@@ -1,5 +1,11 @@
 # Fanfics on AtProto
 
+Links:
+- [Background](#background)
+- [Infrastructure](#infrastructure)
+  - [Notes](#notes)
+  - [Structure](#structure)
+
 ## Background
 
 This was an idea that sparked off a great discussion around decentralizing archives for fanfics and fan works. What if we could have archives that:
