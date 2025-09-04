@@ -1,0 +1,9 @@
+@import url("reset.css");
+
+:root {
+  --body: var(--junicode);
+}
+
+body {
+  font-family: var(--body);
+}

@@ -9,6 +9,14 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^5.13.5"
+    "@astrojs/node": "^9.4.3",
+    "@libsql/client": "^0.15.14",
+    "astro": "^5.13.5",
+    "db0": "^0.3.2",
+    "drizzle-orm": "^0.44.5",
+    "unstorage": "^1.17.0"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^0.31.4"
   }
 }

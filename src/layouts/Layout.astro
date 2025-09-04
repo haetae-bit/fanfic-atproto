@@ -1,0 +1,19 @@
+---
+import { Font } from "astro:assets";
+import "$/styles/base.css";
+
+const { title = "fanfics" } = Astro.props;
+---
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<title>{title}</title>
+		<Font cssVariable="--junicode" preload />
+		<slot name="head" />
+	</head>
+	<body>
+		<slot />
+	</body>
+</html>

@@ -1,0 +1,57 @@
+---
+import Layout from "./Layout.astro";
+
+interface Props {
+  title: string;
+  has_previous: boolean;
+  has_next: boolean;
+}
+
+const { title, has_previous, has_next } = Astro.props;
+---
+<Layout title={title}>
+  <a href="#workname-content">to content</a>
+
+  <nav id="work-menu">
+    {has_previous && (
+      // chapterid - 1?
+      <a href="">previous chaptertitle</a>
+    )}
+    <!-- if theres more than one chapter, render this box -->
+    <select name="workname-chapters" id="workname-chapters">
+      <option value="default" selected>Choose chapter...</option>
+      <!-- map each chapter here -->
+    </select>
+
+    {has_next && (
+      // chapterid + 1 ?
+      <a href="">next chaptertitle</a>
+    )}
+  </nav>
+
+  <main>
+    <header>
+      <h1>{title}</h1>
+      <h2>author name</h2>
+
+      <div id="summary">
+        summary
+      </div>
+    </header>
+
+    <section id="workname-content">
+      <!-- if work has its own style, render it here somehow -->
+      <details>
+        <summary>Author's notes</summary>
+        this should include author's notes
+      </details>
+
+      <slot />
+    </section>
+
+    <aside id="workname-comments">
+      <!-- use bsky api to render comments here -->
+      <!-- paginate this -->
+    </aside>
+  </main>
+</Layout>
