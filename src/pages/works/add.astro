@@ -1,0 +1,34 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { actions } from "astro:actions";
+
+const loggedInUser = Astro.locals.loggedInUser;
+
+if (!loggedInUser) {
+  Astro.redirect("/works");
+}
+
+const result = Astro.getActionResult(actions.worksActions.addWork);
+---
+<Layout>
+  <h1>Add a new work</h1>
+
+  <form action={actions.worksActions.addWork} method="post">
+    <label for="title">title</label>
+    <input type="text" name="title" id="title" required />
+
+    <label for="tags">add tags</label>
+    <input list="tags-list" name="tags" id="tags" />
+    <!-- could be cool to fetch tags from a tags server or smth? idk -->
+    <datalist id="tags-list">
+      <option value="test">here</option>
+      <option value="tag2">another</option>
+      <option value="tag3">try them all!</option>
+    </datalist>
+
+    <label for="content">body</label>
+    <textarea name="content" id="content"></textarea>
+
+    <button>submit</button>
+  </form>
+</Layout>

@@ -1,0 +1,90 @@
+<div id="settings">
+  <form id="user-settings">
+    <label for="font-family">font family</label>
+    <select name="fontFamily" id="font-family">
+      <option value="default">choose...</option>
+      <option value="--serif">serif</option>
+      <option value="--mono">monospaced</option>
+      <option value="--sans-serif">sans serif</option>
+      <option value="--dyslexia">dyslexic</option>
+    </select>
+
+    <label for="font-size">text size</label>
+    <input type="range" name="fontSize" id="font-size" min="-1" max="2" step="1" />
+
+    <label for="line-height">line height</label>
+    <input type="range" name="lineHeight" id="line-height" min="1" max="2" step="0.05" />
+
+    <label for="letter-spacing">letter spacing</label>
+    <input type="range" name="letterSpacing" id="letter-spacing" min="0" max="0.1" step="0.01" />
+
+    <label for="word-spacing">word spacing</label>
+    <input type="range" name="wordSpacing" id="word-spacing" min="0" max="0.5" step="0.01" />
+
+    <div id="test-area">
+      <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Asperiores quae dolorum debitis vero nostrum nobis aspernatur ipsam sunt dolorem, eum ut corrupti unde commodi soluta natus repellendus totam animi adipisci.</p>
+    </div>
+
+    <button id="confirm-settings">save</button>
+  </form>
+</div>
+
+<style>
+  #test-area {
+    --font: var(--body);
+    --size: var(--step-0);
+    --letter-spacing: 0em;
+    --word-spacing: 0em;
+    --line-height: 1.5;
+
+    font-family: var(--font);
+    font-size: var(--size);
+    letter-spacing: var(--letter-spacing);
+    word-spacing: var(--word-spacing);
+    line-height: var(--line-height);
+  }
+</style>
+
+<script>
+  const form = document.forms.namedItem("user-settings");
+  const inputs = document.querySelectorAll("#user-settings :not(button, label, option)");
+  const submitter = document.getElementById("confirm-settings");
+  const test = document.getElementById("test-area");
+
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+  });
+
+  inputs.forEach((input) => {
+    (input as HTMLElement).addEventListener("change", (e) => {
+      const target = e.target as HTMLInputElement || HTMLSelectElement;
+      switch (target.name) {
+        case "fontFamily":
+          (target.value !== "default") 
+            ? test?.style.setProperty("--font", `var(${target.value})`)
+            : test?.style.setProperty("--font", `var(--body)`);
+          break;
+        case "fontSize":
+          test?.style.setProperty("--size", `var(--step-${target.value})`);
+          break;
+        case "lineHeight":
+          test?.style.setProperty("--line-height", target.value);
+          break;
+        case "letterSpacing":
+          test?.style.setProperty("--letter-spacing", `${target.value}em`);
+          break;
+        case "wordSpacing":
+          test?.style.setProperty("--word-spacing", `${target.value}em`);
+          break;
+        default:
+          break;
+      }
+    });
+  });
+
+  submitter?.addEventListener("click", (e) => {
+    e.preventDefault();
+    const data = new FormData(form!);
+    console.table(data);
+  });
+</script>

@@ -1,5 +1,8 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import Settings from "~/Settings.astro";
+
+const currentUser = Astro.locals.loggedInUser;
 ---
 <Layout>
 	<h1>hi</h1>
@@ -7,4 +10,15 @@ import Layout from "../layouts/Layout.astro";
 		<p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Praesentium eum est quisquam distinctio magni recusandae quia vero tempore consectetur! Dolore repellat, voluptatem dignissimos sit eaque iste atque facilis in saepe?</p>
 		<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorem, maxime libero eveniet repellat corporis, architecto voluptate maiores ullam accusamus quasi nostrum nihil placeat cum earum ex voluptatum, harum sunt quam!</p>
 	</main>
+
+	<Settings />
+
+	{currentUser
+		? <>
+			<p>you're logged in!</p>
+			<form action="/oauth/logout" method="post">
+				<button>logout</button>
+			</form>
+		</>
+		: <a href="/login">login</a>}
 </Layout>

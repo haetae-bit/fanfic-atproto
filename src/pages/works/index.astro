@@ -1,0 +1,31 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import type { Tag } from "@/lib/types";
+import { db, eq, Users, Works } from "astro:db";
+
+const works = await db.select()
+  .from(Works)
+  .innerJoin(Users, eq(Works.author, Users.userDid));
+
+const loggedInUser = Astro.locals.loggedInUser;
+---
+
+<Layout>
+  <h1>works</h1>
+  {loggedInUser && 
+    <a href="/works/add">wanna write kid?</a>
+  }
+
+  {works.map(({ Works, Users }) => (
+    <article>
+      <h2>{Works.title}</h2>
+      <h3>{Users.userDid}</h3>
+      <time datetime={Works.createdAt.toISOString()}>{Works.createdAt}</time>
+      {(Works.tags as Tag[]).map((tag: Tag) => (
+        <a href={tag.url}>{tag.label}</a>
+      ))}
+
+      <Fragment set:html={Works.content} />
+    </article>
+  ))}
+</Layout>

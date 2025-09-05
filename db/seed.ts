@@ -11,13 +11,13 @@ export default async function() {
       author: "test", 
       title: "Hey there title",
       content: "<p>i have evil html</p>",
-      tags: { label: "test", url: "#" },
+      tags: [{ label: "test", url: "#" }],
     },
     { 
       author: "another", 
       title: "Hello world",
       content: "<p>whoag i have <b>BOLD</b></p>",
-      tags: { label: "label", url: "#" },
+      tags: [{ label: "label", url: "#" }],
     },
   ]);
 }

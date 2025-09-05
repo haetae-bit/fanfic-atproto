@@ -39,5 +39,8 @@
 }
 
 body {
+  height: 100vh;
   font-family: var(--body);
+  font-size: var(--step-0);
+  line-height: 1.5;
 }

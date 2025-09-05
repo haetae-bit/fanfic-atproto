@@ -1,0 +1,40 @@
+---
+interface Props {
+  label: string;
+  icon?: string;
+  title?: string;
+  class?: string;
+}
+
+const { label, icon, title, class: className, ...rest } = Astro.props;
+---
+<details class:list={["popup", className]} {...rest}>
+  <summary>
+    {icon
+      ? <div class="icon" aria-label={label}>x</div>
+      : <span>{label}</span>
+    }
+  </summary>
+
+  {title && 
+    <h3>{title}</h3>
+  }
+  
+  <slot />
+</details>
+
+<style>
+  .popup {
+    display: inline-block;
+
+    summary {
+      font-size: var(--step--2);
+      cursor: pointer;
+    }
+
+    &::details-content {
+      position: absolute;
+      z-index: 1;
+    }
+  }
+</style>

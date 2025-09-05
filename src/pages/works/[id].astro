@@ -1,0 +1,29 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import type { Tag } from "@/lib/types";
+import type { GetStaticPaths } from "astro";
+import { db, eq, Users, Works } from "astro:db";
+
+export const getStaticPaths = (async () => {
+  const works = await db.select().from(Works).all();
+  return works.map(work => {
+    return {
+      params: { id: work.id, },
+      props: { work },
+    };
+  });
+}) satisfies GetStaticPaths;
+
+const { work } = Astro.props;
+// const author = await db.select().from(Users).where(eq(Users.id, Works.author));
+---
+<Layout>
+  <h1>{work.title}</h1>
+  <!-- <h2>{author[0].userDid}</h2> -->
+  <time datetime={work.createdAt.toISOString()}>{work.createdAt}</time>
+  {(work.tags as Tag[]).map(tag => (
+    <a href={tag.url}>{tag.label}</a>
+  ))}
+
+  <Fragment set:html={work.content} />
+</Layout>
