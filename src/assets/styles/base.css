@@ -1,6 +1,40 @@
 @import url("reset.css");
 
 :root {
+  /* type tokens */
+  /* @link https://utopia.fyi/type/calculator?c=360,18,1.618,1240,20,1.25,5,2,&s=0.75|0.5|0.25,1.5|2|3|4|6,s-l&g=s,l,xl,12 */
+  --step--2: clamp(0.4297rem, 0.2783rem + 0.6732cqi, 0.8rem);
+  --step--1: clamp(0.6953rem, 0.5707rem + 0.554cqi, 1rem);
+  --step-0: clamp(1.125rem, 1.0739rem + 0.2273cqi, 1.25rem);
+  --step-1: clamp(1.5625rem, 1.9257rem + -0.4686cqi, 1.8203rem);
+  --step-2: clamp(1.9531rem, 3.351rem + -1.8037cqi, 2.9452rem);
+  --step-3: clamp(2.4414rem, 5.716rem + -4.2252cqi, 4.7653rem);
+  --step-4: clamp(3.0518rem, 9.616rem + -8.4699cqi, 7.7102rem);
+  --step-5: clamp(3.8147rem, 16.018rem + -15.7462cqi, 12.4751rem);
+
+  /* space tokens */
+  /* @link https://utopia.fyi/space/calculator?c=360,18,1.618,1240,20,1.25,5,2,&s=0.75|0.5|0.25,1.5|2|3|4|6,s-l&g=s,l,xl,12 */
+  --space-3xs: clamp(0.3125rem, 0.3125rem + 0cqi, 0.3125rem);
+  --space-2xs: clamp(0.5625rem, 0.5369rem + 0.1136cqi, 0.625rem);
+  --space-xs: clamp(0.875rem, 0.8494rem + 0.1136cqi, 0.9375rem);
+  --space-s: clamp(1.125rem, 1.0739rem + 0.2273cqi, 1.25rem);
+  --space-m: clamp(1.6875rem, 1.6108rem + 0.3409cqi, 1.875rem);
+  --space-l: clamp(2.25rem, 2.1477rem + 0.4545cqi, 2.5rem);
+  --space-xl: clamp(3.375rem, 3.2216rem + 0.6818cqi, 3.75rem);
+  --space-2xl: clamp(4.5rem, 4.2955rem + 0.9091cqi, 5rem);
+  --space-3xl: clamp(6.75rem, 6.4432rem + 1.3636cqi, 7.5rem);
+
+  /* One-up pairs */
+  --space-3xs-2xs: clamp(0.3125rem, 0.1847rem + 0.5682cqi, 0.625rem);
+  --space-2xs-xs: clamp(0.5625rem, 0.4091rem + 0.6818cqi, 0.9375rem);
+  --space-xs-s: clamp(0.875rem, 0.7216rem + 0.6818cqi, 1.25rem);
+  --space-s-m: clamp(1.125rem, 0.8182rem + 1.3636cqi, 1.875rem);
+  --space-m-l: clamp(1.6875rem, 1.3551rem + 1.4773cqi, 2.5rem);
+  --space-l-xl: clamp(2.25rem, 1.6364rem + 2.7273cqi, 3.75rem);
+  --space-xl-2xl: clamp(3.375rem, 2.7102rem + 2.9545cqi, 5rem);
+  --space-2xl-3xl: clamp(4.5rem, 3.2727rem + 5.4545cqi, 7.5rem);
+  
+  /* font tokens */
   --body: var(--junicode);
 }
 

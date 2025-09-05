@@ -1,22 +1,17 @@
 {
   "name": "atproto-ao3",
-  "type": "module",
   "version": "0.0.1",
+  "dependencies": {
+    "@astrojs/db": "^0.17.1",
+    "@astrojs/node": "^9.4.3",
+    "@fujocoded/authproto": "^0.0.4",
+    "astro": "^5.13.5"
+  },
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro"
   },
-  "dependencies": {
-    "@astrojs/node": "^9.4.3",
-    "@libsql/client": "^0.15.14",
-    "astro": "^5.13.5",
-    "db0": "^0.3.2",
-    "drizzle-orm": "^0.44.5",
-    "unstorage": "^1.17.0"
-  },
-  "devDependencies": {
-    "drizzle-kit": "^0.31.4"
-  }
+  "type": "module"
 }

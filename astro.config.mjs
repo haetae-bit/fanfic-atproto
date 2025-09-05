@@ -1,18 +1,22 @@
 // @ts-check
-import { defineConfig, envField, fontProviders } from 'astro/config';
+import { defineConfig, fontProviders } from 'astro/config';
 import node from '@astrojs/node';
+import db from "@astrojs/db";
+import authproto from "@fujocoded/authproto";
 
 // https://astro.build/config
 export default defineConfig({
   adapter: node({
     mode: 'standalone',
   }),
-  env: {
-    schema: {
-      DB_URL: envField.string({ context: "server", access: "secret" }),
-      DB_TOKEN: envField.string({ context: "server", access: "secret", optional: true }),
-    },
-  },
+  integrations: [
+    db(),
+    authproto({
+      applicationName: "fan archive",
+      applicationDomain: "",
+      driver: { name: "astro:db" },
+    }),
+  ],
   experimental: {
     fonts: [
       {
