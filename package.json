@@ -5,6 +5,7 @@
     "@astrojs/db": "^0.17.1",
     "@astrojs/node": "^9.4.3",
     "@fujocoded/authproto": "^0.0.4",
+    "@lucide/astro": "^0.542.0",
     "astro": "^5.13.5",
     "nanoid": "^5.1.5"
   },

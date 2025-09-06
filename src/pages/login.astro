@@ -14,13 +14,12 @@ const currentUser = Astro.locals.loggedInUser;
     ) : (
       // If there's no current user, show the log in button
       <form action="/oauth/login" method="post">
-        <label for="handle">Input your handle
-          <Popover label="help">
-            <h3>What's my handle?</h3>
-            <p>It'll look like a website URL without the <samp>https://</samp> or slashes, so a typical BlueSky handle will look something like: <b>alice.bsky.social</b>.</p>
-            <p>What yours will look like depends on whether you made a custom handle!</p>
-          </Popover>
-        </label>
+        <label for="handle">Input your handle</label>
+        <Popover id="handle-help" label="help">
+          <h3>What's my handle?</h3>
+          <p>It'll look like a website URL without the <samp>https://</samp> or slashes, so a typical BlueSky handle will look something like: <b>alice.bsky.social</b>.</p>
+          <p>What yours will look like depends on whether you made a custom handle!</p>
+        </Popover>
         <input name="atproto-id" id="handle" required />
         <button type="submit">Login</button>
       </form>

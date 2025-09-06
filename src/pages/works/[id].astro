@@ -24,7 +24,7 @@ if (work.length === 0) {
       {(Works.tags as Tag[]).map(tag => (
         <a href={tag.url}>{tag.label}</a>
       ))}
-
+      
       <Fragment set:html={Works.content} />
     </>
   ))}

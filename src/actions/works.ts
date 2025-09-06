@@ -19,24 +19,31 @@ export const worksActions = {
     accept: "form",
     input: workSchema,
     handler: async (input, context) => {
+      const loggedInUser = context.locals.loggedInUser;
+
       // check against auth
-      if (!context.locals.loggedInUser) {
+      if (!loggedInUser) {
         throw new ActionError({
           code: "UNAUTHORIZED",
           message: "You're not logged in!",
         });
       }
 
-      // const agent = await
-
-      // find the id of the logged in user
-      const userId = await db
+      // find the did of the logged in user
+      const query = await db
         .select({ did: Users.userDid })
         .from(Users)
-        .where(
-          eq(Users.userDid, context.locals.loggedInUser.did)
-        );
-      
+        .where(eq(Users.userDid, loggedInUser.did))
+        .limit(1);
+
+      if (query.length === 0) {
+        throw new ActionError({
+          code: "UNAUTHORIZED",
+          message: "You can only add a work if you connected your PDS!",
+        });
+      }
+
+      const user = query[0];
       // check nanoid for collision probability: https://zelark.github.io/nano-id-cc/
       const alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
       const nanoid = customAlphabet(alphabet, 16);
@@ -44,11 +51,14 @@ export const worksActions = {
       
       const work = await db.insert(Works).values({
         slug,
-        author: userId[0].did,
+        author: user.did,
         title: input.title,
         content: input.content,
         tags: input.tags,
       }).returning();
+
+      // depending on whether someone toggled the privacy option, push this into firehouse
+      // const agent = await
 
       return work;
     },

@@ -3,6 +3,7 @@ import Layout from "@/layouts/Layout.astro";
 import { actions } from "astro:actions";
 import { db, eq, Users, Works } from "astro:db";
 import Dialog from "~/Dialog.astro";
+import Popover from "~/Popover.astro";
 
 const loggedInUser = Astro.locals.loggedInUser;
 
@@ -20,7 +21,7 @@ if (!loggedInUser) {
   <p>{loggedInUser?.handle}</p>
   
   <!-- registration will only happen in the below form! -->
-  {!user && (
+  {(user.length === 0) && (
     <>
       <h2>Connect account</h2>
       <div class="info">
@@ -31,8 +32,15 @@ if (!loggedInUser) {
       
       <Dialog id="connect-account" title="Are you sure?">
         <form action={actions.usersActions.addUser} method="post">
-          <input type="hidden" name="did" value={loggedInUser.did} />
-          
+          <label for="nickname">Nickname</label>
+          <Popover id="nickname-info" label="info" icon="danger">
+            <p>You can optionally set your nickname for this site. This is separate from your handle and acts as your identifier.</p>
+            <p>Think of your handle as what you use to log in with, and your nickname as the name you want to publish your works under.</p>
+            <h3>Important</h3>
+            <p>If you do set a nickname, </p>
+          </Popover>
+          <input type="text" name="nickname" id="nickname" />
+
           <button formmethod="dialog">Cancel</button>
           <button>Confirm</button>
         </form>

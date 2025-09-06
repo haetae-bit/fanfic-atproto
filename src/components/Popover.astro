@@ -1,40 +1,64 @@
 ---
+import { Info, TriangleAlert, Skull } from "@lucide/astro";
+
 interface Props {
+  id?: string;
   label: string;
-  icon?: string;
+  icon?: "info" | "warning" | "danger";
   title?: string;
   class?: string;
 }
 
-const { label, icon, title, class: className, ...rest } = Astro.props;
+const { id, label, icon, title, class: className, ...rest } = Astro.props;
 ---
-<details class:list={["popup", className]} {...rest}>
-  <summary>
-    {icon
-      ? <div class="icon" aria-label={label}>x</div>
-      : <span>{label}</span>
-    }
-  </summary>
-
-  {title && 
-    <h3>{title}</h3>
+<!-- type button needs to be set here, otherwise it doesn't work inside forms -->
+<button
+  type="button" 
+  id={`${id}-trigger`} 
+  class:list={["popup", "anchor", className]} 
+  aria-describedby={id}
+  popovertarget={id}
+>
+  {icon
+    ? 
+      <div class="icon" aria-label={label}>
+        {icon &&
+          (icon === "info") ? <Info /> :
+          (icon === "warning") ? <TriangleAlert /> :
+          (icon === "danger") ? <Skull /> :
+          <></>
+        }
+      </div>
+    : <span>{label}</span>
   }
+</button>
+
+<div {id} class:list={["popup", className]} role="tooltip" {...rest} popover="auto">
+  {title && (
+    <h3>{title}</h3>
+  )}
   
   <slot />
-</details>
+</div>
 
-<style>
-  .popup {
-    display: inline-block;
+<style define:vars={{ trigger: `${id}-anchor` }}>
+  .popup.anchor {
+    anchor: var(--trigger);
+  }
 
-    summary {
-      font-size: var(--step--2);
-      cursor: pointer;
-    }
-
-    &::details-content {
-      position: absolute;
-      z-index: 1;
-    }
+  div.popup {
+    position-anchor: var(--trigger);
+    inset: anchor(trigger );
+    position-try-fallbacks: flip-block, flip-inline;
   }
 </style>
+
+<script define:vars={{ id }} is:inline>
+  const trigger = document.getElementById(`${id}-trigger`);
+  const popover = document.getElementById(id);
+
+  trigger.addEventListener("click", (e) => {
+    e.preventDefault();
+    popover.togglePopover();
+  });
+</script>
