@@ -5,6 +5,10 @@ Links:
 - [Infrastructure](#infrastructure)
   - [Notes](#notes)
   - [Structure](#structure)
+- [Contributing](#contributing)
+
+> [!WARNING]
+> This is alpha software, there's no guarantee that this will work on your system. But if you'd like to try hacking at this, take a look at the [Contributing](#contributing) section once instructions are written up.
 
 ## Background
 
@@ -27,7 +31,7 @@ AtProto, to my understanding, is made of multiple layers. There's:
 
 1. The client (the actual site that displays data)
 2. The PDS (the server that stores user's data)
-3. The AppView (the thing that grabs only relevant data)
+3. The AppView (the thing that grabs only relevant data and serves as an API)
 4. The Lexicon (the blueprint for data to be used in AppViews and clients)
 
 ... And probably more, and there's a lot of discussion around how user data ownership / censorship / etc gets handled on those layers.
@@ -37,30 +41,42 @@ In our case, we'll only worry about making the client and then get drafts of the
 Currently, I'm using these technologies:
 
 - Astro
-- Drizzle ORM
-- Turso
-- Unstorage
+- Drizzle ORM (via Astro DB)
+  - Turso (LibSQL under the hood)
+- Unstorage (via [@fujocoded/authproto](https://github.com/FujoWebDev/fujocoded-plugins/tree/main/astro-authproto))
 
 Mainly because: 1, Astro is a really well-documented web framework that's pretty approachable as someone who used to handwrite HTML pages; 2, SQLite / LibSQL are (to my knowledge) fairly cheap databases to run; and 3, Unstorage is pretty dead simple for setting up auth sessions from scratch.
 
 ### Structure
 
-#### `src/actions`
+#### Database: `db` 
 
-These hold actions that run every time a user wants to publish a new work or signs up for the archive.
+This holds all the relevant database code. This also contains the structure and types for database tables.
 
-#### `src/assets`
+#### Actions: `src/actions`
+
+These hold actions that run every time a user wants to publish a new work or signs up for the archive. Basically the backend functionality for this project.
+
+#### Assets: `src/assets` 
 
 This has images / libre font / `.css` files to be used stylistically throughout the site.
 
-#### `src/components`
+#### Components: `src/components` 
 
 These hold components that are reused throughout `src/pages`. Like PHP includes but in HTML and JavaScript (well, technically it's JSX).
 
-#### `src/lib/db`
+#### Pages: `src/pages` 
 
-This holds all the relevant database connecting code. This also contains the types for database tables.
+These are the actual routes that are available to end-users. Under the pages are nested pages grouped under folders, namely:
 
-#### `src/pages`
+##### Users: `src/pages/users`
 
-These are the actual pages where data, user interactions, etc happen. So this would be more HTML/CSS/JavaScript-oriented.
+These are pages where users can view all user profiles, find a specific user profile, or update their account settings.
+
+##### Works: `src/pages/works`
+
+These only hold pages that are relevant to adding, editing, deleting, or viewing works.
+
+## Contributing
+
+To be added, but feel free to open an issue in the meantime!

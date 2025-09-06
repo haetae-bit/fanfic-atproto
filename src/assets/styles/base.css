@@ -35,7 +35,11 @@
   --space-2xl-3xl: clamp(4.5rem, 3.2727rem + 5.4545cqi, 7.5rem);
   
   /* font tokens */
-  --body: var(--junicode);
+  --serif: var(--plex-serif);
+  --sans: var(--atkinson);
+  --mono: var(--plex-mono);
+
+  --body: var(--serif);
 }
 
 body {

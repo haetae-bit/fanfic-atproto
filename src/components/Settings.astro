@@ -1,12 +1,15 @@
-<div id="settings">
+---
+import Dialog from "./Dialog.astro";
+---
+<Dialog id="settings" title="User preferences">
   <form id="user-settings">
     <label for="font-family">font family</label>
     <select name="fontFamily" id="font-family">
       <option value="default">choose...</option>
       <option value="--serif">serif</option>
       <option value="--mono">monospaced</option>
-      <option value="--sans-serif">sans serif</option>
-      <option value="--dyslexia">dyslexic</option>
+      <option value="--sans">sans serif</option>
+      <option value="--dyslexic">dyslexic</option>
     </select>
 
     <label for="font-size">text size</label>
@@ -27,7 +30,7 @@
 
     <button id="confirm-settings">save</button>
   </form>
-</div>
+</Dialog>
 
 <style>
   #test-area {

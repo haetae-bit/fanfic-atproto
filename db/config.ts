@@ -14,6 +14,7 @@ const Users = defineTable({
 const Works = defineTable({
   columns: {
     id: column.number({ primaryKey: true }),
+    slug: column.text({ unique: true }),
     author: column.text({ references: () => Users.columns.userDid }),
     // recordkey
     title: column.text(),
@@ -22,6 +23,9 @@ const Works = defineTable({
     createdAt: column.date({ name: "created_at", default: NOW }),
     updatedAt: column.date({ name: "updated_at", optional: true }),
   },
+  indexes: [
+    { on: ["slug", "createdAt"], unique: true },
+  ],
 });
 
 export default defineDb({

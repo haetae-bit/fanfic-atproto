@@ -1,29 +1,28 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import type { Tag } from "@/lib/types";
-import type { GetStaticPaths } from "astro";
 import { db, eq, Users, Works } from "astro:db";
 
-export const getStaticPaths = (async () => {
-  const works = await db.select().from(Works).all();
-  return works.map(work => {
-    return {
-      params: { id: work.id, },
-      props: { work },
-    };
-  });
-}) satisfies GetStaticPaths;
+const { id } = Astro.params;
 
-const { work } = Astro.props;
-// const author = await db.select().from(Users).where(eq(Users.id, Works.author));
+const works = await db.select()
+  .from(Works)
+  .where(eq(Works.id, Number(id)))
+  .innerJoin(Users, eq(Works.author, Users.userDid))
+  .limit(1);
+
 ---
 <Layout>
-  <h1>{work.title}</h1>
-  <!-- <h2>{author[0].userDid}</h2> -->
-  <time datetime={work.createdAt.toISOString()}>{work.createdAt}</time>
-  {(work.tags as Tag[]).map(tag => (
-    <a href={tag.url}>{tag.label}</a>
-  ))}
+  {works.map(({ Works, Users }) => (
+    <h1>{Works.title}</h1>
+    <h2>{Users.userDid}</h2>
+    <time datetime={Works.createdAt.toISOString()}>{Works.createdAt}</time>
+    <ul>
+      {(Works.tags as unknown as Tag[]).map(tag => (
+        <li><a href={tag.url}>{tag.label}</a></li>
+      ))}
+    </ul>
 
-  <Fragment set:html={work.content} />
+    <Fragment set:html={Works.content} />
+  ))}
 </Layout>
