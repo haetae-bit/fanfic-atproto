@@ -1,6 +1,7 @@
 import { ActionError, defineAction } from "astro:actions";
 import { z } from "astro:content";
 import { db, eq, Users, Works } from "astro:db";
+import { customAlphabet } from "nanoid";
 
 const workSchema = z.object({
   title: z.string(),
@@ -36,7 +37,13 @@ export const worksActions = {
           eq(Users.userDid, context.locals.loggedInUser.did)
         );
       
+      // check nanoid for collision probability: https://zelark.github.io/nano-id-cc/
+      const alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+      const nanoid = customAlphabet(alphabet, 16);
+      const slug = nanoid();
+      
       const work = await db.insert(Works).values({
+        slug,
         author: userId[0].did,
         title: input.title,
         content: input.content,

@@ -5,24 +5,27 @@ import { db, eq, Users, Works } from "astro:db";
 
 const { id } = Astro.params;
 
-const works = await db.select()
+const work = await db.select()
   .from(Works)
-  .where(eq(Works.id, Number(id)))
+  .where(eq(Works.slug, id!))
   .innerJoin(Users, eq(Works.author, Users.userDid))
   .limit(1);
 
+if (work.length === 0) {
+  return Astro.redirect("/not-found");
+}
 ---
 <Layout>
-  {works.map(({ Works, Users }) => (
-    <h1>{Works.title}</h1>
-    <h2>{Users.userDid}</h2>
-    <time datetime={Works.createdAt.toISOString()}>{Works.createdAt}</time>
-    <ul>
-      {(Works.tags as unknown as Tag[]).map(tag => (
-        <li><a href={tag.url}>{tag.label}</a></li>
+  {work.map(({ Works, Users }) => (
+    <>
+      <h1>{Works.title}</h1>
+      <h2>{Users.userDid}</h2>
+      <time datetime={Works.createdAt.toISOString()}>{Works.createdAt}</time>
+      {(Works.tags as Tag[]).map(tag => (
+        <a href={tag.url}>{tag.label}</a>
       ))}
-    </ul>
 
-    <Fragment set:html={Works.content} />
+      <Fragment set:html={Works.content} />
+    </>
   ))}
 </Layout>

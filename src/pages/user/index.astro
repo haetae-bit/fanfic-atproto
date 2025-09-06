@@ -1,0 +1,72 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { actions } from "astro:actions";
+import { db, eq, Users, Works } from "astro:db";
+import Dialog from "~/Dialog.astro";
+
+const loggedInUser = Astro.locals.loggedInUser;
+
+const user = await db.select()
+  .from(Users)
+  .where(eq(Users.userDid, loggedInUser?.did ?? ""))
+  .fullJoin(Works, eq(Users.userDid, Works.author));
+
+if (!loggedInUser) {
+  return Astro.redirect("/login");
+}
+---
+<Layout>
+  <h1>User Settings</h1>
+  <p>{loggedInUser?.handle}</p>
+  
+  <!-- registration will only happen in the below form! -->
+  {!user && (
+    <>
+      <h2>Connect account</h2>
+      <div class="info">
+        <p>Right now, you aren't connected to the site. You can connect your BlueSky / self-hosted PDS account to this website to post a work.</p>
+        <p>Please check out the Terms of Service, Privacy Policy, and Code of Conduct before connecting your account.</p>
+      </div>
+      <button id="trigger-confirm">Connect your PDS Account</button>
+      
+      <Dialog id="connect-account" title="Are you sure?">
+        <form action={actions.usersActions.addUser} method="post">
+          <input type="hidden" name="did" value={loggedInUser.did} />
+          
+          <button formmethod="dialog">Cancel</button>
+          <button>Confirm</button>
+        </form>
+      </Dialog>
+    </>
+  )}
+  
+  <!-- this is weird but this should ONLY render if the user is registered -->
+  {user.map(({ Users, Works }) => {
+    if (Users) {
+      return (
+        <>
+          <time datetime={Users.joinedAt.toISOString()}>{Users.joinedAt}</time>
+          <p>{Users.userDid}</p>
+
+          {Works
+            ? <section>
+                <ul>
+                  {JSON.stringify(Works)}
+                </ul>
+              </section>
+            : <a href="/works/add">go write! if you want :)</a>
+          }
+        </>
+      )
+    }
+  })}
+</Layout>
+
+<script>
+  const trigger = document.getElementById("trigger-confirm");
+  const confirmDialog = document.getElementById("connect-account") as HTMLDialogElement;
+
+  trigger?.addEventListener("click", (_) => {
+    confirmDialog.showModal();
+  });
+</script>

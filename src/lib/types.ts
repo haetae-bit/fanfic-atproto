@@ -1,11 +1,11 @@
 export interface Work {
-  id: number;
+  slug: string;
   title: string;
-  author: number | string;
-  tags: Array<Tag>;
+  author: string;
+  tags: Tag[];
   content: string;
-  createdAt: Date | string;
-  updatedAt: Date | string | undefined;
+  createdAt: Date;
+  updatedAt: Date | undefined;
 }
 
 export interface Tag {

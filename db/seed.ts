@@ -7,13 +7,15 @@ export default async function() {
   ]);
 
   await db.insert(Works).values([
-    { 
+    {
+      slug: "1234",
       author: "test", 
       title: "Hey there title",
       content: "<p>i have evil html</p>",
       tags: [{ label: "test", url: "#" }],
     },
     { 
+      slug: "1235",
       author: "another", 
       title: "Hello world",
       content: "<p>whoag i have <b>BOLD</b></p>",

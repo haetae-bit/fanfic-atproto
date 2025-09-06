@@ -1,0 +1,15 @@
+---
+const LINKS = [
+  { label: "Home", url: "/" },
+  { label: "Works", url: "/works" },
+  { label: "Login", url: "/login" },
+  { label: "Settings", url: "/user" },
+];
+---
+<nav id="main-nav">
+  <ul>
+    {LINKS.map(({ label, url }) => (
+      <li><a href={url}>{label}</a></li>
+    ))}
+  </ul>
+</nav>

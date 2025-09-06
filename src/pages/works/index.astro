@@ -18,7 +18,7 @@ const loggedInUser = Astro.locals.loggedInUser;
 
   {works.map(({ Works, Users }) => (
     <article>
-      <h2>{Works.title}</h2>
+      <h2><a href={`/works/${Works.slug}`}>{Works.title}</a></h2>
       <h3>{Users.userDid}</h3>
       <time datetime={Works.createdAt.toISOString()}>{Works.createdAt}</time>
       {(Works.tags as Tag[]).map((tag: Tag) => (
