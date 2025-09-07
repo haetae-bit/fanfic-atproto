@@ -1,19 +1,17 @@
 ---
-const LINKS = [
-  { label: "Home", url: "/" },
-  { label: "Works", url: "/works" },
-];
-
 const loggedInUser = Astro.locals.loggedInUser;
 ---
-<nav id="main-nav">
-  <ul>
-    {LINKS.map(({ label, url }) => (
-      <li><a href={url}>{label}</a></li>
-    ))}
-    {loggedInUser
-      ? <li><a href="/user">Settings</a></li>
-      : <li><a href="/login">Login</a></li>
-    }
-  </ul>
+<nav id="main-nav" class="navbar bg-base-100">
+  <div class="flex-1">
+    <a href="/" class="btn btn-ghost text-xl">Home</a>
+  </div>
+  <div class="flex-none">
+    <ul class="menu menu-horizontal px-1">
+      <li><a href="/works">Works</a></li>
+      {loggedInUser
+        ? <li><a href="/user">Settings</a></li>
+        : <li><a href="/login">Login</a></li>
+      }
+    </ul>
+  </div>
 </nav>

@@ -6,9 +6,10 @@ import Navbar from "~/Navbar.astro";
 interface Props {
 	title?: string;
 	skipLink?: string;
+	class?: string;
 }
 
-const { title = "fanfics", skipLink } = Astro.props;
+const { title = "fanfics", skipLink, class: className, ...rest } = Astro.props;
 ---
 <html lang="en">
 	<head>
@@ -22,7 +23,7 @@ const { title = "fanfics", skipLink } = Astro.props;
 		<Font cssVariable="--plex-serif" preload />
 		<slot name="head" />
 	</head>
-	<body>
+	<body class="flex flex-col min-h-svh">
 		<header>
 			{skipLink && (
 				<a class="skip-link" href={`#${skipLink}`}>Skip to content</a>
@@ -31,21 +32,24 @@ const { title = "fanfics", skipLink } = Astro.props;
 			<Navbar />
 		</header>
 
-		<slot />
+		<div class:list={["min-w-[65ch] max-w-10/12 mx-auto", className]} {...rest}>
+			<slot />
+		</div>
 
-		<footer>
+		<footer class="footer sm:footer-horizontal footer-center bg-base-300 text-base-content mt-auto p-5">
 			copyright or something ig
 		</footer>
 	</body>
 </html>
 
 <style>
-	.skip-link {
-		position: absolute;
-		left: calc(max-content * -1);
-	}
+	@reference "../assets/styles/global.css";
 
-	footer {
-		margin-top: auto;
+	.skip-link {
+		@apply absolute top-3 -left-full transition-all ease-in-out btn btn-ghost;
+		
+		&:focus {
+			@apply left-3;
+		}
 	}
 </style>

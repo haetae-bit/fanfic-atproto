@@ -4,12 +4,13 @@ import { Info, TriangleAlert, Skull } from "@lucide/astro";
 interface Props {
   id?: string;
   label: string;
+  direction: "top" | "bottom";
   icon?: "info" | "warning" | "danger";
   title?: string;
   class?: string;
 }
 
-const { id, label, icon, title, class: className, ...rest } = Astro.props;
+const { id, label, direction = "top", icon, title, class: className, ...rest } = Astro.props;
 ---
 <!-- type button needs to be set here, otherwise it doesn't work inside forms -->
 <button
@@ -24,8 +25,7 @@ const { id, label, icon, title, class: className, ...rest } = Astro.props;
       (icon === "warning") ? "text-warning" :
       (icon === "danger") ? "text-error" :
       "text-base-content",
-    "popover-btn",
-    className
+    "popover-btn"
   ]} 
   aria-describedby={id}
   popovertarget={id}
@@ -67,14 +67,16 @@ const { id, label, icon, title, class: className, ...rest } = Astro.props;
   </div>
 </div>
 
-<style define:vars={{ anchor: `--${id}-anchor` }}>
+<style define:vars={{ anchor: `--${id}-anchor`, direction }}>
   .popover-btn {
     anchor-name: var(--anchor);
   }
 
   .popover-content {
     position-anchor: var(--anchor);
-    top: calc(anchor(top) - 5em);
+    top: anchor(var(--direction));
+    left: anchor(center);
+    transform: translateX(-50%);
     position-try-fallbacks: flip-block, flip-inline;
   }
 </style>

@@ -4,12 +4,13 @@ import X from "@lucide/astro/icons/x";
 interface Props {
   id: string;
   title: string;
+  class?: string;
   alert?: boolean;
 }
 
-const { id, title, alert = false } = Astro.props;
+const { id, title, class: className, alert = false } = Astro.props;
 ---
-<dialog {id} role={alert ? "alertdialog" : undefined} closedby="any">
+<dialog {id} class:list={["card", className]} role={alert ? "alertdialog" : undefined} closedby="any">
   <header>
     <h1>{title}</h1>
     <form method="dialog">
@@ -25,33 +26,4 @@ const { id, title, alert = false } = Astro.props;
 </dialog>
 
 <style>
-  dialog {
-    margin: auto;
-    min-height: 200px;
-    padding: 0;
-
-    header {
-      display: flex;
-      align-items: center;
-      background-color: aqua;
-      padding: 0.5rem;
-      
-      h1 {
-        flex: 1;
-        font-size: var(--step--1);
-      }
-
-      .close {
-        cursor: pointer;
-        min-width: 44px;
-        min-height: 44px;
-        display: grid;
-        place-content: center;
-      }
-    }
-
-    .dialog-content {
-      padding: 1rem;
-    }
-  }
 </style>

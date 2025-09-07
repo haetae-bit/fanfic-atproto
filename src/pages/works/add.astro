@@ -1,6 +1,6 @@
 ---
 import Layout from "@/layouts/Layout.astro";
-import { actions } from "astro:actions";
+import { actions, isInputError } from "astro:actions";
 
 const loggedInUser = Astro.locals.loggedInUser;
 
@@ -9,26 +9,50 @@ if (!loggedInUser) {
 }
 
 const result = Astro.getActionResult(actions.worksActions.addWork);
+const errors = isInputError(result?.error) ? result.error.fields : {};
 ---
 <Layout>
-  <h1>Add a new work</h1>
+  <main>
+    <h1>Add a new work</h1>
 
-  <form action={actions.worksActions.addWork} method="post">
-    <label for="title">title</label>
-    <input type="text" name="title" id="title" required />
+    <form action={actions.worksActions.addWork} method="post">
+      <label for="title">title</label>
+      <input transition:persist type="text" name="title" id="title" aria-describedby="title-error" required />
+      {errors.title && (
+        <div id="title-error">
+          {errors.title}
+        </div>
+      )}
 
-    <label for="tags">add tags</label>
-    <input list="tags-list" name="tags" id="tags" />
-    <!-- could be cool to fetch tags from a tags server or smth? idk -->
-    <datalist id="tags-list">
-      <option value="test">here</option>
-      <option value="tag2">another</option>
-      <option value="tag3">try them all!</option>
-    </datalist>
+      <label for="tags">add tags</label>
+      <input transition:persist type="text" list="tags-list" name="tags" id="tags" aria-describedby="tags-error" />
+      <!-- could be cool to fetch tags from a tags server or smth? idk -->
+      <datalist id="tags-list">
+        <option value="test">here</option>
+        <option value="tag2">another</option>
+        <option value="tag3">try them all!</option>
+      </datalist>
+      {errors.tags && (
+        <div id="tags-error">
+          {errors.tags}
+        </div>
+      )}
 
-    <label for="content">body</label>
-    <textarea name="content" id="content"></textarea>
+      <label for="content">body</label>
+      <textarea transition:persist name="content" id="content" aria-describedby="content-error"></textarea>
+      {errors.content && (
+        <div id="content-error">
+          {errors.content}
+        </div>
+      )}
 
-    <button>submit</button>
-  </form>
+      <button>submit</button>
+    </form>
+
+    {result?.error && (
+      <div class="error">
+        {result.error.message}
+      </div>
+    )}
+  </main>
 </Layout>

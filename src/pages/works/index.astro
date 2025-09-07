@@ -11,21 +11,45 @@ const loggedInUser = Astro.locals.loggedInUser;
 ---
 
 <Layout>
-  <h1>works</h1>
-  {loggedInUser && 
-    <a href="/works/add">wanna write kid?</a>
-  }
+  <h1 class="text-5xl">works</h1>
 
-  {works.map(({ Works, Users }) => (
-    <article>
-      <h2><a href={`/works/${Works.slug}`}>{Works.title}</a></h2>
-      <h3>{Users.userDid}</h3>
-      <time datetime={Works.createdAt.toISOString()}>{Works.createdAt}</time>
-      {(Works.tags as Tag[]).map((tag: Tag) => (
-        <a href={tag.url}>{tag.label}</a>
-      ))}
+  <main id="content">
+    {loggedInUser && 
+      <a href="/works/add">wanna write kid?</a>
+    }
 
-      <Fragment set:html={Works.content} />
-    </article>
-  ))}
+    {works.map(({ Works, Users }) => (
+      <article class="card">
+        <header>
+          <div class="flex items-center justify-between">
+            <hgroup class="flex-1">
+              <h2 class="card-title">
+                <a href={`/works/${Works.slug}`}>{Works.title}</a>
+              </h2>
+              <h3>{Users.userDid}</h3>
+            </hgroup>
+            <time datetime={Works.createdAt.toISOString()}>{Works.createdAt}</time>
+          </div>
+          {JSON.stringify(Works.tags)}
+          {/* <ul class="flex flex-wrap gap-1.5">
+            {(Works.tags as Tag[]).map((tag: Tag) => (
+              <li><a class="tag" href={tag.url}>{tag.label}</a></li>
+            ))}
+          </ul> */}
+        </header>
+
+        <div class="card-body prose lg:prose-xl">
+          <Fragment set:html={Works.content} />
+        </div>
+      </article>
+    ))}
+  </main>
 </Layout>
+
+<style>
+  @reference "../../assets/styles/global.css";
+
+  .tag {
+    @apply btn btn-accent;  
+  }
+</style>

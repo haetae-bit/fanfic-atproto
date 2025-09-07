@@ -6,12 +6,7 @@ import { customAlphabet } from "nanoid";
 const workSchema = z.object({
   title: z.string(),
   content: z.string(),
-  tags: z.array(
-    z.object({
-      label: z.string(),
-      uri: z.string(),
-    })
-  ),
+  tags: z.string(),
 });
 
 export const worksActions = {
@@ -44,10 +39,13 @@ export const worksActions = {
       }
 
       const user = query[0];
+
       // check nanoid for collision probability: https://zelark.github.io/nano-id-cc/
       const alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
       const nanoid = customAlphabet(alphabet, 16);
       const slug = nanoid();
+
+      // convert the tags into json thru shenaniganery
       
       const work = await db.insert(Works).values({
         slug,
@@ -56,7 +54,7 @@ export const worksActions = {
         content: input.content,
         tags: input.tags,
       }).returning();
-
+      
       // depending on whether someone toggled the privacy option, push this into firehouse
       // const agent = await
 

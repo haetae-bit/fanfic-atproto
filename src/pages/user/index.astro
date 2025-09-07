@@ -7,21 +7,26 @@ import Popover from "~/Popover.astro";
 
 const loggedInUser = Astro.locals.loggedInUser;
 
-const user = await db.select()
-  .from(Users)
-  .where(eq(Users.userDid, loggedInUser?.did ?? ""))
-  .fullJoin(Works, eq(Users.userDid, Works.author));
-
 if (!loggedInUser) {
   return Astro.redirect("/login");
 }
+
+const query = await db.select()
+  .from(Users)
+  .where(eq(Users.userDid, loggedInUser.did))
+  .limit(1);
+const user = query[0];
+
+const works = await db.select()
+  .from(Works)
+  .where(eq(Works.author, user.userDid));
 ---
 <Layout>
   <h1>User Settings</h1>
   <p>{loggedInUser?.handle}</p>
   
   <!-- registration will only happen in the below form! -->
-  {(user.length === 0) && (
+  {(query.length === 0) && (
     <>
       <h2>Connect account</h2>
       <div class="info">
@@ -33,11 +38,11 @@ if (!loggedInUser) {
       <Dialog id="connect-account" title="Are you sure?">
         <form action={actions.usersActions.addUser} method="post">
           <label for="nickname">Nickname</label>
-          <Popover id="nickname-info" label="info" icon="danger">
+          <Popover id="nickname-info" label="info" icon="warning" direction="bottom">
             <p>You can optionally set your nickname for this site. This is separate from your handle and acts as your identifier.</p>
             <p>Think of your handle as what you use to log in with, and your nickname as the name you want to publish your works under.</p>
             <h3>Important</h3>
-            <p>If you do set a nickname, </p>
+            <p>If you do set a nickname, please make sure it's unique! Having two people with the same nickname would cause confusion, unfortunately.</p>
           </Popover>
           <input type="text" name="nickname" id="nickname" />
 
@@ -48,26 +53,40 @@ if (!loggedInUser) {
     </>
   )}
   
-  <!-- this is weird but this should ONLY render if the user is registered -->
-  {user.map(({ Users, Works }) => {
-    if (Users) {
-      return (
-        <>
-          <time datetime={Users.joinedAt.toISOString()}>{Users.joinedAt}</time>
-          <p>{Users.userDid}</p>
+  {user && (
+    <>
+      <h2>your nickname???</h2>
+      <time datetime={user.joinedAt.toISOString()}>{user.joinedAt}</time>
+      <p>{user.userDid}</p>
 
-          {Works
-            ? <section>
+      {works && (
+        <section>
+          <ul>
+            {works.map(work => (
+              <article>
+                <h3>{work.title}</h3>
+
+                <time datetime={work.createdAt.toISOString()}>
+                  {work.createdAt}
+                </time>
+                {work.updatedAt && (
+                  <time datetime={work.updatedAt.toISOString()}>
+                    {work.updatedAt}
+                  </time>
+                )}
+
                 <ul>
-                  {JSON.stringify(Works)}
+                  {JSON.stringify(work.tags)}
                 </ul>
-              </section>
-            : <a href="/works/add">go write! if you want :)</a>
-          }
-        </>
-      )
-    }
-  })}
+                
+                summary here
+              </article>
+            ))}
+          </ul>
+        </section>
+      )}
+    </>
+  )}
 </Layout>
 
 <script>

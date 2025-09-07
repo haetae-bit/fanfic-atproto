@@ -1,5 +1,4 @@
 ---
-import Popover from "~/Popover.astro";
 import Layout from "../layouts/Layout.astro";
 
 const currentUser = Astro.locals.loggedInUser;
@@ -10,16 +9,6 @@ const currentUser = Astro.locals.loggedInUser;
 		<p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Praesentium eum est quisquam distinctio magni recusandae quia vero tempore consectetur! Dolore repellat, voluptatem dignissimos sit eaque iste atque facilis in saepe?</p>
 		<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorem, maxime libero eveniet repellat corporis, architecto voluptate maiores ullam accusamus quasi nostrum nihil placeat cum earum ex voluptatum, harum sunt quam!</p>
 	</main>
-
-	<form>
-	<Popover id="hey" icon="info" label="test">
-		<p>hello?</p>
-	</Popover>
-	</form>
-
-	<Popover id="what" label="tell me">
-		<p>fdajlkdfsjl?</p>
-	</Popover>
 
 	{currentUser
 		? <>

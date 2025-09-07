@@ -1,2 +1,29 @@
 @import "tailwindcss";
 @plugin "daisyui";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  /* font tokens */
+  --font-sans: var(--atkinson);
+  --font-serif: var(--plex-serif);
+  --font-mono: var(--plex-mono);
+  --font-dyslexic: var(--dyslexic);
+
+  /* color tokens */
+  
+  /* size tokens */
+  /* @link https://utopia.fyi/type/calculator?c=360,18,1.618,1240,20,1.25,10,2,&s=0.75|0.5|0.25,1.5|2|3|4|6,s-l&g=s,l,xl,12 */
+  --text-xs: clamp(0.4297rem, 0.2783rem + 0.6732cqi, 0.8rem);
+  --text-sm: clamp(0.6953rem, 0.5707rem + 0.554cqi, 1rem);
+  --text-base: clamp(1.125rem, 1.0739rem + 0.2273cqi, 1.25rem);
+  --text-lg: clamp(1.5625rem, 1.9257rem + -0.4686cqi, 1.8203rem);
+  --text-xl: clamp(1.9531rem, 3.351rem + -1.8037cqi, 2.9452rem);
+  --text-2xl: clamp(2.4414rem, 5.716rem + -4.2252cqi, 4.7653rem);
+  --text-3xl: clamp(3.0518rem, 9.616rem + -8.4699cqi, 7.7102rem);
+  --text-4xl: clamp(3.8147rem, 16.018rem + -15.7462cqi, 12.4751rem);
+  --text-5xl: clamp(4.7684rem, 26.4915rem + -28.0298cqi, 20.1848rem);
+  --text-6xl: clamp(5.9605rem, 43.581rem + -48.5427cqi, 32.6589rem);
+  --text-7xl: clamp(7.4506rem, 71.4115rem + -82.5302cqi, 52.8422rem);
+  --text-8xl: clamp(9.3132rem, 116.6654rem + -138.5189cqi, 85.4986rem);
+  --text-9xl: clamp(11.6415rem, 190.1667rem + -230.355cqi, 138.3368rem);
+}

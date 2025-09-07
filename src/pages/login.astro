@@ -5,24 +5,31 @@ import Popover from "~/Popover.astro";
 const currentUser = Astro.locals.loggedInUser;
 ---
 <Layout>
-  {
-    currentUser ? (
-      // If there's a current user, show the log out button
-      <form action="/oauth/logout" method="post">
-        <button type="submit">Logout</button>
-      </form>
-    ) : (
-      // If there's no current user, show the log in button
-      <form action="/oauth/login" method="post">
-        <label for="handle">Input your handle</label>
-        <Popover id="handle-help" label="help">
-          <h3>What's my handle?</h3>
-          <p>It'll look like a website URL without the <samp>https://</samp> or slashes, so a typical BlueSky handle will look something like: <b>alice.bsky.social</b>.</p>
-          <p>What yours will look like depends on whether you made a custom handle!</p>
-        </Popover>
-        <input name="atproto-id" id="handle" required />
-        <button type="submit">Login</button>
-      </form>
-    )
-  }
+  <main id="content">
+    <h1 class="text-xl">Log in</h1>
+    {
+      currentUser ? (
+        // If there's a current user, show the log out button
+        <form action="/oauth/logout" method="post">
+          <button type="submit">Logout</button>
+        </form>
+      ) : (
+        // If there's no current user, show the log in button
+        <form action="/oauth/login" method="post">
+          <fieldset class="fieldset mx-auto place-content-center max-w-md">
+            <label class="fieldset-label" for="handle">
+              Input your handle
+              <Popover id="handle-help" icon="info" label="help" direction="bottom">
+                <h3>What's my handle?</h3>
+                <p>It'll look like a website URL without the <samp>https://</samp> or slashes, so a typical BlueSky handle will look something like: <b>alice.bsky.social</b>.</p>
+                <p>What yours will look like depends on whether you made a custom handle!</p>
+              </Popover>
+            </label>
+            <input type="text" class="input w-full" name="atproto-id" id="handle" required />
+            <button class="btn btn-primary" type="submit">Login</button>
+          </fieldset>
+        </form>
+      )
+    }
+  </main>
 </Layout>

@@ -6,7 +6,7 @@ export const usersActions = {
   addUser: defineAction({
     accept: "form",
     input: z.object({
-      nickname: z.string(),
+      nickname: z.string().optional(),
     }),
     handler: async (input, context) => {
       const loggedInUser = context.locals.loggedInUser;
