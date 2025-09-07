@@ -12,10 +12,14 @@ const currentUser = Astro.locals.loggedInUser;
 	</main>
 
 	<form>
-	<Popover id="hey" label="test">
+	<Popover id="hey" icon="info" label="test">
 		<p>hello?</p>
 	</Popover>
 	</form>
+
+	<Popover id="what" label="tell me">
+		<p>fdajlkdfsjl?</p>
+	</Popover>
 
 	{currentUser
 		? <>

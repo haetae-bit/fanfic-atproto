@@ -15,7 +15,18 @@ const { id, label, icon, title, class: className, ...rest } = Astro.props;
 <button
   type="button" 
   id={`${id}-trigger`} 
-  class:list={["popup", "anchor", className]} 
+  class:list={[
+    "btn",
+    "btn-xs", 
+    icon && ["btn-circle", "btn-ghost"],
+    icon &&
+      (icon === "info") ? "text-info" :
+      (icon === "warning") ? "text-warning" :
+      (icon === "danger") ? "text-error" :
+      "text-base-content",
+    "popover-btn",
+    className
+  ]} 
   aria-describedby={id}
   popovertarget={id}
 >
@@ -33,22 +44,37 @@ const { id, label, icon, title, class: className, ...rest } = Astro.props;
   }
 </button>
 
-<div {id} class:list={["popup", className]} role="tooltip" {...rest} popover="auto">
-  {title && (
-    <h3>{title}</h3>
-  )}
-  
-  <slot />
+<div
+  {id} 
+  class:list={[
+    "dropdown",
+    "card",
+    "bg-base-100",
+    "w-72",
+    "shadow",
+    "popover-content",
+    className,
+  ]} 
+  role="tooltip" {...rest} 
+  popover="auto"
+>
+  <div class="card-body">
+    {title && (
+      <h3 class="card-title">{title}</h3>
+    )}
+    
+    <slot />
+  </div>
 </div>
 
-<style define:vars={{ trigger: `${id}-anchor` }}>
-  .popup.anchor {
-    anchor: var(--trigger);
+<style define:vars={{ anchor: `--${id}-anchor` }}>
+  .popover-btn {
+    anchor-name: var(--anchor);
   }
 
-  div.popup {
-    position-anchor: var(--trigger);
-    inset: anchor(trigger );
+  .popover-content {
+    position-anchor: var(--anchor);
+    top: calc(anchor(top) - 5em);
     position-try-fallbacks: flip-block, flip-inline;
   }
 </style>

@@ -4,12 +4,16 @@ import node from '@astrojs/node';
 import db from "@astrojs/db";
 import fujocodedAuthproto from "@fujocoded/authproto";
 
+import tailwindcss from "@tailwindcss/vite";
+
 // https://astro.build/config
 export default defineConfig({
   output: "server",
+
   adapter: node({
     mode: 'standalone',
   }),
+
   integrations: [
     db(),
     fujocodedAuthproto({
@@ -20,6 +24,7 @@ export default defineConfig({
       // },
     })
   ],
+
   experimental: {
     fonts: [
       {
@@ -82,5 +87,9 @@ export default defineConfig({
         ],
       }
     ],
+  },
+
+  vite: {
+    plugins: [tailwindcss()],
   },
 });

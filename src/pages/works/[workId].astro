@@ -3,11 +3,11 @@ import Layout from "@/layouts/Layout.astro";
 import type { Tag } from "@/lib/types";
 import { db, eq, Users, Works } from "astro:db";
 
-const { id } = Astro.params;
+const { workId } = Astro.params;
 
 const work = await db.select()
   .from(Works)
-  .where(eq(Works.slug, id!))
+  .where(eq(Works.slug, workId!))
   .innerJoin(Users, eq(Works.author, Users.userDid))
   .limit(1);
 
