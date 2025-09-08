@@ -2,56 +2,69 @@
 import Layout from "./Layout.astro";
 
 interface Props {
+  slug: string;
   title: string;
-  has_previous: boolean;
-  has_next: boolean;
+  author: string;
+  // tags: Tag[];
+  tags: any;
+  createdAt: Date;
+  updatedAt?: Date | null;
+  comments?: boolean;
+  previous?: boolean;
+  next?: boolean;
 }
 
-const { title, has_previous, has_next } = Astro.props;
+const { slug, title, author, tags, createdAt, updatedAt, comments, previous, next } = Astro.props;
 ---
-<Layout title={title}>
-  <a href="#workname-content">to content</a>
-
+<Layout title={title} skipLink="work-body">
   <nav id="work-menu">
-    {has_previous && (
+    {previous && (
       // chapterid - 1?
       <a href="">previous chaptertitle</a>
     )}
     <!-- if theres more than one chapter, render this box -->
-    <select name="workname-chapters" id="workname-chapters">
+    <select name="chapterSelect" id={`${slug}-chapters`}>
       <option value="default" selected>Choose chapter...</option>
       <!-- map each chapter here -->
     </select>
 
-    {has_next && (
+    {next && (
       // chapterid + 1 ?
       <a href="">next chaptertitle</a>
     )}
   </nav>
 
-  <main>
+  <main id="work-body">
     <header>
       <h1>{title}</h1>
-      <h2>author name</h2>
+      <h2>{author}</h2>
+      <!-- replace this at some point -->
+      {JSON.stringify(tags)}
+      <time datetime={createdAt.toISOString()}>{createdAt}</time>
+      {updatedAt && (
+        <time datetime={updatedAt.toISOString()}>{updatedAt}</time>
+      )}
 
       <div id="summary">
         summary
       </div>
     </header>
 
-    <section id="workname-content">
+    <section id={`${slug}-content`} class="prose lg:prose-xl">
       <!-- if work has its own style, render it here somehow -->
       <details>
         <summary>Author's notes</summary>
         this should include author's notes
       </details>
-
+      
       <slot />
     </section>
 
-    <aside id="workname-comments">
-      <!-- use bsky api to render comments here -->
-      <!-- paginate this -->
-    </aside>
+    {comments && (
+      <aside id={`${slug}-comments`}>
+        <!-- use bsky api to render comments here -->
+        <!-- paginate this -->
+      </aside>
+    )}
   </main>
 </Layout>

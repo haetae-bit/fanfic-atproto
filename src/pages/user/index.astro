@@ -1,9 +1,11 @@
 ---
 import Layout from "@/layouts/Layout.astro";
+import { Info } from "@lucide/astro";
 import { actions } from "astro:actions";
 import { db, eq, Users, Works } from "astro:db";
 import Dialog from "~/Dialog.astro";
 import Popover from "~/Popover.astro";
+import Settings from "~/Settings.astro";
 
 const loggedInUser = Astro.locals.loggedInUser;
 
@@ -21,79 +23,100 @@ const works = await db.select()
   .from(Works)
   .where(eq(Works.author, user?.userDid ?? loggedInUser.did));
 ---
-<Layout>
-  <h1>User Settings</h1>
-  <p>{loggedInUser?.handle}</p>
-  
-  <!-- registration will only happen in the below form! -->
-  {(query.length === 0) && (
-    <>
-      <h2>Connect account</h2>
-      <div class="info">
-        <p>Right now, you aren't connected to the site. You can connect your BlueSky / self-hosted PDS account to this website to post a work.</p>
-        <p>Please check out the Terms of Service, Privacy Policy, and Code of Conduct before connecting your account.</p>
-      </div>
-      <button id="trigger-confirm">Connect your PDS Account</button>
-      
-      <Dialog id="connect-account" title="Are you sure?">
-        <form action={actions.usersActions.addUser} method="post">
-          <label for="nickname">Nickname</label>
-          <Popover id="nickname-info" label="info" icon="warning" direction="bottom">
-            <p>You can optionally set your nickname for this site. This is separate from your handle and acts as your identifier.</p>
-            <p>Think of your handle as what you use to log in with, and your nickname as the name you want to publish your works under.</p>
-            <h3>Important</h3>
-            <p>If you do set a nickname, please make sure it's unique! Having two people with the same nickname would cause confusion, unfortunately.</p>
-          </Popover>
-          <input type="text" name="nickname" id="nickname" />
+<Layout skipLink="user-profile">
+  <main id="user-profile">
+    <h1 class="text-xl">User Settings</h1>
+    <p>{loggedInUser?.handle}</p>
+    
+    <!-- registration will only happen in the below form! -->
+    {(query.length === 0) && (
+      <>
+        <h2 class="text-lg">Connect account</h2>
+        <div class="info">
+          <p>Right now, you aren't connected to the site. You can connect your BlueSky / self-hosted PDS account to this website to post a work.</p>
+          <p>Please check out the Terms of Service, Privacy Policy, and Code of Conduct before connecting your account.</p>
+        </div>
+        <button id="trigger-confirm" class="btn btn-accent">Connect your PDS Account</button>
+        
+        <Dialog id="connect-account" title="Are you sure?">
+          <form action={actions.usersActions.addUser} method="post">
+            <fieldset class="fieldset">
+              <div class="flex gap-1">
+                <label for="nickname" class="label">Nickname</label>
+                <Popover id="nickname-note" label="info" icon="warning" title="Important">
+                  <p>If you do set a nickname, please make sure it's unique! Having two people with the same nickname would cause confusion, unfortunately.</p>
+                </Popover>
+              </div>
+              <input class="input w-full" type="text" name="nickname" id="nickname" aria-describedby="nickname-info" />
+              <div id="nickname-info" class="alert">
+                <Info class="text-info" />
+                <div>
+                  <p>You can optionally set your nickname for this site.</p>
+                  <p>This is separate from your handle and acts similarly to a penname.</p>
+                </div>
+              </div>
+            </fieldset>
 
-          <button formmethod="dialog">Cancel</button>
-          <button>Confirm</button>
-        </form>
-      </Dialog>
-    </>
-  )}
-  
-  {user && (
-    <>
-      <h2>your nickname???</h2>
-      <time datetime={user.joinedAt.toISOString()}>{user.joinedAt}</time>
-      <p>{user.userDid}</p>
+            <div class="modal-action">
+              <button class="btn btn-neutral" formmethod="dialog">Cancel</button>
+              <button class="btn btn-primary">Confirm</button>
+            </div>
+          </form>
+        </Dialog>
+      </>
+    )}
+    
+    {user && (
+      <>
+        <h2>your nickname???</h2>
+        <time datetime={user.joinedAt.toISOString()}>{user.joinedAt}</time>
+        <p>{user.userDid}</p>
 
-      {works && (
-        <section>
-          <ul>
-            {works.map(work => (
-              <article>
-                <h3>{work.title}</h3>
+        {works && (
+          <section>
+            <ul>
+              {works.map(work => (
+                <article>
+                  <h3>{work.title}</h3>
 
-                <time datetime={work.createdAt.toISOString()}>
-                  {work.createdAt}
-                </time>
-                {work.updatedAt && (
-                  <time datetime={work.updatedAt.toISOString()}>
-                    {work.updatedAt}
+                  <time datetime={work.createdAt.toISOString()}>
+                    {work.createdAt}
                   </time>
-                )}
+                  {work.updatedAt && (
+                    <time datetime={work.updatedAt.toISOString()}>
+                      {work.updatedAt}
+                    </time>
+                  )}
 
-                <ul>
-                  {JSON.stringify(work.tags)}
-                </ul>
-                
-                summary here
-              </article>
-            ))}
-          </ul>
-        </section>
-      )}
-    </>
-  )}
+                  <ul>
+                    {JSON.stringify(work.tags)}
+                  </ul>
+                  
+                  summary here
+                </article>
+              ))}
+            </ul>
+          </section>
+        )}
+      </>
+    )}
+
+    <button class="btn btn-primary" id="trigger-settings">Set preferences</button>
+    <Settings />
+  </main>
 </Layout>
 
 <script>
   const trigger = document.getElementById("trigger-confirm");
+  const trigger2 = document.getElementById("trigger-settings");
   const confirmDialog = document.getElementById("connect-account") as HTMLDialogElement;
+  const settingsDialog = document.getElementById("settings") as HTMLDialogElement;
 
   trigger?.addEventListener("click", (_) => {
     confirmDialog.showModal();
+  });
+
+  trigger2?.addEventListener("click", (_) => {
+    settingsDialog.showModal();
   });
 </script>

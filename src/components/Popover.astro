@@ -4,21 +4,19 @@ import { Info, TriangleAlert, Skull } from "@lucide/astro";
 interface Props {
   id?: string;
   label: string;
-  direction: "top" | "bottom";
   icon?: "info" | "warning" | "danger";
   title?: string;
   class?: string;
 }
 
-const { id, label, direction = "top", icon, title, class: className, ...rest } = Astro.props;
+const { id, label, icon, title, class: className, ...rest } = Astro.props;
 ---
 <!-- type button needs to be set here, otherwise it doesn't work inside forms -->
 <button
   type="button" 
   id={`${id}-trigger`} 
   class:list={[
-    "btn",
-    "btn-xs", 
+    "btn btn-xs", 
     icon && ["btn-circle", "btn-ghost"],
     icon &&
       (icon === "info") ? "text-info" :
@@ -47,16 +45,12 @@ const { id, label, direction = "top", icon, title, class: className, ...rest } =
 <div
   {id} 
   class:list={[
-    "dropdown",
-    "card",
-    "bg-base-100",
-    "w-72",
-    "shadow",
     "popover-content",
     className,
   ]} 
-  role="tooltip" {...rest} 
-  popover="auto"
+  role="tooltip"  
+  popover="auto" 
+  {...rest} 
 >
   <div class="card-body">
     {title && (
@@ -67,26 +61,70 @@ const { id, label, direction = "top", icon, title, class: className, ...rest } =
   </div>
 </div>
 
-<style define:vars={{ anchor: `--${id}-anchor`, direction }}>
+<style define:vars={{ anchor: `--${id}-anchor` }}>
+  @reference "../assets/styles/global.css";
+
   .popover-btn {
-    anchor-name: var(--anchor);
+    @supports (anchor-name: var(--anchor)) {
+      anchor-name: var(--anchor);
+    }
   }
 
   .popover-content {
-    position-anchor: var(--anchor);
-    top: anchor(var(--direction));
-    left: anchor(center);
-    transform: translateX(-50%);
-    position-try-fallbacks: flip-block, flip-inline;
+    @apply dropdown card mx-0 inset-auto bg-base-100 w-72 shadow;
+
+    @supports (position-anchor: var(--anchor)) and (left: anchor(center)) {
+      position-anchor: var(--anchor);
+      left: anchor(center);
+      transform: translateX(-50%);
+    }
   }
 </style>
 
-<script define:vars={{ id }} is:inline>
-  const trigger = document.getElementById(`${id}-trigger`);
-  const popover = document.getElementById(id);
+<script>
+  import { computePosition, autoUpdate, shift, flip } from "@floating-ui/dom";
+  const triggers = document.querySelectorAll(".popover-btn");
+  
+  triggers.forEach(trigger => {
+    const btn = trigger as HTMLButtonElement;
+    // triggering button will always end with "-trigger"
+    // so slice that from the id
+    const id = btn.id.slice(0, -8);
+    const popover = document.getElementById(`${id}`) as HTMLElement;
+    
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      popover.togglePopover();
+    });
 
-  trigger.addEventListener("click", (e) => {
-    e.preventDefault();
-    popover.togglePopover();
+    popover.addEventListener("toggle", (e) => {
+      const cleanup = autoUpdate(
+        btn, 
+        popover, 
+        () => {
+          computePosition(btn, popover, {
+            middleware: [
+              flip(),
+              shift({
+                crossAxis: false,
+              }),
+            ],
+          }).then(({ placement, middlewareData }) => {
+            Object.assign(popover.style, {
+              top: `anchor(${placement})`,
+              ...(placement === "top") && {
+                transform: (middlewareData.shift?.enabled.x) 
+                  ? `translate(calc(-50% + ${middlewareData.shift.x}px), -100%)`
+                  : `translate(-50%, -100%)`,
+              },
+            });
+          });
+        });
+      if (e.newState === "open") {
+        cleanup;
+      } else {
+        cleanup();
+      }
+    });
   });
 </script>

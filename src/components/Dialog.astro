@@ -13,30 +13,32 @@ const { id, title, class: className, alert = false } = Astro.props;
 <dialog
   {id}
   class:list={[
-    "m-auto", 
-    "rounded-box",
-    "shadow"
-    , className,
+    "modal modal-bottom sm:modal-middle",
+    className,
   ]}
   role={alert ? "alertdialog" : undefined}
   closedby="any"
 >
-  <div class="card">
-    <header class="flex items-center justify-between">
-      <h1 class="card-title">{title}</h1>
+  <div class="modal-box">
+    <header class="modal-header">
+      <h1 class="text-lg leading-none flex-1 pl-2">{title}</h1>
       <form method="dialog">
-        <button aria-label="close" class="close">
+        <button aria-label="close" class="btn btn-error">
           <X />
         </button>
       </form>
     </header>
-
-    <div class="card-body">
+    
+    <div class="mt-14">
       <slot />
     </div>
   </div>
 </dialog>
 
 <style>
-
+  @reference "../assets/styles/global.css";
+  
+  .modal-header {
+    @apply absolute top-0 left-0 flex items-center justify-between p-2 container bg-accent text-accent-content;
+  }
 </style>
