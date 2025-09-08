@@ -1,3 +1,4 @@
+import { getAgent } from "@/lib/atproto";
 import { ActionError, defineAction } from "astro:actions";
 import { z } from "astro:content";
 import { db, eq, Users, Works } from "astro:db";
@@ -7,6 +8,7 @@ const workSchema = z.object({
   title: z.string(),
   content: z.string(),
   tags: z.string(),
+  public: z.boolean(),
 });
 
 export const worksActions = {
@@ -55,9 +57,27 @@ export const worksActions = {
         tags: input.tags,
       }).returning();
       
-      // depending on whether someone toggled the privacy option, push this into firehouse
-      // const agent = await
-
+      // depending on whether someone toggled the privacy option, push this into user pds
+      if (input.public) {
+        try {
+          const agent = await getAgent(context.locals);
+          const result = await agent!.com.atproto.repo.createRecord({
+            repo: loggedInUser.did,
+            collection: "", // need to figure out WHERE this needs to go
+            record: work[0],
+          });
+          
+          return result;
+        } catch (error) {
+          console.error(error);
+          throw new ActionError({
+            code: "BAD_REQUEST",
+            message: "Something went wrong with posting your fic to your PDS!",
+          });
+        }
+      }
+      // otherwise just return the work
+      
       return work;
     },
   }),

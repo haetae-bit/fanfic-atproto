@@ -1,5 +1,6 @@
 ---
 import Layout from "@/layouts/Layout.astro";
+import { didToHandle } from "@/lib/atproto";
 import type { Tag } from "@/lib/types";
 import { db, eq, Users, Works } from "astro:db";
 
@@ -18,7 +19,7 @@ const loggedInUser = Astro.locals.loggedInUser;
       <a href="/works/add">wanna write kid?</a>
     }
 
-    {works.map(({ Works, Users }) => (
+    {works.map(async ({ Works, Users }) => (
       <article class="card">
         <header>
           <div class="flex items-center justify-between">
@@ -26,7 +27,7 @@ const loggedInUser = Astro.locals.loggedInUser;
               <h2 class="card-title">
                 <a href={`/works/${Works.slug}`}>{Works.title}</a>
               </h2>
-              <h3>{Users.userDid}</h3>
+              <h3>{await didToHandle(Users.userDid)}</h3>
             </hgroup>
             <time datetime={Works.createdAt.toISOString()}>{Works.createdAt}</time>
           </div>

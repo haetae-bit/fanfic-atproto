@@ -46,6 +46,9 @@ const errors = isInputError(result?.error) ? result.error.fields : {};
         </div>
       )}
 
+      <label for="public">Publish to your PDS?</label>
+      <input type="checkbox" name="public" id="public" />
+      
       <button>submit</button>
     </form>
 

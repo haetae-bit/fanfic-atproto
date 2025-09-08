@@ -1,5 +1,6 @@
 ---
 import Layout from "@/layouts/Layout.astro";
+import { didToHandle } from "@/lib/atproto";
 import type { Tag } from "@/lib/types";
 import { db, eq, Users, Works } from "astro:db";
 
@@ -16,10 +17,10 @@ if (work.length === 0) {
 }
 ---
 <Layout>
-  {work.map(({ Works, Users }) => (
+  {work.map(async ({ Works, Users }) => (
     <>
       <h1>{Works.title}</h1>
-      <h2>{Users.userDid}</h2>
+      <h2>{await didToHandle(Users.userDid)}</h2>
       <time datetime={Works.createdAt.toISOString()}>{Works.createdAt}</time>
       {(Works.tags as Tag[]).map(tag => (
         <a href={tag.url}>{tag.label}</a>

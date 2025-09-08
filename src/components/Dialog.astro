@@ -10,20 +10,33 @@ interface Props {
 
 const { id, title, class: className, alert = false } = Astro.props;
 ---
-<dialog {id} class:list={["card", className]} role={alert ? "alertdialog" : undefined} closedby="any">
-  <header>
-    <h1>{title}</h1>
-    <form method="dialog">
-      <button aria-label="close" class="close">
-        <X />
-      </button>
-    </form>
-  </header>
+<dialog
+  {id}
+  class:list={[
+    "m-auto", 
+    "rounded-box",
+    "shadow"
+    , className,
+  ]}
+  role={alert ? "alertdialog" : undefined}
+  closedby="any"
+>
+  <div class="card">
+    <header class="flex items-center justify-between">
+      <h1 class="card-title">{title}</h1>
+      <form method="dialog">
+        <button aria-label="close" class="close">
+          <X />
+        </button>
+      </form>
+    </header>
 
-  <div class="dialog-content">
-    <slot />
+    <div class="card-body">
+      <slot />
+    </div>
   </div>
 </dialog>
 
 <style>
+
 </style>

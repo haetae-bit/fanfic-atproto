@@ -19,7 +19,7 @@ const user = query[0];
 
 const works = await db.select()
   .from(Works)
-  .where(eq(Works.author, user.userDid));
+  .where(eq(Works.author, user?.userDid ?? loggedInUser.did));
 ---
 <Layout>
   <h1>User Settings</h1>
