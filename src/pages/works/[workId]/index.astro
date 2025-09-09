@@ -1,0 +1,33 @@
+---
+import WorkPage from "@/layouts/WorkPage.astro";
+import { didToHandle } from "@/lib/atproto";
+import { db, eq, Users, Works } from "astro:db";
+
+const { workId } = Astro.params;
+const loggedInUser = Astro.locals.loggedInUser;
+
+// the work could be fetched from the database or from the pds
+// would this potentially lighten db load? maybe
+const [work] = await db.select()
+  .from(Works)
+  .where(eq(Works.slug, workId!))
+  .innerJoin(Users, eq(Works.author, Users.userDid))
+  .limit(1);
+
+if (!work) {
+  return Astro.redirect("/not-found");
+}
+---
+<WorkPage 
+  slug={work.Works.slug}
+  title={work.Works.title}
+  author={await didToHandle(work.Users.userDid)}
+  createdAt={work.Works.createdAt}
+  updatedAt={work.Works.updatedAt}
+  tags={work.Works.tags}
+>
+  {(work.Users.userDid === loggedInUser?.did) && (
+    <a href={`/works/${workId}/edit`}>Edit your work</a>
+  )}
+  <Fragment set:html={work.Works.content} />
+</WorkPage>

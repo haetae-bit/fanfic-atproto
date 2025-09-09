@@ -15,10 +15,10 @@ const Users = defineTable({
 const Works = defineTable({
   columns: {
     id: column.number({ primaryKey: true }),
+    uri: column.text({ unique: true, optional: true }),
     slug: column.text({ unique: true }),
-    author: column.text({ references: () => Users.columns.userDid }),
-    // recordkey
     title: column.text(),
+    author: column.text({ references: () => Users.columns.userDid }),
     content: column.text({ multiline: true }),
     tags: column.json(),
     createdAt: column.date({ name: "created_at", default: NOW }),
@@ -26,6 +26,7 @@ const Works = defineTable({
   },
   indexes: [
     { on: ["slug", "createdAt"], unique: true },
+    { on: ["uri", "createdAt"], unique: true },
   ],
 });
 

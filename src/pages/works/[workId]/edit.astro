@@ -1,35 +1,47 @@
 ---
 import Layout from "@/layouts/Layout.astro";
-import { actions, isInputError } from "astro:actions";
+import { isInputError } from "astro:actions";
+import { actions } from "astro:actions";
+import { db, eq, Users, Works } from "astro:db";
 
+const { workId } = Astro.params;
 const loggedInUser = Astro.locals.loggedInUser;
 
+// the work could be fetched from the database or from the pds
+// would this potentially lighten db load? maybe
+const [work] = await db.select()
+  .from(Works)
+  .where(eq(Works.slug, workId!))
+  .innerJoin(Users, eq(Works.author, Users.userDid))
+  .limit(1);
+
+if (!work) {
+  return Astro.redirect("/not-found");
+}
+
 if (!loggedInUser) {
-  // put in a thing that tells the user they're not logged in
-  return Astro.redirect("/works");
+  return Astro.redirect("/login");
 }
 
-const result = Astro.getActionResult(actions.worksActions.addWork);
+if (work.Users.userDid !== loggedInUser.did) {
+  return Astro.redirect("/unauthorized");
+}
+
+const result = Astro.getActionResult(actions.worksActions.updateWork);
 const errors = isInputError(result?.error) ? result.error.fields : {};
-
-if (result && !result.error) {
-  return Astro.redirect(`/works/${result.data.slug}`);
-  // eventually we could return a uri and parse? it? i think?
-}
 ---
-<Layout skipLink="new-work">
-  <main id="new-work">
-    <h1>Add a new work</h1>
-
-    <form action={actions.worksActions.addWork} method="post">
+<Layout skipLink={`edit-${workId}`}>
+  <main id={`edit-${workId}`}>
+    <form action={actions.worksActions.updateWork} method="post">
       <label for="title">title</label>
       <input 
         type="text" 
         name="title" 
         id="title" 
         aria-describedby="title-error" 
+        value={work.Works.title}  
         required 
-        transition:persist 
+        transition:persist
       />
       {errors.title && (
         <div id="title-error">
@@ -38,12 +50,13 @@ if (result && !result.error) {
       )}
 
       <label for="tags">add tags</label>
-      <input 
+      <input
         type="text" 
         list="tags-list" 
         name="tags" 
         id="tags" 
-        aria-describedby="tags-error" 
+        aria-describedby="tags-error"
+        value={work.Works.tags as string} 
         transition:persist 
       />
       <!-- could be cool to fetch tags from a tags server or smth? idk -->
@@ -59,16 +72,14 @@ if (result && !result.error) {
       )}
 
       <label for="content">body</label>
-      <!-- replace this with a rich text editor / code editor later -->
-      <textarea name="content" id="content" aria-describedby="content-error" transition:persist></textarea>
+      <textarea name="content" id="content" aria-describedby="content-error" transition:persist>
+        {work.Works.content}
+      </textarea>
       {errors.content && (
         <div id="content-error">
           {errors.content}
         </div>
       )}
-      
-      <label for="publish">Publish to your PDS?</label>
-      <input type="checkbox" name="publish" id="publish" />
       
       <button>submit</button>
     </form>
