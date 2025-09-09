@@ -32,7 +32,7 @@ const { title = "fanfics", skipLink, class: className, ...rest } = Astro.props;
 			<Navbar />
 		</header>
 
-		<div class:list={["min-w-[65ch] max-w-10/12 mx-auto", className]} {...rest}>
+		<div class:list={["min-w-[65ch] max-w-10/12 mx-auto text-base", className]} {...rest}>
 			<slot />
 		</div>
 

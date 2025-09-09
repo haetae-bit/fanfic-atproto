@@ -22,6 +22,7 @@ export default defineConfig({
     })
   ],
   vite: {
+    // @ts-ignore
     plugins: [tailwindcss()],
   },
   experimental: {
@@ -39,7 +40,17 @@ export default defineConfig({
       },
       {
         provider: fontProviders.fontsource(),
-        name: "Atkinson Hyperlegible",
+        name: "Readex Pro",
+        cssVariable: "--readex",
+      },
+      {
+        provider: fontProviders.fontsource(),
+        name: "Sora",
+        cssVariable: "--sora",
+      },
+      {
+        provider: fontProviders.fontsource(),
+        name: "Atkinson Hyperlegible Next",
         cssVariable: "--atkinson",
       },
       {

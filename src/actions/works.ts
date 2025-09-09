@@ -1,3 +1,4 @@
+import { TID } from "@atproto/common-web";
 import { getAgent } from "@/lib/atproto";
 import { ActionError, defineAction } from "astro:actions";
 import { z } from "astro:content";
@@ -26,7 +27,7 @@ export const worksActions = {
         });
       }
 
-      // find the did of the logged in user
+      // find the did of the logged in user from our db
       const query = await db
         .select({ did: Users.userDid })
         .from(Users)
@@ -40,7 +41,7 @@ export const worksActions = {
         });
       }
 
-      const user = query[0];
+      const [user] = query;
 
       // check nanoid for collision probability: https://zelark.github.io/nano-id-cc/
       const alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
@@ -48,26 +49,52 @@ export const worksActions = {
       const slug = nanoid();
 
       // convert the tags into json thru shenaniganery
+      const tags = input.tags;
       
       const work = await db.insert(Works).values({
         slug,
         author: user.did,
         title: input.title,
         content: input.content,
-        tags: input.tags,
+        tags,
       }).returning();
       
+      const [newWork] = work;
+
       // depending on whether someone toggled the privacy option, push this into user pds
       if (input.public) {
+        // we don't need the id, but we'll need the author's did
+        // we'll grab the created + updated timestamps and convert them into strings
+        const { author, id, createdAt, updatedAt, ...data } = newWork;
+        const createdTimestamp = createdAt.toISOString();
+        const record = {
+          ...data,
+          createdAt: createdTimestamp,
+        };
+        
         try {
+          const rkey = TID.nextStr();
           const agent = await getAgent(context.locals);
-          const result = await agent!.com.atproto.repo.createRecord({
-            repo: loggedInUser.did,
-            collection: "", // need to figure out WHERE this needs to go
-            record: work[0],
+
+          if (!agent) {
+            console.error("Agent not found!");
+            throw new ActionError({
+              code: "BAD_REQUEST",
+              message: "Something went wrong when connecting to your PDS.",
+            });
+          }
+
+          // ideally, we'd like tags to be references to another record but we won't process them here
+          // we'll just smush this in and pray
+          const result = await agent.com.atproto.repo.putRecord({
+            repo: author, // since we KNOW that the author is the users' did
+            collection: "moe.fanfics.works",
+            rkey,
+            record,
+            validate: false,
           });
-          
-          return result;
+
+          return result.data.uri;
         } catch (error) {
           console.error(error);
           throw new ActionError({
@@ -76,9 +103,9 @@ export const worksActions = {
           });
         }
       }
-      // otherwise just return the work
       
-      return work;
+      // otherwise just return the work
+      return newWork;
     },
   }),
 };

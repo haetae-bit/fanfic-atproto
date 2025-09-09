@@ -7,9 +7,13 @@ const loggedInUser = Astro.locals.loggedInUser;
   </div>
   <div class="flex-none">
     <ul class="menu menu-horizontal px-1">
+      <li><a href="/search">Search</a></li>
       <li><a href="/works">Works</a></li>
       {loggedInUser
-        ? <li><a href="/user">Settings</a></li>
+        ? <>
+            <li><a href="/works/add">New Work</a></li>
+            <li><a href="/user">Settings</a></li>
+          </>
         : <li><a href="/login">Login</a></li>
       }
     </ul>
