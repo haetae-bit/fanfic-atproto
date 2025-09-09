@@ -111,4 +111,6 @@ npm run dev
 
 If you want to support me making making this, please feel free to donate a coffee.
 
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="haetae" data-color="#BD5FFF" data-emoji="☕" data-font="Comic" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#ffffff" data-coffee-color="#FFDD00" ></script>
+<a href="https://buymeacoffee.com/haetae" target="_blank" referrerpolicy="no-referrer">
+  <img src="https://cdn.buymeacoffee.com/buttons/default-blue.png" alt="buy me a coffee" />
+</a>
