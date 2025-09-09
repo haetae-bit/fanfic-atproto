@@ -6,6 +6,7 @@ Links:
   - [Notes](#notes)
   - [Structure](#structure)
 - [Contributing](#contributing)
+- [Support](#support)
 
 > [!WARNING]
 > This is alpha software, there's no guarantee that this will work on your system. But if you'd like to try hacking at this, take a look at the [Contributing](#contributing) section once instructions are written up.
@@ -79,4 +80,35 @@ These only hold pages that are relevant to adding, editing, deleting, or viewing
 
 ## Contributing
 
-To be added, but feel free to open an issue in the meantime!
+The instructions may change in the future in case the development workflow changes. Please feel free to [report an issue](/issues) if you come across any during development or building.
+
+### Prerequisites
+
+- Git
+- Node.js
+  - `v18.20.8` or `v20.3.0`, `v22.0.0` or higher. (`v19` and `v21` are not supported.)
+- `npm` or similar package manager
+
+> [!IMPORTANT]
+> Running this with `deno` does not work. You'll get an "Unsupported key curve for this operation" error when running the project and testing OAuth. See [this issue](https://github.com/panva/jose/discussions/740).
+
+### Instructions
+
+1. Clone the repo to your system using the following command:
+```bash
+git clone https://github.com/haetae-bit/fanfic-atproto
+```
+2. Use whatever runtime you use to install packages: 
+```bash
+npm install
+```
+3. To run the development server, use this command: 
+```bash
+npm run dev
+```
+
+## Support
+
+If you want to support me making making this, please feel free to donate a coffee.
+
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="haetae" data-color="#BD5FFF" data-emoji="☕" data-font="Comic" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#ffffff" data-coffee-color="#FFDD00" ></script>
