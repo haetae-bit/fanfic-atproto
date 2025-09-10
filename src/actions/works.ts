@@ -158,7 +158,6 @@ export const worksActions = {
             });
           }
 
-          // we'll just smush this in and pray
           const result = await agent.com.atproto.repo.putRecord({
             repo: work.author, // since the author will be a did
             collection: "moe.fanfics.works",
@@ -167,10 +166,10 @@ export const worksActions = {
               title,
               tags,
               content,
+              createdAt: work.createdAt.toISOString(),
               updatedAt: updatedAt.toISOString(),
             },
             validate: false,
-            swapRecord: rkey, // idk what this does
           });
 
           if (!result.success) {

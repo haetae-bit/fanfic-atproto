@@ -31,19 +31,3 @@
   --text-8xl: clamp(9.3132rem, 116.6654rem + -138.5189cqi, 85.4986rem);
   --text-9xl: clamp(11.6415rem, 190.1667rem + -230.355cqi, 138.3368rem);
 }
-
-@custom-variant dark (&:where(
-  [data-theme=dark],
-  [data-theme=dracula], 
-  [data-theme=synthwave], 
-  [data-theme=halloween], 
-  [data-theme=forest], 
-  [data-theme=aqua],
-  [data-theme=black],
-  [data-theme=luxury],
-  [data-theme=business],
-  [data-theme=night],
-  [data-theme=coffee],
-  [data-theme=sunset],
-  [data-theme=abyss]
-));

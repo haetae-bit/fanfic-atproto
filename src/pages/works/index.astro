@@ -14,22 +14,28 @@ const loggedInUser = Astro.locals.loggedInUser;
 <Layout>
   <h1 class="text-5xl">works</h1>
 
-  <main id="content">
+  <main id="content" class="flex flex-col gap-5 max-w-full">
     {loggedInUser && 
       <a href="/works/add">wanna write kid?</a>
     }
-
+    
     {works.map(async ({ Works, Users }) => (
-      <article class="card">
+      <article class="card rounded-box shadow p-5">
         <header>
           <div class="flex items-center justify-between">
             <hgroup class="flex-1">
               <h2 class="card-title">
                 <a href={`/works/${Works.slug}`}>{Works.title}</a>
               </h2>
-              <h3>{await didToHandle(Users.userDid)}</h3>
+              <h3>
+                {Users.nickname
+                  ? Users.nickname
+                  : await didToHandle(Users.userDid)}
+              </h3>
             </hgroup>
-            <time datetime={Works.createdAt.toISOString()}>{Works.createdAt}</time>
+            <time datetime={Works.createdAt.toISOString()}>
+              {Works.createdAt.toLocaleDateString()}
+            </time>
           </div>
           {JSON.stringify(Works.tags)}
           {/* <ul class="flex flex-wrap gap-1.5">

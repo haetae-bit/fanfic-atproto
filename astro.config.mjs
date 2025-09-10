@@ -31,12 +31,39 @@ export default defineConfig({
         provider: fontProviders.fontsource(),
         name: "IBM Plex Serif",
         cssVariable: "--plex-serif",
-        fallbacks: [ 'Charter', 'Bitstream Charter', 'Sitka Text', 'Cambria', 'Georgia', "serif"],
       },
       {
         provider: fontProviders.fontsource(),
-        name: "IBM Plex Mono",
+        name: "Libertinus Serif",
+        cssVariable: "--libertinus-serif",
+      },
+      {
+        provider: fontProviders.fontsource(),
+        name: "Noto Serif",
+        cssVariable: "--noto-serif",
+      },
+      {
+        provider: fontProviders.fontsource(),
+        name: "Lora",
+        cssVariable: "--lora",
+      },
+      {
+        provider: fontProviders.fontsource(),
+        name: "iA Writer Mono",
         cssVariable: "--plex-mono",
+      },
+      {
+        provider: fontProviders.fontsource(),
+        name: "Intel One Mono",
+        cssVariable: "--intel-mono",
+      },
+      {
+        provider: fontProviders.fontsource(),
+        name: "Recursive",
+        cssVariable: "--recursive",
+        styles: ["oblique", "normal"],
+        weights: [300, 1000],
+        variationSettings: "'slnt' -15 0, 'CASL' 0 1, 'CRSV' 0 1, 'MONO' 0 1",
       },
       {
         provider: fontProviders.fontsource(),
@@ -95,7 +122,12 @@ export default defineConfig({
             style: "italic",
           },
         ],
-      }
+      },
+      {
+        provider: fontProviders.fontsource(),
+        name: "Jacquard 12",
+        cssVariable: "--jacquard-12",
+      },
     ],
   },
 });

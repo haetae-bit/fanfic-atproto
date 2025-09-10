@@ -16,7 +16,7 @@ const [work] = await db.select()
   .limit(1);
 
 if (!work) {
-  return Astro.redirect("/not-found");
+  return Astro.redirect("/errors/not-found");
 }
 
 if (!loggedInUser) {
@@ -24,7 +24,7 @@ if (!loggedInUser) {
 }
 
 if (work.Users.userDid !== loggedInUser.did) {
-  return Astro.redirect("/unauthorized");
+  return Astro.redirect("/errors/unauthorized");
 }
 
 const result = Astro.getActionResult(actions.worksActions.updateWork);
@@ -33,55 +33,69 @@ const errors = isInputError(result?.error) ? result.error.fields : {};
 <Layout skipLink={`edit-${workId}`}>
   <main id={`edit-${workId}`}>
     <form action={actions.worksActions.updateWork} method="post">
-      <label for="title">title</label>
-      <input 
-        type="text" 
-        name="title" 
-        id="title" 
-        aria-describedby="title-error" 
-        value={work.Works.title}  
-        required 
-        transition:persist
-      />
-      {errors.title && (
-        <div id="title-error">
-          {errors.title}
-        </div>
-      )}
+      <fieldset class="fieldset">
+        <label for="title" class="label">Title</label>
+        <input 
+          type="text" 
+          name="title" 
+          id="title" 
+          class="input w-full"
+          aria-describedby="title-error" 
+          value={work.Works.title}  
+          required 
+          transition:persist
+        />
+        {errors.title && (
+          <div id="title-error">
+            {errors.title}
+          </div>
+        )}
+      </fieldset>
 
-      <label for="tags">add tags</label>
-      <input
-        type="text" 
-        list="tags-list" 
-        name="tags" 
-        id="tags" 
-        aria-describedby="tags-error"
-        value={work.Works.tags as string} 
-        transition:persist 
-      />
-      <!-- could be cool to fetch tags from a tags server or smth? idk -->
-      <datalist id="tags-list">
-        <option value="test">here</option>
-        <option value="tag2">another</option>
-        <option value="tag3">try them all!</option>
-      </datalist>
-      {errors.tags && (
-        <div id="tags-error">
-          {errors.tags}
-        </div>
-      )}
+      <fieldset class="fieldset">
+        <label for="tags" class="label">Add tags</label>
+        <input
+          type="text" 
+          list="tags-list" 
+          name="tags" 
+          id="tags" 
+          class="input"
+          aria-describedby="tags-error"
+          value={work.Works.tags as string} 
+          transition:persist 
+        />
+        <!-- could be cool to fetch tags from a tags server or smth? idk -->
+        <datalist id="tags-list">
+          <option value="test">here</option>
+          <option value="tag2">another</option>
+          <option value="tag3">try them all!</option>
+        </datalist>
+        {errors.tags && (
+          <div id="tags-error">
+            {errors.tags}
+          </div>
+        )}
+      </fieldset>
 
-      <label for="content">body</label>
-      <textarea name="content" id="content" aria-describedby="content-error" transition:persist>
-        {work.Works.content}
-      </textarea>
-      {errors.content && (
-        <div id="content-error">
-          {errors.content}
-        </div>
-      )}
+      <fieldset class="fieldset">
+        <label for="content" class="label">Body</label>
+        <textarea 
+          name="content" 
+          id="content" 
+          class="textarea" 
+          aria-describedby="content-error" 
+          transition:persist
+        >
+          {work.Works.content.trim()}
+        </textarea>
+        {errors.content && (
+          <div id="content-error">
+            {errors.content}
+          </div>
+        )}
+      </fieldset>
       
-      <button>submit</button>
+      <button class="btn btn-primary">Submit</button>
     </form>
 
     {result?.error && (

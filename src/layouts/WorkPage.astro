@@ -23,7 +23,7 @@ const { slug, title, author, tags, createdAt, updatedAt, comments, previous, nex
       <a href="">previous chaptertitle</a>
     )}
     <!-- if theres more than one chapter, render this box -->
-    <select name="chapterSelect" id={`${slug}-chapters`}>
+    <select name="chapterSelect" id={`${slug}-chapters`} class="select">
       <option value="default" selected>Choose chapter...</option>
       <!-- map each chapter here -->
     </select>
@@ -50,7 +50,7 @@ const { slug, title, author, tags, createdAt, updatedAt, comments, previous, nex
       </div>
     </header>
 
-    <section id={`${slug}-content`} class="prose lg:prose-xl">
+    <section id={`${slug}-content`}>
       <!-- if work has its own style, render it here somehow -->
       <details>
         <summary>Author's notes</summary>
