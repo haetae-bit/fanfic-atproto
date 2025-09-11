@@ -1,10 +1,10 @@
+import { AtUri } from "@atproto/api";
 import { TID } from "@atproto/common-web";
 import { getAgent } from "@/lib/atproto";
 import { ActionError, defineAction } from "astro:actions";
 import { z } from "astro:content";
 import { db, eq, and, Users, Works } from "astro:db";
 import { customAlphabet } from "nanoid";
-import { AtUri } from "@atproto/api";
 
 const workSchema = z.object({
   title: z.string(),

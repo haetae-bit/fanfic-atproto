@@ -14,7 +14,6 @@ const errors = isInputError(result?.error) ? result.error.fields : {};
 
 if (result && !result.error) {
   return Astro.redirect(`/works/${result.data.slug}`);
-  // eventually we could return a uri and parse? it? i think?
 }
 ---
 <Layout skipLink="new-work">

@@ -30,6 +30,14 @@ const Works = defineTable({
   ],
 });
 
+const Tags = defineTable({
+  columns: {
+    id: column.number({ primaryKey: true }),
+    type: column.text({ enum: ["character", "relationship", "series", "warnings"] }),
+    label: column.text(),
+  },
+});
+
 export default defineDb({
   tables: {
     Users,

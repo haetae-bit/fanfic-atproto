@@ -17,10 +17,11 @@ const { title = "fanfics", skipLink, class: className, ...rest } = Astro.props;
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="viewport" content="width=device-width" />
 		<title>{title}</title>
-		<Font cssVariable="--atkinson" preload />
+		<Font cssVariable="--quattro" preload />
 		<Font cssVariable="--dyslexic" preload />
-		<Font cssVariable="--plex-mono" preload />
+		<Font cssVariable="--intel-mono" preload />
 		<Font cssVariable="--plex-serif" preload />
+		<Font cssVariable="--jacquard-12" preload />
 		<slot name="head" />
 	</head>
 	<body class="flex flex-col min-h-svh">

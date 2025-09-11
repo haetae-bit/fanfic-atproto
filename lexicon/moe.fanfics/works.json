@@ -1,0 +1,45 @@
+{
+  "lexicon": 1,
+  "id": "moe.fanfics.works",
+  "defs": {
+    "main": {
+      "type": "record",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000,
+            "maxGraphemes": 1000
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "text": {
+                "type": "string",
+                "maxLength": 1000,
+                "maxGraphemes": 1000
+              }
+            }
+          },
+          "content": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 8096000,
+            "maxGraphemes": 4096000
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "datetime"
+          }
+        }
+      }
+    }
+  }
+}

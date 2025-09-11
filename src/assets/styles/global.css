@@ -8,10 +8,11 @@
 /* default theme */
 @theme {
   /* font tokens */
-  --font-sans: var(--atkinson);
+  --font-sans: var(--quattro);
   --font-serif: var(--plex-serif);
-  --font-mono: var(--plex-mono);
+  --font-mono: var(--intel-mono);
   --font-dyslexic: var(--dyslexic);
+  --font-display: var(--jacquard-12);
 
   /* color tokens */
   
@@ -30,4 +31,9 @@
   --text-7xl: clamp(7.4506rem, 71.4115rem + -82.5302cqi, 52.8422rem);
   --text-8xl: clamp(9.3132rem, 116.6654rem + -138.5189cqi, 85.4986rem);
   --text-9xl: clamp(11.6415rem, 190.1667rem + -230.355cqi, 138.3368rem);
+}
+
+@utility title {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
 }

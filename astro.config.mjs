@@ -2,7 +2,7 @@
 import { defineConfig, fontProviders } from 'astro/config';
 import node from '@astrojs/node';
 import db from "@astrojs/db";
-import fujocodedAuthproto from "@fujocoded/authproto";
+import authproto from "@fujocoded/authproto";
 import tailwindcss from "@tailwindcss/vite";
 
 // https://astro.build/config
@@ -13,7 +13,7 @@ export default defineConfig({
   }),
   integrations: [
     db(),
-    fujocodedAuthproto({
+    authproto({
       applicationName: "fan archive",
       applicationDomain: "localhost:4321",
       // driver: {
@@ -50,7 +50,7 @@ export default defineConfig({
       {
         provider: fontProviders.fontsource(),
         name: "iA Writer Mono",
-        cssVariable: "--plex-mono",
+        cssVariable: "--writer-mono",
       },
       {
         provider: fontProviders.fontsource(),
@@ -67,13 +67,18 @@ export default defineConfig({
       },
       {
         provider: fontProviders.fontsource(),
-        name: "Readex Pro",
-        cssVariable: "--readex",
+        name: "iA Writer Quattro",
+        cssVariable: "--quattro",
       },
       {
         provider: fontProviders.fontsource(),
         name: "Sora",
         cssVariable: "--sora",
+      },
+      {
+        provider: fontProviders.fontsource(),
+        name: "Readex Pro",
+        cssVariable: "--readex",
       },
       {
         provider: fontProviders.fontsource(),

@@ -4,12 +4,12 @@
   "dependencies": {
     "@astrojs/db": "^0.17.2",
     "@astrojs/node": "^9.4.3",
-    "@atproto/api": "^0.16.7",
+    "@atproto/api": "^0.16.9",
     "@floating-ui/dom": "^1.7.4",
     "@fujocoded/authproto": "^0.0.4",
     "@lucide/astro": "^0.542.0",
     "@tailwindcss/vite": "^4.1.13",
-    "astro": "^5.13.6",
+    "astro": "^5.13.7",
     "nanoid": "^5.1.5",
     "tailwindcss": "^4.1.13"
   },
@@ -22,7 +22,7 @@
   "type": "module",
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.16",
-    "daisyui": "^5.1.8"
+    "daisyui": "^5.1.10"
   },
   "trustedDependencies": [
     "@tailwindcss/oxide"

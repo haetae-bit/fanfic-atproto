@@ -1,22 +1,26 @@
 ---
+import Layout from "@/layouts/Layout.astro";
+import { didToHandle } from "@/lib/atproto";
 import { db, eq, Users, Works } from "astro:db";
 
 const { userDid } = Astro.params;
 
-const user = await db.select()
+const [user] = await db.select()
   .from(Users)
   .where(eq(Users.userDid, userDid!))
   .innerJoin(Works, eq(Works.author, Users.userDid))
   .limit(1);
 
-if (user.length === 0) {
+if (!user) {
   return Astro.redirect("/not-found");
 }
 ---
+<Layout>
+  <h1 class="title">
+    {user.Users.nickname
+      ? user.Users.nickname
+      : await didToHandle(user.Users.userDid)}
+  </h1>
 
-{user.map(({ Users, Works }) => (
-  <>
-    <h1>{Users.userDid}</h1>
-    {JSON.stringify(Works)}
-  </>
-))}
+  {JSON.stringify(user.Works)}
+</Layout>
