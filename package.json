@@ -6,7 +6,7 @@
     "@astrojs/node": "^9.4.3",
     "@atproto/api": "^0.16.9",
     "@floating-ui/dom": "^1.7.4",
-    "@fujocoded/authproto": "^0.0.4",
+    "@fujocoded/authproto": "^0.1.1",
     "@lucide/astro": "^0.542.0",
     "@tailwindcss/vite": "^4.1.13",
     "astro": "^5.13.7",

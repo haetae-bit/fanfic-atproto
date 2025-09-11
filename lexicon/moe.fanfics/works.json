@@ -8,27 +8,37 @@
       "record": {
         "type": "object",
         "properties": {
+          "author": {
+            "type": "string",
+            "format": "at-identifier"
+          },
           "title": {
             "type": "string",
             "minLength": 1,
-            "maxLength": 1000,
-            "maxGraphemes": 1000
+            "maxLength": 1280,
+            "maxGraphemes": 128
           },
           "tags": {
             "type": "array",
+            "description": "Tags for content the work may be related to, for example 'fluff' or 'meta'",
             "items": {
-              "text": {
-                "type": "string",
-                "maxLength": 1000,
-                "maxGraphemes": 1000
-              }
+              "type": "string"
             }
           },
-          "content": {
+          "summary": {
             "type": "string",
             "minLength": 1,
-            "maxLength": 8096000,
-            "maxGraphemes": 4096000
+            "maxLength": 3000,
+            "maxGraphemes": 300
+          },
+          "chapters": {
+            "type": "array",
+            "items": {
+              "type": "union",
+              "refs": [
+                "moe.fanfics.works.chapter"
+              ]
+            }
           },
           "createdAt": {
             "type": "string",

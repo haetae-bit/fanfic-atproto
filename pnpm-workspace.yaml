@@ -1,2 +1,6 @@
 onlyBuiltDependencies:
+  - '@tailwindcss/oxide'
+  - esbuild
   - sharp
+
+shamefullyHoist: true

@@ -16,9 +16,12 @@ export default defineConfig({
     authproto({
       applicationName: "fan archive",
       applicationDomain: "localhost:4321",
-      // driver: {
-      //   name: "astro:db",
-      // },
+      driver: {
+        name: "astro:db",
+      },
+      scopes: {
+        genericData: true,
+      },
     })
   ],
   vite: {
