@@ -37,3 +37,78 @@
   font-family: var(--font-display);
   font-size: var(--text-xl);
 }
+
+body {
+  height: 100vh;
+  font-family: var(--body);
+  font-size: var(--step-0);
+  line-height: 1.5;
+}
+
+h1 {
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+label {
+  display: block;
+  font-size: .8em;
+  font-weight: bold;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="email"],
+textarea {
+  border: 1px var(--color-base-300) solid;
+  border-radius: 2px;
+  padding: 3px 5px;
+  font-size: inherit;
+  font-family: var(--sans);
+  width: 100%;
+}
+
+button.btn,
+button[type="submit"],
+input[type="submit"],
+input[type="reset"] {
+  background-color: var(--color-primary);
+  color: var(--color-primary-content);
+  border-radius: 4px;
+  padding: 5px 10px;
+  font-size: 1em;
+  font-weight: bold;
+  text-align: center;
+  min-width: 150px;
+  transition: 0.3s;
+  position: relative;
+}
+
+button.btn:hover,
+button[type="submit"]:hover,
+input[type="submit"]:hover,
+input[type="reset"]:hover {
+  background-color: color-mix(in srgb-linear, var(--color-primary), #000000 20%);
+}
+
+button.btn:active,
+button[type="submit"]:active,
+input[type="submit"]:active,
+input[type="reset"]:active {
+  top: 1px;
+}
+
+.input-field {
+  display: block;
+  margin-bottom: 1em;
+}
+
+.ql-toolbar.ql-snow {
+  border-color: var(--color-base-300) !important;
+  border-radius: 2px 2px 0 0;
+}
+
+#content.ql-container.ql-snow {
+  border-color: var(--color-base-300);
+  border-radius: 0 0 2px 2px;
+}

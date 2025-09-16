@@ -1,6 +1,8 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import { actions, isInputError } from "astro:actions";
+import "quill/dist/quill.core.css";
+import "quill/dist/quill.snow.css";
 
 const loggedInUser = Astro.locals.loggedInUser;
 
@@ -21,55 +23,62 @@ if (result && !result.error) {
     <h1>Add a new work</h1>
 
     <form action={actions.worksActions.addWork} method="post">
-      <label for="title">title</label>
-      <input 
-        type="text" 
-        name="title" 
-        id="title" 
-        aria-describedby="title-error" 
-        required 
-        transition:persist 
-      />
-      {errors.title && (
-        <div id="title-error">
-          {errors.title}
-        </div>
-      )}
+      <div class="input-field">
+        <label for="title">Title</label>
+        <input 
+          type="text" 
+          name="title" 
+          id="title" 
+          aria-describedby="title-error" 
+          required 
+          transition:persist 
+        />
+        {errors.title && (
+          <div id="title-error">
+            {errors.title}
+          </div>
+        )}
+      </div>
 
-      <label for="tags">add tags</label>
-      <input 
-        type="text" 
-        list="tags-list" 
-        name="tags" 
-        id="tags" 
-        aria-describedby="tags-error" 
-        transition:persist 
-      />
-      <!-- could be cool to fetch tags from a tags server or smth? idk -->
-      <datalist id="tags-list">
-        <option value="test">here</option>
-        <option value="tag2">another</option>
-        <option value="tag3">try them all!</option>
-      </datalist>
-      {errors.tags && (
-        <div id="tags-error">
-          {errors.tags}
-        </div>
-      )}
+      <div class="input-field">
+        <label for="tags">Add Tags</label>
+        <input 
+          type="text" 
+          list="tags-list" 
+          name="tags" 
+          id="tags" 
+          aria-describedby="tags-error" 
+          transition:persist 
+        />
+        <!-- could be cool to fetch tags from a tags server or smth? idk -->
+        <!-- maybe from labelers the instance is subscribed to? - @veryroundbird.house -->
+        <datalist id="tags-list">
+          <option value="test">here</option>
+          <option value="tag2">another</option>
+          <option value="tag3">try them all!</option>
+        </datalist>
+        {errors.tags && (
+          <div id="tags-error">
+            {errors.tags}
+          </div>
+        )}
+      </div>
 
-      <label for="content">body</label>
-      <!-- replace this with a rich text editor / code editor later -->
-      <textarea name="content" id="content" aria-describedby="content-error" transition:persist></textarea>
-      {errors.content && (
-        <div id="content-error">
-          {errors.content}
-        </div>
-      )}
-      
-      <label for="publish">Publish to your PDS?</label>
-      <input type="checkbox" name="publish" id="publish" />
-      
-      <button>submit</button>
+      <div class="input-field">
+        <label for="content">Work Text</label>
+        <div id="content" aria-describedby="content-error" transition:persist rows="50"></div>
+        {errors.content && (
+          <div id="content-error">
+            {errors.content}
+          </div>
+        )}
+      </div>
+      <div class="input-field">
+        <label for="publish"><input type="checkbox" name="publish" id="publish" /> Publish to your PDS?</label>
+      </div>
+      <div class="input-field">
+        <button type="submit">Submit</button>
+      </div>
     </form>
 
     {result?.error && (
@@ -79,3 +88,20 @@ if (result && !result.error) {
     )}
   </main>
 </Layout>
+
+<script>
+  import Quill from "quill";
+  
+  const quill = new Quill('#content', {
+    theme: 'snow',
+    modules: {
+      syntax: true
+    }
+  });
+</script>
+  
+<style>
+  #content {
+    min-height: 50vh;
+  }
+</style>
