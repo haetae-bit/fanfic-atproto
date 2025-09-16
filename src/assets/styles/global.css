@@ -68,7 +68,7 @@ textarea {
   width: 100%;
 }
 
-button.btn,
+.btn-primary,
 button[type="submit"],
 input[type="submit"],
 input[type="reset"] {
@@ -84,14 +84,14 @@ input[type="reset"] {
   position: relative;
 }
 
-button.btn:hover,
+.btn-primary:hover,
 button[type="submit"]:hover,
 input[type="submit"]:hover,
 input[type="reset"]:hover {
   background-color: color-mix(in srgb-linear, var(--color-primary), #000000 20%);
 }
 
-button.btn:active,
+.btn-primary:active,
 button[type="submit"]:active,
 input[type="submit"]:active,
 input[type="reset"]:active {
@@ -103,6 +103,41 @@ input[type="reset"]:active {
   margin-bottom: 1em;
 }
 
+nav ul.menu {
+  gap: 20px;
+  align-items: center;
+}
+
+nav ul.menu form:hover {
+  background-color: transparent;
+  border-radius: none;
+}
+
+nav ul.menu .search-label {
+  width: 1px;
+  height: 1px;
+  position: absolute;
+  overflow: hidden;
+  text-indent: -100px;
+}
+
+nav ul.menu a {
+  padding-bottom: 5px;
+  border-width: 0 0 5px 0;
+  padding: 5px 0;
+  border-color: transparent;
+  border-style: solid;
+  box-shadow: none;
+  background-color: transparent;
+  border-radius: 0;
+}
+
+nav ul.menu a:hover {
+  border-width: 0 0 5px 0;
+  border-color: var(--color-secondary);
+  border-style: solid;
+}
+
 .ql-toolbar.ql-snow {
   border-color: var(--color-base-300) !important;
   border-radius: 2px 2px 0 0;
@@ -111,4 +146,24 @@ input[type="reset"]:active {
 #content.ql-container.ql-snow {
   border-color: var(--color-base-300);
   border-radius: 0 0 2px 2px;
+}
+
+article.card {
+  border: 1px var(--color-base-300) solid;
+  border-radius: 5px;
+}
+
+article.card h2 {
+  font-size: 1.1em;
+  font-weight: bold;
+}
+
+article.card .author {
+  font-size: .8em;
+  font-weight: normal;
+  font-style: italic;
+}
+
+article.card time {
+  font-size: .8em;
 }

@@ -3,11 +3,16 @@ const loggedInUser = Astro.locals.loggedInUser;
 ---
 <nav id="main-nav" class="navbar bg-base-100">
   <div class="flex-1">
-    <a href="/" class="btn btn-ghost font-display text-xl">Home</a>
+    <a href="/" class="font-display text-xl">Home</a>
   </div>
   <div class="flex-none">
     <ul class="menu menu-horizontal px-1">
-      <li><a href="/search">Search</a></li>
+      <li>
+        <form method="get">
+          <label class="label search-label" for="work-search">Search</label>
+          <input class="input" type="search" name="workSearch" id="work-search" placeholder="Search" />
+        </form>
+      </li>
       <li><a href="/works">Works</a></li>
       {loggedInUser
         ? <>
