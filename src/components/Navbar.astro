@@ -1,4 +1,7 @@
 ---
+import Cog from "@lucide/astro/icons/cog";
+import Settings from "./Settings.astro";
+
 const loggedInUser = Astro.locals.loggedInUser;
 ---
 <nav id="main-nav" class="navbar bg-base-100">
@@ -6,16 +9,32 @@ const loggedInUser = Astro.locals.loggedInUser;
     <a href="/" class="btn btn-ghost font-display text-xl">Home</a>
   </div>
   <div class="flex-none">
-    <ul class="menu menu-horizontal px-1">
+    <ul class="menu menu-horizontal items-center px-1">
       <li><a href="/search">Search</a></li>
       <li><a href="/works">Works</a></li>
       {loggedInUser
         ? <>
             <li><a href="/works/add">New Work</a></li>
-            <li><a href="/user">Settings</a></li>
+            <li><a href="/user">User Profile</a></li>
           </>
         : <li><a href="/login">Login</a></li>
       }
+      <li>
+        <button id="trigger-settings" class="btn btn-neutral btn-square">
+          <Cog aria-label="Open settings" />
+        </button>
+      </li>
     </ul>
   </div>
 </nav>
+
+<Settings />
+
+<script>
+  const trigger = document.getElementById("trigger-settings");
+  const dialog = document.getElementById("settings") as HTMLDialogElement;
+
+  trigger?.addEventListener("click", (_) => {
+    dialog.showModal();
+  });
+</script>

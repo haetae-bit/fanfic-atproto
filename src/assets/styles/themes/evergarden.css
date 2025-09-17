@@ -1,0 +1,127 @@
+:root:where([data-theme="evergarden-spring"]) {
+  color-scheme: dark;
+  --color-base-100: oklch(31.823% 0.01421 226.577);
+  --color-base-200: oklch(35.67% 0.01588 229.522);
+  --color-base-300: oklch(40.042% 0.01761 225.017);
+  --color-base-content: oklch(97.68% 0.02224 109.633);
+  --color-primary: oklch(87.527% 0.06046 162.249);
+  --color-primary-content: oklch(31.823% 0.01421 226.577);
+  --color-secondary: oklch(86.391% 0.07534 336.248);
+  --color-secondary-content: oklch(31.823% 0.01421 226.577);
+  --color-accent: oklch(83.38% 0.07764 302.471);
+  --color-accent-content: oklch(31.823% 0.01421 226.577);
+  --color-neutral: oklch(98% 0.003 247.858);
+  --color-neutral-content: oklch(27.988% 0.01236 233.015);
+  --color-info: oklch(83.272% 0.05588 257.769);
+  --color-info-content: oklch(31.823% 0.01421 226.577);
+  --color-success: oklch(88.578% 0.06886 129.422);
+  --color-success-content: oklch(31.823% 0.01421 226.577);
+  --color-warning: oklch(87.62% 0.08301 77.653);
+  --color-warning-content: oklch(31.823% 0.01421 226.577);
+  --color-error: oklch(73.012% 0.14459 19.658);
+  --color-error-content: oklch(31.823% 0.01421 226.577);
+  --radius-selector: 0.25rem;
+  --radius-field: 0.5rem;
+  --radius-box: 0.25rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 2px;
+  --depth: 0;
+  --noise: 1;
+}
+
+:root:where([data-theme="evergarden-summer"]) {
+  color-scheme: light;
+  --color-base-100: oklch(90.512% 0.01752 248.16);
+  --color-base-200: oklch(86.677% 0.02191 246.002);
+  --color-base-300: oklch(83.638% 0.02723 251.77);
+  --color-base-content: oklch(22.26% 0.00953 234.305);
+  --color-primary: oklch(67.259% 0.0825 45.424);
+  --color-primary-content: oklch(22.26% 0.00953 234.305);
+  --color-secondary: oklch(68.25% 0.04709 181.912);
+  --color-secondary-content: oklch(22.26% 0.00953 234.305);
+  --color-accent: oklch(74.926% 0.06655 337.189);
+  --color-accent-content: oklch(22.26% 0.00953 234.305);
+  --color-neutral: oklch(22.26% 0.00953 234.305);
+  --color-neutral-content: oklch(74.866% 0.02587 216.127);
+  --color-info: oklch(69.954% 0.04583 256);
+  --color-info-content: oklch(22.26% 0.00953 234.305);
+  --color-success: oklch(70.986% 0.0821 129.574);
+  --color-success-content: oklch(22.26% 0.00953 234.305);
+  --color-warning: oklch(71.024% 0.07561 77.706);
+  --color-warning-content: oklch(22.26% 0.00953 234.305);
+  --color-error: oklch(62.04% 0.11107 19.298);
+  --color-error-content: oklch(22.26% 0.00953 234.305);
+  --radius-selector: 0.25rem;
+  --radius-field: 0.5rem;
+  --radius-box: 0.25rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 2px;
+  --depth: 0;
+  --noise: 1;
+}
+
+:root:where([data-theme="evergarden-fall"]) {
+  color-scheme: dark;
+  --color-base-100: oklch(27.988% 0.01236 233.015);
+  --color-base-200: oklch(31.514% 0.01313 229.478);
+  --color-base-300: oklch(36.777% 0.01489 224.018);
+  --color-base-content: oklch(97.68% 0.02224 109.633);
+  --color-primary: oklch(78.757% 0.11156 40.54);
+  --color-primary-content: oklch(27.988% 0.01236 233.015);
+  --color-secondary: oklch(83.38% 0.07764 302.471);
+  --color-secondary-content: oklch(27.988% 0.01236 233.015);
+  --color-accent: oklch(88.644% 0.05455 180.409);
+  --color-accent-content: oklch(27.988% 0.01236 233.015);
+  --color-neutral: oklch(97.68% 0.02224 109.633);
+  --color-neutral-content: oklch(24.723% 0.01046 229.488);
+  --color-info: oklch(83.272% 0.05588 257.769);
+  --color-info-content: oklch(27.988% 0.01236 233.015);
+  --color-success: oklch(88.578% 0.06886 129.422);
+  --color-success-content: oklch(27.988% 0.01236 233.015);
+  --color-warning: oklch(87.62% 0.08301 77.653);
+  --color-warning-content: oklch(27.988% 0.01236 233.015);
+  --color-error: oklch(73.012% 0.14459 19.658);
+  --color-error-content: oklch(27.988% 0.01236 233.015);
+  --radius-selector: 0.25rem;
+  --radius-field: 0.5rem;
+  --radius-box: 0.25rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 2px;
+  --depth: 0;
+  --noise: 1;
+}
+
+:root:where([data-theme="evergarden-winter"]) {
+  color-scheme: dark;
+  --color-base-100: oklch(0.2589 0.0115 225.59);
+  --color-base-200: oklch(0.2983 0.0144 226.53);
+  --color-base-300: oklch(0.3678 0.0149 223.89);
+  --color-base-content: oklch(0.9768 0.0223 109.54);
+  --color-primary: oklch(87.527% 0.06046 162.249);
+  --color-primary-content: oklch(25.886% 0.01153 225.696);
+  --color-secondary: oklch(86.391% 0.07534 336.248);
+  --color-secondary-content: oklch(25.886% 0.01153 225.696);
+  --color-accent: oklch(83.38% 0.07764 302.471);
+  --color-accent-content: oklch(25.886% 0.01153 225.696);
+  --color-neutral: oklch(97.68% 0.02224 109.633);
+  --color-neutral-content: oklch(22.26% 0.00953 234.305);
+  --color-info: oklch(83.272% 0.05588 257.769);
+  --color-info-content: oklch(25.886% 0.01153 225.696);
+  --color-success: oklch(88.578% 0.06886 129.422);
+  --color-success-content: oklch(25.886% 0.01153 225.696);
+  --color-warning: oklch(87.62% 0.08301 77.653);
+  --color-warning-content: oklch(29.834% 0.0144 226.633);
+  --color-error: oklch(73.012% 0.14459 19.658);
+  --color-error-content: oklch(25.886% 0.01153 225.696);
+  --radius-selector: 0.25rem;
+  --radius-field: 0.5rem;
+  --radius-box: 0.25rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 2px;
+  --depth: 0;
+  --noise: 1;
+}

@@ -1,12 +1,23 @@
 ---
+import themes from "@/lib/themes";
 import Dialog from "./Dialog.astro";
 ---
 <Dialog id="settings" title="User preferences">
   <form id="user-settings">
     <fieldset class="fieldset">
-      <label for="font-family">font family</label>
+      <label for="theme" class="label">Theme</label>
+      <select name="theme" id="theme" class="select">
+        <option disabled>Choose theme</option>
+        {themes.map(theme => (
+          <option value={theme}>{theme}</option>
+        ))}
+      </select>
+    </fieldset>
+
+    <fieldset class="fieldset">
+      <label for="font-family">Font family</label>
       <select class="select" name="fontFamily" id="font-family">
-        <option value="default">choose...</option>
+        <option value="default">Choose...</option>
         <option value="--font-serif">serif</option>
         <option value="--font-mono">monospaced</option>
         <option value="--font-sans">sans serif</option>
@@ -85,6 +96,8 @@ import Dialog from "./Dialog.astro";
     (input as HTMLElement).addEventListener("change", (e) => {
       const target = e.target as HTMLInputElement || HTMLSelectElement;
       switch (target.name) {
+        case "theme":
+          document.documentElement.dataset.theme = target.value;
         case "fontFamily":
           (target.value !== "default") 
             ? test?.style.setProperty("--font", `var(${target.value})`)

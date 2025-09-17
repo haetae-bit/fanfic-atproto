@@ -7,7 +7,7 @@
     "@atproto/api": "^0.16.9",
     "@floating-ui/dom": "^1.7.4",
     "@fujocoded/authproto": "^0.1.1",
-    "@lucide/astro": "^0.542.0",
+    "@lucide/astro": "^0.544.0",
     "@tailwindcss/vite": "^4.1.13",
     "astro": "^5.13.7",
     "nanoid": "^5.1.5",
@@ -17,12 +17,17 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "lex": "lex gen-api ./src/lib/generated/api ./lexicon/**/**/*.json"
   },
   "type": "module",
   "devDependencies": {
+    "@ameinhardt/unocss-preset-daisy": "^1.1.8",
+    "@atproto/lex-cli": "^0.9.5",
+    "@catppuccin/daisyui": "^2.1.1",
     "@tailwindcss/typography": "^0.5.16",
-    "daisyui": "^5.1.10"
+    "daisyui": "^5.1.12",
+    "unocss": "^66.5.1"
   },
   "trustedDependencies": [
     "@tailwindcss/oxide"

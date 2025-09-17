@@ -1,16 +1,28 @@
 {
   "lexicon": 1,
-  "id": "moe.fanfics.works",
+  "id": "moe.fanfics.work",
   "defs": {
     "main": {
       "type": "record",
-      "key": "tid",
+      "key": "record-key",
       "record": {
         "type": "object",
+        "required": [
+          "author",
+          "title",
+          "tags",
+          "summary",
+          "chapters",
+          "createdAt"
+        ],
         "properties": {
+          "uri": {
+            "type": "string",
+            "format": "at-uri"
+          },
           "author": {
             "type": "string",
-            "format": "at-identifier"
+            "format": "did"
           },
           "title": {
             "type": "string",
@@ -27,16 +39,18 @@
           },
           "summary": {
             "type": "string",
+            "description": "You can describe your work in a summary. Only limited HTML is allowed.",
             "minLength": 1,
             "maxLength": 3000,
-            "maxGraphemes": 300
+            "maxGraphemes": 3000
           },
           "chapters": {
             "type": "array",
             "items": {
               "type": "union",
               "refs": [
-                "moe.fanfics.works.chapter"
+                "moe.fanfics.work.chapter",
+                "moe.fanfics.work.chapter#chapterRef"
               ]
             }
           },

@@ -1,11 +1,11 @@
 ---
 import Layout from "@/layouts/Layout.astro";
+import { didToHandle } from "@/lib/atproto";
 import { Info } from "@lucide/astro";
 import { actions } from "astro:actions";
 import { db, eq, Users, Works } from "astro:db";
 import Dialog from "~/Dialog.astro";
 import Popover from "~/Popover.astro";
-import Settings from "~/Settings.astro";
 
 const loggedInUser = Astro.locals.loggedInUser;
 
@@ -13,11 +13,10 @@ if (!loggedInUser) {
   return Astro.redirect("/login");
 }
 
-const query = await db.select()
+const [user] = await db.select()
   .from(Users)
   .where(eq(Users.userDid, loggedInUser.did))
   .limit(1);
-const user = query[0];
 
 const works = await db.select()
   .from(Works)
@@ -29,14 +28,14 @@ const works = await db.select()
     <p>{loggedInUser?.handle}</p>
     
     <!-- registration will only happen in the below form! -->
-    {(query.length === 0) && (
+    {!user && (
       <>
         <h2 class="text-lg">Connect account</h2>
         <div class="info">
           <p>Right now, you aren't connected to the site. You can connect your BlueSky / self-hosted PDS account to this website to post a work.</p>
           <p>Please check out the Terms of Service, Privacy Policy, and Code of Conduct before connecting your account.</p>
         </div>
-        <button id="trigger-confirm" class="btn btn-accent">Connect your PDS Account</button>
+        <button id="trigger-connect" class="btn btn-accent">Connect your PDS Account</button>
         
         <Dialog id="connect-account" title="Are you sure?">
           <form action={actions.usersActions.addUser} method="post">
@@ -68,9 +67,12 @@ const works = await db.select()
     
     {user && (
       <>
-        <h2>your nickname???</h2>
+        <h2>
+          {user.nickname
+            ? user.nickname
+            : await didToHandle(user.userDid)}
+        </h2>
         <time datetime={user.joinedAt.toISOString()}>{user.joinedAt}</time>
-        <p>{user.userDid}</p>
 
         {works && (
           <section>
@@ -100,23 +102,14 @@ const works = await db.select()
         )}
       </>
     )}
-
-    <button class="btn btn-primary" id="trigger-settings">Set preferences</button>
-    <Settings />
   </main>
 </Layout>
 
 <script>
-  const trigger = document.getElementById("trigger-confirm");
-  const trigger2 = document.getElementById("trigger-settings");
-  const confirmDialog = document.getElementById("connect-account") as HTMLDialogElement;
-  const settingsDialog = document.getElementById("settings") as HTMLDialogElement;
+  const trigger = document.getElementById("trigger-connect");
+  const dialog = document.getElementById("connect-account") as HTMLDialogElement;
 
   trigger?.addEventListener("click", (_) => {
-    confirmDialog.showModal();
-  });
-
-  trigger2?.addEventListener("click", (_) => {
-    settingsDialog.showModal();
+    dialog.showModal();
   });
 </script>

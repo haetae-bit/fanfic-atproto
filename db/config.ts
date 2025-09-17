@@ -42,6 +42,7 @@ export default defineDb({
   tables: {
     Users,
     Works,
+    Tags,
   },
 });
 

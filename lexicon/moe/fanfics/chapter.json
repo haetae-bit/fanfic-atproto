@@ -1,0 +1,70 @@
+{
+  "lexicon": 1,
+  "id": "moe.fanfics.work.chapter",
+  "defs": {
+    "main": {
+      "type": "record",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": [
+          "workAtUri",
+          "title",
+          "content",
+          "createdAt"
+        ],
+        "properties": {
+          "workAtUri": {
+            "type": "string",
+            "format": "at-uri"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000,
+            "maxGraphemes": 1000
+          },
+          "authorsNotes": {
+            "type": "string",
+            "description": "You can add additional notes to a chapter. Typically, these are displayed before chapter content. Only limited HTML is allowed.",
+            "minLength": 1,
+            "maxLength": 2560,
+            "maxGraphemes": 256
+          },
+          "content": {
+            "type": "string",
+            "minLength": 1
+          },
+          "endNotes": {
+            "type": "string",
+            "description": "You can add additional notes to a chapter. Typically, these are displayed after chapter content. Only limited HTML is allowed.",
+            "minLength": 1,
+            "maxLength": 2560,
+            "maxGraphemes": 256
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "datetime"
+          }
+        }
+      }
+    },
+    "chapterRef": {
+      "type": "record",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "properties": {
+          "chapterAtUri": {
+            "type": "string",
+            "format": "at-uri"
+          }
+        }
+      }
+    }
+  }
+}
