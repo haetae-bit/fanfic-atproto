@@ -3,7 +3,6 @@ import { defineConfig, fontProviders } from 'astro/config';
 import node from '@astrojs/node';
 import db from "@astrojs/db";
 import authproto from "@fujocoded/authproto";
-import unocss from "unocss/astro";
 import tailwindcss from "@tailwindcss/vite";
 
 // https://astro.build/config
@@ -24,9 +23,6 @@ export default defineConfig({
         genericData: true,
       },
     }),
-    // unocss({
-    //   injectReset: true,
-    // }),
   ],
   vite: {
     // @ts-ignore
