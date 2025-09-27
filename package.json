@@ -8,26 +8,21 @@
     "@floating-ui/dom": "^1.7.4",
     "@fujocoded/authproto": "^0.1.1",
     "@lucide/astro": "^0.544.0",
-    "@tailwindcss/vite": "^4.1.13",
     "astro": "^5.13.8",
-    "nanoid": "^5.1.5",
-    "tailwindcss": "^4.1.13"
+    "nanoid": "^5.1.5"
   },
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "lex": "lex gen-api ./src/lib/generated/api ./lexicon/**/**/*.json"
+    "lex": "lex gen-server ./src/lib/generated/api ./lexicons/**/**/*.json"
   },
   "type": "module",
   "devDependencies": {
+    "@ameinhardt/unocss-preset-daisy": "^1.1.8",
     "@atproto/lex-cli": "^0.9.5",
-    "@catppuccin/daisyui": "^2.1.1",
-    "@tailwindcss/typography": "^0.5.16",
-    "daisyui": "^5.1.13"
-  },
-  "trustedDependencies": [
-    "@tailwindcss/oxide"
-  ]
+    "daisyui": "^5.1.13",
+    "unocss": "^66.5.2"
+  }
 }

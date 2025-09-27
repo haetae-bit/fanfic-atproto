@@ -8,9 +8,13 @@ const loggedInUser = Astro.locals.loggedInUser;
   <div class="flex-1">
     <a href="/" class="btn btn-ghost font-display text-xl">Home</a>
   </div>
-  <div class="flex-none">
+  <div class="flex items-center gap2">
+    <search>
+      <form action="" method="get">
+        <input type="search" class="input" />
+      </form>
+    </search>
     <ul class="menu menu-horizontal items-center px-1">
-      <li><a href="/search">Search</a></li>
       <li><a href="/works">Works</a></li>
       {loggedInUser
         ? <>

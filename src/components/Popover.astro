@@ -62,8 +62,6 @@ const { id, label, icon, title, class: className, ...rest } = Astro.props;
 </div>
 
 <style define:vars={{ anchor: `--${id}-anchor` }}>
-  @reference "../assets/styles/global.css";
-
   .popover-btn {
     @supports (anchor-name: var(--anchor)) {
       anchor-name: var(--anchor);
@@ -120,11 +118,7 @@ const { id, label, icon, title, class: className, ...rest } = Astro.props;
             });
           });
         });
-      if (e.newState === "open") {
-        cleanup;
-      } else {
-        cleanup();
-      }
+      (e.newState === "open") ? cleanup : cleanup();
     });
   });
 </script>

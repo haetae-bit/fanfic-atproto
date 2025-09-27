@@ -1,50 +1,35 @@
 @import "reset.css";
+@import "./themes/evergarden.css";
+@import "./themes/rosepine.css";
 
 :root {
-  /* type tokens */
-  /* @link https://utopia.fyi/type/calculator?c=360,18,1.618,1240,20,1.25,5,2,&s=0.75|0.5|0.25,1.5|2|3|4|6,s-l&g=s,l,xl,12 */
-  --step--2: clamp(0.4297rem, 0.2783rem + 0.6732cqi, 0.8rem);
-  --step--1: clamp(0.6953rem, 0.5707rem + 0.554cqi, 1rem);
-  --step-0: clamp(1.125rem, 1.0739rem + 0.2273cqi, 1.25rem);
-  --step-1: clamp(1.5625rem, 1.9257rem + -0.4686cqi, 1.8203rem);
-  --step-2: clamp(1.9531rem, 3.351rem + -1.8037cqi, 2.9452rem);
-  --step-3: clamp(2.4414rem, 5.716rem + -4.2252cqi, 4.7653rem);
-  --step-4: clamp(3.0518rem, 9.616rem + -8.4699cqi, 7.7102rem);
-  --step-5: clamp(3.8147rem, 16.018rem + -15.7462cqi, 12.4751rem);
-
-  /* space tokens */
-  /* @link https://utopia.fyi/space/calculator?c=360,18,1.618,1240,20,1.25,5,2,&s=0.75|0.5|0.25,1.5|2|3|4|6,s-l&g=s,l,xl,12 */
-  --space-3xs: clamp(0.3125rem, 0.3125rem + 0cqi, 0.3125rem);
-  --space-2xs: clamp(0.5625rem, 0.5369rem + 0.1136cqi, 0.625rem);
-  --space-xs: clamp(0.875rem, 0.8494rem + 0.1136cqi, 0.9375rem);
-  --space-s: clamp(1.125rem, 1.0739rem + 0.2273cqi, 1.25rem);
-  --space-m: clamp(1.6875rem, 1.6108rem + 0.3409cqi, 1.875rem);
-  --space-l: clamp(2.25rem, 2.1477rem + 0.4545cqi, 2.5rem);
-  --space-xl: clamp(3.375rem, 3.2216rem + 0.6818cqi, 3.75rem);
-  --space-2xl: clamp(4.5rem, 4.2955rem + 0.9091cqi, 5rem);
-  --space-3xl: clamp(6.75rem, 6.4432rem + 1.3636cqi, 7.5rem);
-
-  /* One-up pairs */
-  --space-3xs-2xs: clamp(0.3125rem, 0.1847rem + 0.5682cqi, 0.625rem);
-  --space-2xs-xs: clamp(0.5625rem, 0.4091rem + 0.6818cqi, 0.9375rem);
-  --space-xs-s: clamp(0.875rem, 0.7216rem + 0.6818cqi, 1.25rem);
-  --space-s-m: clamp(1.125rem, 0.8182rem + 1.3636cqi, 1.875rem);
-  --space-m-l: clamp(1.6875rem, 1.3551rem + 1.4773cqi, 2.5rem);
-  --space-l-xl: clamp(2.25rem, 1.6364rem + 2.7273cqi, 3.75rem);
-  --space-xl-2xl: clamp(3.375rem, 2.7102rem + 2.9545cqi, 5rem);
-  --space-2xl-3xl: clamp(4.5rem, 3.2727rem + 5.4545cqi, 7.5rem);
+  /* size tokens */
+  /* @link https://utopia.fyi/type/calculator?c=360,18,1.067,1240,20,1.125,10,2,&s=0.75|0.5|0.25,1.5|2|3|4|6,s-l&g=s,l,xl,NaN */
+  --text-xs: clamp(0.9877rem, 0.9884rem + -0.0009vw, 0.9882rem);
+  --text-sm: clamp(1.0544rem, 1.0311rem + 0.1032vw, 1.1111rem);
+  --text-base: clamp(1.125rem, 1.0739rem + 0.2273vw, 1.25rem);
+  --text-lg: clamp(1.2004rem, 1.1162rem + 0.3743vw, 1.4063rem);
+  --text-xl: clamp(1.2808rem, 1.1576rem + 0.5477vw, 1.582rem);
+  --text-2xl: clamp(1.3666rem, 1.1976rem + 0.7512vw, 1.7798rem);
+  --text-3xl: clamp(1.4582rem, 1.2356rem + 0.9892vw, 2.0023rem);
+  --text-4xl: clamp(1.5559rem, 1.2709rem + 1.2667vw, 2.2525rem);
+  --text-5xl: clamp(1.6601rem, 1.3026rem + 1.5891vw, 2.5341rem);
+  --text-6xl: clamp(1.7713rem, 1.3297rem + 1.9628vw, 2.8509rem);
+  --text-7xl: clamp(1.89rem, 1.3512rem + 2.3949vw, 3.2072rem);
+  --text-8xl: clamp(2.0167rem, 1.3656rem + 2.8936vw, 3.6081rem);
+  --text-9xl: clamp(2.1518rem, 1.3715rem + 3.468vw, 4.0592rem);
   
   /* font tokens */
-  --sans: var(--atkinson);
-  --serif: var(--plex-serif);
-  --mono: var(--plex-mono);
-  
-  --body: var(--serif);
+  --font-serif: var(--plex-serif);
+  --font-dyslexic: var(--dyslexic);
 }
 
 body {
-  height: 100vh;
-  font-family: var(--body);
   font-size: var(--step-0);
   line-height: 1.5;
+  min-height: 100vh;
+  
+  @supports (min-height: 100svh) {
+    min-height: 100svh;
+  }
 }
