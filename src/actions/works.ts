@@ -174,7 +174,7 @@ export const worksActions = {
 
           if (!result.success) {
             throw new ActionError({
-              code: "INTERNAL_SERVER_ERROR",
+              code: "BAD_REQUEST",
               message: "Something went wrong with updating your fic on your PDS!",
             });
           }
@@ -256,6 +256,13 @@ export const worksActions = {
             collection: "moe.fanfics.works",
             rkey,
           });
+
+          if (!result.success) {
+            throw new ActionError({
+              code: "BAD_REQUEST",
+              message: "Something went wrong with deleting your fic from your PDS!",
+            });
+          }
         } catch (error) {
           console.error(error);
           throw new ActionError({
@@ -264,6 +271,15 @@ export const worksActions = {
           });
         }
       }
+
+      const [result] = await db.delete(Works)
+        .where(and(
+          eq(Works.slug, workId!),
+          eq(Works.author, loggedInUser.did)
+        ))
+        .returning();
+      
+      return result;
     },
   }),
 };

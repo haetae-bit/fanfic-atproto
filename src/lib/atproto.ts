@@ -20,7 +20,6 @@ export async function didToHandle(did: string) {
     const atProtoData = await RESOLVER.resolveAtprotoData(did);
     return atProtoData.handle;
   } catch (error) {
-    // console.error(error);
     return "Invalid handle";
   }
 }
