@@ -15,8 +15,8 @@ import Dialog from "./Dialog.astro";
     </fieldset>
 
     <fieldset class="fieldset">
-      <label for="font-family">Font family</label>
-      <select class="select" name="fontFamily" id="font-family">
+      <label for="font-family" class="label">Font family</label>
+      <select name="fontFamily" id="font-family" class="select">
         <option value="default">Choose...</option>
         <option value="--font-serif">serif</option>
         <option value="--font-mono">monospaced</option>
@@ -26,29 +26,31 @@ import Dialog from "./Dialog.astro";
     </fieldset>
 
     <fieldset class="fieldset">
-      <label for="font-size">text size</label>
-      <input class="range" type="range" name="fontSize" id="font-size" min="-1" max="2" step="1" />
+      <label for="font-size" class="label">Text size</label>
+      <input class="range" type="range" name="fontSize" id="font-size" min="-1" max="2" step="1" value="0" />
     </fieldset>
 
     <fieldset class="fieldset">
-      <label for="line-height">line height</label>
-      <input class="range" type="range" name="lineHeight" id="line-height" min="1" max="2" step="0.05" />
+      <label for="line-height" class="label">Line height</label>
+      <input class="range" type="range" name="lineHeight" id="line-height" min="1" max="2" step="0.05" value="1" />
     </fieldset>
     
     <fieldset class="fieldset">
-      <label for="letter-spacing">letter spacing</label>
-      <input class="range" type="range" name="letterSpacing" id="letter-spacing" min="0" max="0.1" step="0.01" />
+      <label for="letter-spacing" class="label">Letter spacing</label>
+      <input class="range" type="range" name="letterSpacing" id="letter-spacing" min="0" max="0.1" step="0.01" value="0" />
     </fieldset>
 
     <fieldset class="fieldset">
-      <label for="word-spacing">word spacing</label>
-      <input class="range" type="range" name="wordSpacing" id="word-spacing" min="0" max="0.5" step="0.01" />
+      <label for="word-spacing" class="label">Word spacing</label>
+      <input class="range" type="range" name="wordSpacing" id="word-spacing" min="0" max="0.5" step="0.01" value="0" />
     </fieldset>
 
     <div id="test-area" class="mt-4 text-(length:--size) leading-(--line-height) tracking-(--letter-spacing) line-clamp-4">
       <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Asperiores quae dolorum debitis vero nostrum nobis aspernatur ipsam sunt dolorem, eum ut corrupti unde commodi soluta natus repellendus totam animi adipisci.</p>
     </div>
 
+    <!-- reset here? -->
+     
     <div class="modal-action">
       <button formmethod="dialog" value="default" class="btn btn-neutral">Cancel</button>
       <button id="confirm-settings" class="btn btn-primary">Save</button>
@@ -78,13 +80,11 @@ import Dialog from "./Dialog.astro";
   const submitter = document.getElementById("confirm-settings");
   const test = document.getElementById("test-area");
 
+  // on load, grab the preferences from private data
+
   form?.addEventListener("submit", (e) => {
     const target = e.target as HTMLFormElement;
-    if (target.nodeValue === null) {
-      return;
-    } else {
-      e.preventDefault();
-    }
+    if (target.nodeValue === null) return; e.preventDefault();
   });
 
   inputs.forEach((input) => {

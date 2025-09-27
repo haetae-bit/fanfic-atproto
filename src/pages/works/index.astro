@@ -12,7 +12,7 @@ const loggedInUser = Astro.locals.loggedInUser;
 ---
 
 <Layout>
-  <h1 class="title">Works</h1>
+  <h1>Works</h1>
 
   <main id="content" class="flex flex-col gap-5 max-w-full">
     {loggedInUser && 
@@ -37,12 +37,13 @@ const loggedInUser = Astro.locals.loggedInUser;
               {Works.createdAt.toLocaleDateString()}
             </time>
           </div>
-          {JSON.stringify(Works.tags)}
-          {/* <ul class="flex flex-wrap gap-1.5">
-            {(Works.tags as Tag[]).map((tag: Tag) => (
-              <li><a class="tag" href={tag.url}>{tag.label}</a></li>
-            ))}
-          </ul> */}
+          {Array.isArray(Works.tags)
+            ? (<ul class="flex flex-wrap gap-1.5">
+                {(Works.tags as Tag[]).map((tag: Tag) => (
+                  <li><a class="tag" href={tag.url}>{tag.label}</a></li>
+                ))}
+              </ul>)
+            : <pre>{JSON.stringify(Works.tags)}</pre>}
         </header>
 
         <div class="card-body prose lg:prose-xl">
@@ -54,8 +55,6 @@ const loggedInUser = Astro.locals.loggedInUser;
 </Layout>
 
 <style>
-  @reference "../../assets/styles/global.css";
-
   .tag {
     @apply btn btn-accent;  
   }

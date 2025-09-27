@@ -62,6 +62,16 @@ These hold actions that run every time a user wants to publish a new work or sig
 
 This has images / libre font / `.css` files to be used stylistically throughout the site.
 
+##### Styles (AKA, abomination)
+
+This is the most messed up design system but I sure tried my best with it. The base style uses [daisyui](https://daisyui.com/docs/) and [UnoCSS](https://unocss.dev/guide/), which means the configurations are Strange(tm). Beware of `uno.config.ts`, please don't poke it too hard unless you know what you're doing.
+
+This uses CSS layers to make things work. Any styles used in `base.css` will overwrite everything else across the entire site. This should only be modified sparingly.
+
+All styling should be *within* components or pages via HTML classes or within scoped `<style>` blocks. There are various colors and sizes to keep track of - at some point, I'll document them.
+
+To make contribute new themes, check out the examples inside the `src/assets/styles/themes` folder. You can use the [daisyui Theme Generator](https://daisyui.com/theme-generator/) to quickly build a theme!
+
 #### Components: `src/components` 
 
 These hold components that are reused throughout `src/pages`. Like PHP includes but in HTML and JavaScript (well, technically it's JSX).

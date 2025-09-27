@@ -18,9 +18,9 @@ const { title = "fanfics", skipLink, class: className, ...rest } = Astro.props;
 		<meta name="viewport" content="width=device-width" />
 		<title>{title}</title>
 		<Font cssVariable="--quattro" preload />
-		<Font cssVariable="--dyslexic" preload />
-		<Font cssVariable="--intel-mono" preload />
-		<Font cssVariable="--plex-serif" preload />
+		<Font cssVariable="--dyslexic" />
+		<Font cssVariable="--intel-mono" />
+		<Font cssVariable="--plex-serif" />
 		<Font cssVariable="--jacquard-12" preload />
 		<slot name="head" />
 	</head>
@@ -33,7 +33,7 @@ const { title = "fanfics", skipLink, class: className, ...rest } = Astro.props;
 			<Navbar />
 		</header>
 
-		<div class:list={["sm:w-10/12 sm:mx-auto max-w-full mx-6 text-base", className]} {...rest}>
+		<div class:list={["sm:w-10/12 sm:mx-auto max-w-full mx-6 mb-5", className]} {...rest}>
 			<slot />
 		</div>
 
@@ -44,8 +44,6 @@ const { title = "fanfics", skipLink, class: className, ...rest } = Astro.props;
 </html>
 
 <style>
-	@reference "../assets/styles/global.css";
-
 	.skip-link {
 		@apply absolute top-3 -left-full transition-all ease-in-out btn btn-ghost;
 		

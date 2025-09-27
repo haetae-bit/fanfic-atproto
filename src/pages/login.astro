@@ -6,7 +6,7 @@ const currentUser = Astro.locals.loggedInUser;
 ---
 <Layout>
   <main id="content">
-    <h1 class="font-display text-xl">Log in</h1>
+    <h1>Log in</h1>
     {
       currentUser ? (
         // If there's a current user, show the log out button

@@ -6,9 +6,9 @@ const loggedInUser = Astro.locals.loggedInUser;
 ---
 <nav id="main-nav" class="navbar bg-base-100">
   <div class="flex-1">
-    <a href="/" class="btn btn-ghost font-display text-xl">Home</a>
+    <a href="/" class="font-display text-xl ml-3">Home</a>
   </div>
-  <div class="flex items-center gap2">
+  <div class="flex items-center gap-2">
     <search>
       <form action="" method="get">
         <input type="search" class="input" />
@@ -24,7 +24,7 @@ const loggedInUser = Astro.locals.loggedInUser;
         : <li><a href="/login">Login</a></li>
       }
       <li>
-        <button id="trigger-settings" class="btn btn-neutral btn-square">
+        <button id="trigger-settings" class="btn btn-neutral btn-square ml-3">
           <Cog aria-label="Open settings" />
         </button>
       </li>
