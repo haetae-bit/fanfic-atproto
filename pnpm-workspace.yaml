@@ -1,4 +1,5 @@
 onlyBuiltDependencies:
+  - cbor-extract
   - esbuild
   - sharp
 

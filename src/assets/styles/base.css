@@ -32,6 +32,7 @@
   --space-3xl: clamp(6.75rem, 6.4432rem + 1.3636vw, 7.5rem);
   
   /* font tokens */
+  --font-display: var(--jacquard-12);
   --font-serif: var(--plex-serif);
   --font-dyslexic: var(--dyslexic);
 }

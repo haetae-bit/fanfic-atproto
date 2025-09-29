@@ -6,7 +6,7 @@ const loggedInUser = Astro.locals.loggedInUser;
 ---
 <nav id="main-nav" class="navbar bg-base-100">
   <div class="flex-1">
-    <a href="/" class="font-display text-xl ml-3">Home</a>
+    <a href="/" class="ml-3">Home</a>
   </div>
   <div class="flex items-center gap-2">
     <search>
@@ -24,7 +24,7 @@ const loggedInUser = Astro.locals.loggedInUser;
         : <li><a href="/login">Login</a></li>
       }
       <li>
-        <button id="trigger-settings" class="btn btn-neutral btn-square ml-3">
+        <button id="trigger-settings">
           <Cog aria-label="Open settings" />
         </button>
       </li>
@@ -33,6 +33,12 @@ const loggedInUser = Astro.locals.loggedInUser;
 </nav>
 
 <Settings />
+
+<style>
+  #trigger-settings {
+    @apply btn btn-neutral btn-square ml-3;
+  }
+</style>
 
 <script>
   const trigger = document.getElementById("trigger-settings");

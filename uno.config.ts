@@ -41,6 +41,7 @@ export default defineConfig<PresetWind4Theme>({
       },
     }),
   ],
+  separators: [":"],
   shortcuts: {
     "heading-1": "font-display text-5xl",
     "heading-2": "font-display text-4xl",
