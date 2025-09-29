@@ -54,15 +54,12 @@
       }
     },
     "chapterRef": {
-      "type": "record",
-      "key": "tid",
-      "record": {
-        "type": "object",
-        "properties": {
-          "chapterAtUri": {
-            "type": "string",
-            "format": "at-uri"
-          }
+      "type": "object",
+      "description": "A reference to a chapter record",
+      "properties": {
+        "atUri": {
+          "type": "string",
+          "format": "at-uri"
         }
       }
     }

@@ -8,6 +8,7 @@ import { customAlphabet } from "nanoid";
 
 const workSchema = z.object({
   title: z.string(),
+  summary: z.string(),
   content: z.string(),
   tags: z.string(),
   publish: z.boolean(),
@@ -17,7 +18,7 @@ export const worksActions = {
   addWork: defineAction({
     accept: "form",
     input: workSchema,
-    handler: async ({ title, content, tags, publish }, context) => {
+    handler: async ({ title, summary, content, tags, publish }, context) => {
       const loggedInUser = context.locals.loggedInUser;
 
       // check against auth
@@ -49,7 +50,7 @@ export const worksActions = {
       const createdAt = new Date();
       const record = {
         title,
-        content,
+        summary,
         tags,
       };
 
@@ -72,7 +73,7 @@ export const worksActions = {
           // we'll just smush this in and pray
           const result = await agent.com.atproto.repo.createRecord({
             repo: user.did,
-            collection: "moe.fanfics.works",
+            collection: "moe.fanfics.work",
             rkey,
             record: {
               ...record,
@@ -82,6 +83,20 @@ export const worksActions = {
           });
           
           uri = result.data.uri;
+
+          const crkey = TID.nextStr();
+          const chapter = await agent.com.atproto.repo.createRecord({
+            repo: user.did,
+            collection: "moe.fanfics.work.chapter",
+            rkey: crkey,
+            record: {
+              worksUri: uri,
+              title: "",
+              content,            
+              createdAt: createdAt.toISOString(),
+            },
+            validate: false,
+          });
         } catch (error) {
           console.error(error);
           throw new ActionError({
@@ -111,7 +126,7 @@ export const worksActions = {
   updateWork: defineAction({
     accept: "form",
     input: workSchema,
-    handler: async ({ title, content, tags }, context) => {
+    handler: async ({ title, summary, tags }, context) => {
       const workId = context.params["workId"];
       const loggedInUser = context.locals.loggedInUser;
       
@@ -160,12 +175,12 @@ export const worksActions = {
 
           const result = await agent.com.atproto.repo.putRecord({
             repo: work.author, // since the author will be a did
-            collection: "moe.fanfics.works",
+            collection: "moe.fanfics.work",
             rkey,
             record: {
               title,
               tags,
-              content,
+              summary,
               createdAt: work.createdAt.toISOString(),
               updatedAt: updatedAt.toISOString(),
             },
@@ -191,7 +206,7 @@ export const worksActions = {
         .set({
           title,
           tags,
-          content,
+          summary,
           updatedAt,
         })
         .where(and(
@@ -253,7 +268,7 @@ export const worksActions = {
           // we'll just smush this in and pray
           const result = await agent.com.atproto.repo.deleteRecord({
             repo: work.author, // since the author will be a did
-            collection: "moe.fanfics.works",
+            collection: "moe.fanfics.work",
             rkey,
           });
 

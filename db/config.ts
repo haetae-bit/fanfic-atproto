@@ -19,7 +19,7 @@ const Works = defineTable({
     slug: column.text({ unique: true }),
     title: column.text(),
     author: column.text({ references: () => Users.columns.userDid }),
-    content: column.text({ multiline: true }),
+    summary: column.text({ multiline: true }),
     tags: column.json(),
     createdAt: column.date({ name: "created_at", default: NOW }),
     updatedAt: column.date({ name: "updated_at", optional: true }),
@@ -28,6 +28,20 @@ const Works = defineTable({
     { on: ["slug", "createdAt"], unique: true },
     { on: ["uri", "createdAt"], unique: true },
   ],
+});
+
+const Chapters = defineTable({
+  columns: {
+    id: column.number({ primaryKey: true }),
+    uri: column.text({ optional: true }),
+    workId: column.number({ references: () => Works.columns.id }),
+    order: column.number(),
+    title: column.text(),
+    notes: column.text({ multiline: true, optional: true }),
+    content: column.text({ multiline: true }),
+    createdAt: column.date({ name: "created_at", default: NOW }),
+    updatedAt: column.date({ name: "updated_at", optional: true }),
+  },
 });
 
 const Tags = defineTable({
@@ -42,6 +56,7 @@ export default defineDb({
   tables: {
     Users,
     Works,
+    Chapters,
     Tags,
   },
 });

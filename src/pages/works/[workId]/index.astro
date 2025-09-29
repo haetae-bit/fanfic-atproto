@@ -1,7 +1,7 @@
 ---
 import WorkPage from "@/layouts/WorkPage.astro";
 import { didToHandle } from "@/lib/atproto";
-import { db, eq, Users, Works } from "astro:db";
+import { db, eq, Users, Works, Chapters } from "astro:db";
 
 const { workId } = Astro.params;
 const loggedInUser = Astro.locals.loggedInUser;
@@ -12,9 +12,10 @@ const [work] = await db.select()
   .innerJoin(Users, eq(Works.author, Users.userDid))
   .limit(1);
 
-if (!work) {
-  return Astro.redirect("/not-found");
-}
+const chapters = await db.select()
+  .from(Chapters)
+  .where(eq(Chapters.workId, Works.id))
+  .all();
 ---
 <WorkPage 
   slug={work.Works.slug}
@@ -31,6 +32,7 @@ if (!work) {
   )}
 
   <div class="prose lg:prose-xl">
-    <Fragment set:html={work.Works.content} />
+    <!-- set the first chapter here -->
+    <Fragment set:html={chapters[0].content} />
   </div>
 </WorkPage>

@@ -2,24 +2,29 @@
 import Layout from "@/layouts/Layout.astro";
 import { didToHandle } from "@/lib/atproto";
 import type { Tag } from "@/lib/types";
+import { desc } from "astro:db";
 import { db, eq, Users, Works } from "astro:db";
 
 const works = await db.select()
   .from(Works)
-  .innerJoin(Users, eq(Works.author, Users.userDid));
+  .innerJoin(Users, eq(Works.author, Users.userDid))
+  .orderBy(Works.title);
 
 const loggedInUser = Astro.locals.loggedInUser;
 ---
 
 <Layout>
-  <h1>Works</h1>
-
   <main id="content" class="flex flex-col gap-5 max-w-full">
-    {loggedInUser && 
-      <a href="/works/add">wanna write kid?</a>
-    }
-    
-    {works.map(async ({ Works, Users }) => (
+    <header class="flex items-center justify-between">
+      <h1>Works</h1>
+      {loggedInUser && 
+        <a href="/works/add" class="btn btn-primary">wanna write kid?</a>
+      }
+    </header>
+
+    {works
+      .sort((a, b) => (b.Works.updatedAt ?? b.Works.createdAt).valueOf() - (a.Works.updatedAt ?? a.Works.createdAt).valueOf())
+      .map(async ({ Works, Users }) => (
       <article class="card rounded-box shadow p-5">
         <header>
           <div class="flex items-center justify-between">
@@ -47,7 +52,7 @@ const loggedInUser = Astro.locals.loggedInUser;
         </header>
 
         <div class="card-body prose lg:prose-xl">
-          <Fragment set:html={Works.content} />
+          <Fragment set:html={Works.summary} />
         </div>
       </article>
     ))}

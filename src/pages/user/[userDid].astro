@@ -10,10 +10,6 @@ const [user] = await db.select()
   .where(eq(Users.userDid, userDid!))
   .innerJoin(Works, eq(Works.author, Users.userDid))
   .limit(1);
-
-if (!user) {
-  return Astro.redirect("/not-found");
-}
 ---
 <Layout>
   <h1>
