@@ -2,14 +2,14 @@ import { AtUri } from "@atproto/api";
 import { TID } from "@atproto/common-web";
 import { getAgent } from "@/lib/atproto";
 import { ActionError, defineAction } from "astro:actions";
-import { z } from "astro:content";
+import { z } from "astro:schema";
 import { db, eq, and, Users, Works } from "astro:db";
 import { customAlphabet } from "nanoid";
+import { addChapter } from "@/lib/db";
 
 const workSchema = z.object({
   title: z.string(),
   summary: z.string(),
-  content: z.string(),
   tags: z.string(),
   publish: z.boolean(),
 });
@@ -17,8 +17,25 @@ const workSchema = z.object({
 export const worksActions = {
   addWork: defineAction({
     accept: "form",
-    input: workSchema,
-    handler: async ({ title, summary, content, tags, publish }, context) => {
+    input: workSchema.extend({
+      chapterOption: z.enum(["manual", "leaflet", "bsky"]),
+      chapterUri: z.string().optional(),
+      chapterTitle: z.string(),
+      content: z.string(),
+      notes: z.string().optional(),
+    }),
+    handler: async (
+      {
+        title,
+        summary, 
+        tags, 
+        chapterOption, 
+        chapterUri, 
+        chapterTitle, 
+        content, 
+        notes, 
+        publish 
+      }, context) => {
       const loggedInUser = context.locals.loggedInUser;
 
       // check against auth
@@ -84,19 +101,24 @@ export const worksActions = {
           
           uri = result.data.uri;
 
-          const crkey = TID.nextStr();
-          const chapter = await agent.com.atproto.repo.createRecord({
-            repo: user.did,
-            collection: "moe.fanfics.work.chapter",
-            rkey: crkey,
-            record: {
-              worksUri: uri,
-              title: "",
-              content,            
-              createdAt: createdAt.toISOString(),
-            },
-            validate: false,
-          });
+          // only do this if chapterOption is set to manual
+          if (chapterOption === "manual") {
+            const crkey = TID.nextStr();
+            const chapter = await agent.com.atproto.repo.createRecord({
+              repo: user.did,
+              collection: "moe.fanfics.work.chapter",
+              rkey: crkey,
+              record: {
+                worksUri: uri,
+                title: chapterTitle,
+                content,            
+                createdAt: createdAt.toISOString(),
+              },
+              validate: false,
+            });
+
+            console.log(chapter);
+          }
         } catch (error) {
           console.error(error);
           throw new ActionError({
@@ -111,16 +133,22 @@ export const worksActions = {
       const nanoid = customAlphabet(alphabet, 16);
       const slug = nanoid();
 
-      const work = await db.insert(Works).values({
+      const [work] = await db.insert(Works).values({
         uri,
         slug,
         createdAt,
         author: user.did,
         ...record,
       }).returning();
+
+      await addChapter(
+        work.id,
+        chapterTitle,
+        content,
+        notes,
+      );
       
-      const [newWork] = work;
-      return newWork;
+      return work;
     },
   }),
   updateWork: defineAction({
@@ -130,6 +158,13 @@ export const worksActions = {
       const workId = context.params["workId"];
       const loggedInUser = context.locals.loggedInUser;
       
+      if (!workId) {
+        throw new ActionError({
+          code: "NOT_FOUND",
+          message: "Work slug not found!",
+        });
+      }
+
       if (!loggedInUser) {
         throw new ActionError({
           code: "UNAUTHORIZED",
@@ -139,7 +174,7 @@ export const worksActions = {
 
       const [work] = await db.select().from(Works)
         .where(and(
-          eq(Works.slug, workId!),
+          eq(Works.slug, workId),
           eq(Works.author, loggedInUser.did)
         ))
         .limit(1);
@@ -224,6 +259,13 @@ export const worksActions = {
       const workId = context.params["workId"];
       const loggedInUser = context.locals.loggedInUser;
 
+      if (!workId) {
+        throw new ActionError({
+          code: "NOT_FOUND",
+          message: "Work slug not found!",
+        });
+      }
+
       if (!loggedInUser) {
         throw new ActionError({
           code: "UNAUTHORIZED",
@@ -233,7 +275,7 @@ export const worksActions = {
 
       const [work] = await db.select().from(Works)
         .where(and(
-          eq(Works.slug, workId!),
+          eq(Works.slug, workId),
           eq(Works.author, loggedInUser.did)
         ))
         .limit(1);

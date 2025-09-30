@@ -16,8 +16,8 @@ export default defineConfig<PresetWind4Theme>({
     'typography': 1,
   },
   presets: [
-    presetDaisy(),
     presetWind4(),
+    presetDaisy(),
     presetTypography({
       colorScheme: {
         "body": ["color-mix(in oklab,var(--color-base-content)80%,#0000)", "color-mix(in oklab,var(--color-base-content)80%,#0000)"],
@@ -101,6 +101,6 @@ export default defineConfig<PresetWind4Theme>({
       "9xl": {
         fontSize: "var(--step-10)",
       },
-    }
+    },
   },
 });

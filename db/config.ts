@@ -35,7 +35,7 @@ const Chapters = defineTable({
     id: column.number({ primaryKey: true }),
     uri: column.text({ optional: true }),
     workId: column.number({ references: () => Works.columns.id }),
-    order: column.number(),
+    // order: column.number(), // i don't think this is needed...
     title: column.text(),
     notes: column.text({ multiline: true, optional: true }),
     content: column.text({ multiline: true }),
@@ -47,6 +47,7 @@ const Chapters = defineTable({
 const Tags = defineTable({
   columns: {
     id: column.number({ primaryKey: true }),
+    slug: column.text({ unique: true }),
     type: column.text({ enum: ["character", "relationship", "series", "warnings"] }),
     label: column.text(),
   },
