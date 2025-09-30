@@ -84,11 +84,11 @@ const errors = isInputError(result?.error) ? result.error.fields : {};
           aria-describedby="content-error" 
           transition:persist
         >
-          {work.Works.content.trim()}
+          {work.Works.summary.trim()}
         </textarea>
-        {errors.content && (
+        {errors.summary && (
           <div id="content-error">
-            {errors.content}
+            {errors.summary}
           </div>
         )}
       </fieldset>

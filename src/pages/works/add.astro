@@ -1,11 +1,12 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import { actions, isInputError } from "astro:actions";
+import Dialog from "~/Dialog.astro";
+import Popover from "~/Popover.astro";
 
 const loggedInUser = Astro.locals.loggedInUser;
 
 if (!loggedInUser) {
-  // put in a thing that tells the user they're not logged in
   return Astro.redirect("/works");
 }
 
@@ -20,21 +21,24 @@ if (result && !result.error) {
   <main id="new-work">
     <h1>Add a new work</h1>
 
-    <form action={actions.worksActions.addWork} method="post">
-      <label for="title">title</label>
-      <input 
-        type="text" 
-        name="title" 
-        id="title" 
-        aria-describedby="title-error" 
-        required 
-        transition:persist 
-      />
-      {errors.title && (
-        <div id="title-error">
-          {errors.title}
-        </div>
-      )}
+    <form action={actions.worksActions.addWork} id="new-work-form" method="post">
+      <fieldset class="fieldset">
+        <label for="title" class="label">Title</label>
+        <input 
+          type="text" 
+          class="input"
+          name="title" 
+          id="title" 
+          aria-errormessage="title-error" 
+          required 
+          transition:persist 
+        />
+        {errors.title && (
+          <div id="title-error" class="label text-error">
+            {errors.title}
+          </div>
+        )}
+      </fieldset>
 
       <label for="tags">add tags</label>
       <input 
@@ -42,7 +46,7 @@ if (result && !result.error) {
         list="tags-list" 
         name="tags" 
         id="tags" 
-        aria-describedby="tags-error" 
+        aria-errormessage="tags-error" 
         transition:persist 
       />
       <!-- could be cool to fetch tags from a tags server or smth? idk -->
@@ -57,25 +61,128 @@ if (result && !result.error) {
         </div>
       )}
 
-      <label for="content">body</label>
-      <!-- replace this with a rich text editor / code editor later -->
-      <textarea name="content" id="content" aria-describedby="content-error" transition:persist></textarea>
-      {errors.content && (
-        <div id="content-error">
-          {errors.content}
+      <fieldset class="fieldset">
+        <label for="summary" class="label">Summary</label>
+        <textarea class="textarea" name="summary" id="summary" rows="3" aria-errormessage="summary-error"></textarea>
+        {errors.summary && (
+          <div id="summary-error" class="label text-error">
+            {errors.summary}
+          </div>
+        )}
+      </fieldset>
+
+      <fieldset class="fieldset">
+        <legend class="fieldset-legend">Add chapter</legend>
+
+        <div class="tabs tabs-box" id="chapter-options">
+          <input 
+            class="tab"
+            type="radio" 
+            name="chapterOption" 
+            id="manual" 
+            value="manual" 
+            aria-label="Default" 
+            aria-controls="option-manual"
+            checked 
+          />
+          <div id="option-manual" class="tab-content option">
+            <label for="chapter-title" class="label">Chapter Title</label>
+            <input 
+              class="input" 
+              type="text" 
+              name="chapterTitle" 
+              id="chapter-title" 
+              aria-errormessage="chapter-error"
+              required 
+              transition:persist 
+            />
+            {errors.chapterTitle && (
+              <div id="chapter-title-error" class="label text-error">
+                {errors.chapterTitle}
+              </div>
+            )}
+          
+            <label for="content" class="label">Work Text</label>
+            <!-- replace this with a rich text editor / code editor later -->
+            <textarea class="textarea" name="content" id="content" aria-errormessage="content-error" transition:persist></textarea>
+            {errors.content && (
+              <div id="content-error" class="label text-error">
+                {errors.content}
+              </div>
+            )}
+          </div>
+
+          <input 
+            class="tab" 
+            type="radio" 
+            name="chapterOption" 
+            id="leaflet" 
+            value="leaflet" 
+            aria-label="Import from leaflet" 
+            aria-controls="option-leaflet"
+          />
+          <div id="option-leaflet" class="tab-content option">
+            <p>You can import a document from leaflet.pub as a chapter into your work.</p>
+            <label for="leaflet-uri" class="label">
+              Leaflet URI
+              <Popover id="leaflet-help" icon="info" label="help">
+                <p>Please input the URL of the leaflet document you'd like to use. Make sure it's published in a publication(?)</p>
+              </Popover>
+            </label>
+            <input class="input" type="url" name="chapterUri" id="leaflet-uri" />
+          </div>
+
+          <input 
+            class="tab" 
+            type="radio" 
+            name="chapterOption" 
+            id="bsky" 
+            value="bsky" 
+            aria-label="Import from BlueSky" 
+            aria-controls="option-bsky"
+          />
+          <div id="option-bsky" class="tab-content option">
+            <p>You can import a BlueSky post as a chapter in your work!</p>
+            <label for="bsky-uri" class="label">
+              BlueSky URI
+              <Popover id="bsky-help" icon="info" label="help">
+                <p>Please input the URL of the BlueSky post.</p>
+              </Popover>
+            </label>
+            <input class="input" type="url" name="chapterUri" id="bsky-uri" />
+          </div>
         </div>
-      )}
+      </fieldset>
       
-      <label for="publish">Publish to your PDS?</label>
-      <input type="checkbox" name="publish" id="publish" />
+      <fieldset class="fieldset">
+        <label class="flex items-center gap-2">
+          <input class="checkbox" type="checkbox" name="publish" id="publish" /> 
+          <span class="label">Publish to your PDS?</span>
+        </label>
+      </fieldset>
       
-      <button>submit</button>
+      <button class="btn btn-primary">Submit</button>
     </form>
 
     {result?.error && (
-      <div class="error">
+      <div class="text-error">
         {result.error.message}
       </div>
     )}
   </main>
 </Layout>
+
+<style>
+  .label {
+    @apply label text-base;
+  }
+
+  .option {
+    @apply bg-base-100 border-base-300 p-6;
+  }
+</style>
+
+<script>
+  const form = document.forms.namedItem("new-work-form") as HTMLFormElement;
+  console.log(form.elements);
+</script>

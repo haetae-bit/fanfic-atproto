@@ -84,7 +84,8 @@ import Dialog from "./Dialog.astro";
 
   form?.addEventListener("submit", (e) => {
     const target = e.target as HTMLFormElement;
-    if (target.nodeValue === null) return; e.preventDefault();
+    if (target.nodeValue === null) return;
+    e.preventDefault();
   });
 
   inputs.forEach((input) => {

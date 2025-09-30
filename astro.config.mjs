@@ -5,26 +5,24 @@ import db from "@astrojs/db";
 import authproto from "@fujocoded/authproto";
 import unocss from "unocss/astro";
 
+import svelte from "@astrojs/svelte";
+
 // https://astro.build/config
 export default defineConfig({
   output: "server",
   adapter: node({
     mode: 'standalone',
   }),
-  integrations: [
-    db(),
-    authproto({
-      applicationName: "fan archive",
-      applicationDomain: "localhost:4321",
-      driver: {
-        name: "astro:db",
-      },
-      scopes: {
-        genericData: true,
-      },
-    }),
-    unocss(),
-  ],
+  integrations: [db(), authproto({
+    applicationName: "fan archive",
+    applicationDomain: "localhost:4321",
+    driver: {
+      name: "astro:db",
+    },
+    scopes: {
+      genericData: true,
+    },
+  }), unocss(), svelte()],
   experimental: {
     fonts: [
       {

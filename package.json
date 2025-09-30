@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "dependencies": {
     "@astrojs/db": "^0.18.0",
-    "@astrojs/node": "^9.4.3",
+    "@astrojs/node": "^9.4.4",
+    "@astrojs/svelte": "^7.2.0",
     "@atproto/api": "^0.16.9",
     "@atproto/common-web": "^0.4.3",
     "@atproto/identity": "^0.4.9",
@@ -13,7 +14,8 @@
     "@floating-ui/dom": "^1.7.4",
     "@fujocoded/authproto": "^0.1.1",
     "@lucide/astro": "^0.544.0",
-    "astro": "^5.13.8",
+    "@sindresorhus/slugify": "^3.0.0",
+    "astro": "^5.14.1",
     "nanoid": "^5.1.5"
   },
   "scripts": {
