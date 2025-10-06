@@ -2,35 +2,47 @@
 import WorkPage from "@/layouts/WorkPage.astro";
 import { didToHandle } from "@/lib/atproto";
 import { db, eq, Users, Works, Chapters } from "astro:db";
+import type { Work, Chapter, User } from "@/lib/types";
 
 const { workId } = Astro.params;
+const slug = workId!;
 const loggedInUser = Astro.locals.loggedInUser;
 
-const [work] = await db.select()
+const rows = await db.select()
   .from(Works)
-  .where(eq(Works.slug, workId!))
+  .where(eq(Works.slug, slug))
   .innerJoin(Users, eq(Works.author, Users.userDid))
-  .limit(1);
-
-const chapters = await db.select()
-  .from(Chapters)
-  .where(eq(Chapters.workId, work.Works.id))
+  .leftJoin(Chapters, eq(Works.id, Chapters.workId))
   .all();
+
+const result = rows.reduce<Record<string, { work: Work; user: User; chapters: Chapter[] }>>((acc, row) => {
+  const work = row.Works;
+  const user = row.Users;
+  const chapter = row.Chapters;
+  
+  if (!acc[slug]) { acc[slug] = { work, user, chapters: [] }; }
+  if (chapter) { acc[slug].chapters.push(chapter); }
+  return acc;
+}, {});
+
+const { work, user, chapters } = result[slug];
 ---
 <WorkPage 
-  slug={work.Works.slug}
-  title={work.Works.title}
-  author={work.Users.nickname ? work.Users.nickname : await didToHandle(work.Users.userDid)}
-  summary={work.Works.summary}
-  createdAt={work.Works.createdAt}
-  updatedAt={work.Works.updatedAt}
-  tags={work.Works.tags}
+  slug={work.slug}
+  title={work.title}
+  author={user.nickname ? user.nickname : await didToHandle(user.userDid)}
+  summary={work.summary}
+  createdAt={work.createdAt}
+  updatedAt={work.updatedAt}
+  tags={work.tags}
+  {chapters}
 >
-  {(work.Users.userDid === loggedInUser?.did) && (
+  {(user.userDid === loggedInUser?.did) && (
     <a href={`/works/${workId}/edit`}>Edit your work</a>
+    <a href={`/works/${workId}/add-chapter`}>Add chapter</a>
   )}
-
-  {chapters[0] && (
+  
+  {chapters.length > 0 && (
     <div class="prose lg:prose-xl">
       {/* set the first chapter here */}
       <Fragment set:html={chapters[0].content} />

@@ -1,6 +1,7 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import { didToHandle } from "@/lib/atproto";
+import type { Work, User } from "@/lib/types";
 import { actions } from "astro:actions";
 import { db, eq, Users, Works } from "astro:db";
 import Dialog from "~/Dialog.astro";
@@ -12,16 +13,25 @@ if (!loggedInUser) {
   return Astro.redirect("/login");
 }
 
-const [user] = await db.select()
+const rows = await db.select()
   .from(Users)
   .where(eq(Users.userDid, loggedInUser.did))
-  .limit(1);
-
-const works = await db.select()
-  .from(Works)
-  .where(eq(Works.author, user?.userDid ?? loggedInUser.did))
-  .orderBy(Works.title)
+  .leftJoin(Works, eq(Works.author, loggedInUser.did))
   .all();
+
+const result = rows.reduce<Record<string, { user: User; works: Work[]; }>>((acc, row) => {
+  const user = row.Users;
+  const work = row.Works;
+
+  if (!acc[user.userDid]) { acc[user.userDid] = { user, works: [] }; }
+  if (work) { acc[user.userDid].works.push(work); }
+  return acc;
+}, {});
+
+const { user, works } = result[loggedInUser.did];
+works.sort((a, b) => {
+  return (b.updatedAt ?? b.createdAt).valueOf() - (a.updatedAt ?? a.createdAt).valueOf();
+});
 ---
 <Layout skipLink="user-profile">
   <main id="user-profile">
@@ -81,9 +91,7 @@ const works = await db.select()
         {works && (
           <section>
             <ol>
-              {works
-                .sort((a, b) => (b.updatedAt ?? b.createdAt).valueOf() - (a.updatedAt ?? a.createdAt).valueOf())
-                .map(work => (
+              {works.map(work => (
                 <li>
                   {/* probably could componentize work entries */}
                   <article>

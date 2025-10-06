@@ -1,26 +1,6 @@
-import type { AtUri } from "@atproto/api";
+import type { Chapters, Tags, Users, Works } from "astro:db";
 
-export type Work = {
-  slug: string;
-  title: string;
-  author: string;
-  tags: Tag[];
-  summary: string;
-  createdAt: Date;
-  updatedAt: Date | undefined;
-}
-
-export type Chapter = {
-  uri?: AtUri;
-  title: string;
-  notes?: string | undefined;
-  content: string;
-  createdAt: Date;
-  updatedAt: Date | undefined;
-}
-
-export type Tag = {
-  type: "character" | "relationship" | "series" | "warnings";
-  label: string;
-  url?: string;
-}
+export type Work = typeof Works.$inferSelect;
+export type Chapter = typeof Chapters.$inferSelect;
+export type Tag = typeof Tags.$inferSelect;
+export type User = typeof Users.$inferSelect;

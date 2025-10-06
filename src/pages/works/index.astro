@@ -4,12 +4,15 @@ import { didToHandle } from "@/lib/atproto";
 import type { Tag } from "@/lib/types";
 import { db, eq, Users, Works } from "astro:db";
 
+const loggedInUser = Astro.locals.loggedInUser;
 const works = await db.select()
   .from(Works)
   .innerJoin(Users, eq(Works.author, Users.userDid))
   .orderBy(Works.title);
 
-const loggedInUser = Astro.locals.loggedInUser;
+works.sort((a, b) => {
+  return (b.Works.updatedAt ?? b.Works.createdAt).valueOf() - (a.Works.updatedAt ?? a.Works.createdAt).valueOf();
+});
 ---
 
 <Layout>
@@ -21,9 +24,7 @@ const loggedInUser = Astro.locals.loggedInUser;
       }
     </header>
 
-    {works
-      .sort((a, b) => (b.Works.updatedAt ?? b.Works.createdAt).valueOf() - (a.Works.updatedAt ?? a.Works.createdAt).valueOf())
-      .map(async ({ Works, Users }) => (
+    {works.map(async ({ Works, Users }) => (
       <article class="card rounded-box shadow p-5">
         <header>
           <div class="flex items-center justify-between">
@@ -42,7 +43,7 @@ const loggedInUser = Astro.locals.loggedInUser;
           {Array.isArray(Works.tags)
             ? <ul class="flex flex-wrap gap-1.5">
                 {(Works.tags as Tag[]).map((tag: Tag) => (
-                  <li><a class="tag" href={tag.url}>{tag.label}</a></li>
+                  <li><a class="tag" href={tag.slug}>{tag.label}</a></li>
                 ))}
               </ul>
             : <pre>{JSON.stringify(Works.tags)}</pre>
