@@ -1,0 +1,7 @@
+---
+import { and, Chapters, db, eq, Works } from "astro:db";
+
+const { workId, chapterId } = Astro.params;
+---
+<p>work{workId}</p>
+<p>chapte: {chapterId}</p>

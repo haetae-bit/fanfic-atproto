@@ -8,15 +8,40 @@ const { userDid } = Astro.params;
 const [user] = await db.select()
   .from(Users)
   .where(eq(Users.userDid, userDid!))
-  .innerJoin(Works, eq(Works.author, Users.userDid))
   .limit(1);
+
+const works = await db.select()
+  .from(Works)
+  .where(eq(Works.author, user.userDid))
+  .all();
 ---
 <Layout>
-  <h1>
-    {user.Users.nickname
-      ? user.Users.nickname
-      : await didToHandle(user.Users.userDid)}
-  </h1>
+  <h1>{user.nickname ? user.nickname : await didToHandle(user.userDid)}</h1>
 
-  {JSON.stringify(user.Works)}
+  {works && (
+    <section>
+      <ol>
+        {works
+          .sort((a, b) => (b.updatedAt ?? b.createdAt).valueOf() - (a.updatedAt ?? a.createdAt).valueOf())
+          .map(work => (
+          <li>
+            <article>
+              <header>
+                <h2><a href={`/works/${work.slug}`}>{work.title}</a></h2>
+                <time datetime={work.createdAt.toISOString()}>{work.createdAt}</time>
+                {work.updatedAt && (
+                  <time datetime={work.updatedAt.toISOString()}>{work.updatedAt}</time>
+                )}
+                {JSON.stringify(work.tags)}
+              </header>
+              
+              <blockquote>
+                {work.summary}
+              </blockquote>
+            </article>
+          </li>
+        ))}
+      </ol>
+    </section>
+  )}
 </Layout>

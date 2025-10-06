@@ -1,7 +1,6 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import { didToHandle } from "@/lib/atproto";
-import { Info } from "@lucide/astro";
 import { actions } from "astro:actions";
 import { db, eq, Users, Works } from "astro:db";
 import Dialog from "~/Dialog.astro";
@@ -20,24 +19,27 @@ const [user] = await db.select()
 
 const works = await db.select()
   .from(Works)
-  .where(eq(Works.author, user?.userDid ?? loggedInUser.did));
+  .where(eq(Works.author, user?.userDid ?? loggedInUser.did))
+  .orderBy(Works.title)
+  .all();
 ---
 <Layout skipLink="user-profile">
   <main id="user-profile">
-    <h1 class="text-xl">User Settings</h1>
+    <h1>User Settings</h1>
     <p>{loggedInUser?.handle}</p>
     
     <!-- registration will only happen in the below form! -->
     {!user && (
       <>
-        <h2 class="text-lg">Connect account</h2>
+        <h2>Connect account</h2>
         <div class="info">
           <p>Right now, you aren't connected to the site. You can connect your BlueSky / self-hosted PDS account to this website to post a work.</p>
           <p>Please check out the Terms of Service, Privacy Policy, and Code of Conduct before connecting your account.</p>
         </div>
-        <button id="trigger-connect" class="btn btn-accent">Connect your PDS Account</button>
         
-        <Dialog id="connect-account" title="Are you sure?">
+        <Dialog id="connect-account" title="Are you sure?" buttonColor="accent">
+          <span slot="button">Connect your PDS Account</span>
+
           <form action={actions.usersActions.addUser} method="post">
             <fieldset class="fieldset">
               <div class="flex gap-1">
@@ -46,9 +48,15 @@ const works = await db.select()
                   <p>If you do set a nickname, please make sure it's unique!</p>
                 </Popover>
               </div>
-              <input class="input w-full" type="text" name="nickname" id="nickname" aria-describedby="nickname-info" />
+              <input 
+                class="input w-full" 
+                type="text" 
+                name="nickname" 
+                id="nickname" 
+                aria-describedby="nickname-info"
+              />
               <div id="nickname-info" class="alert">
-                <Info class="text-info" />
+                <div class="i-lc-info text-info" aria-hidden="true" />
                 <div>
                   <p>You can optionally set your nickname for this site.</p>
                   <p>This is separate from your handle and acts similarly to a penname.</p>
@@ -67,49 +75,43 @@ const works = await db.select()
     
     {user && (
       <>
-        <h2>
-          {user.nickname
-            ? user.nickname
-            : await didToHandle(user.userDid)}
-        </h2>
+        <h2>{user.nickname ? user.nickname : await didToHandle(user.userDid)}</h2>
         <time datetime={user.joinedAt.toISOString()}>{user.joinedAt}</time>
 
         {works && (
           <section>
-            <ul>
-              {works.map(work => (
-                <article>
-                  <h3>{work.title}</h3>
+            <ol>
+              {works
+                .sort((a, b) => (b.updatedAt ?? b.createdAt).valueOf() - (a.updatedAt ?? a.createdAt).valueOf())
+                .map(work => (
+                <li>
+                  {/* probably could componentize work entries */}
+                  <article>
+                    <header>
+                      <h3><a href={`/works/${work.slug}`}>{work.title}</a></h3>
 
-                  <time datetime={work.createdAt.toISOString()}>
-                    {work.createdAt}
-                  </time>
-                  {work.updatedAt && (
-                    <time datetime={work.updatedAt.toISOString()}>
-                      {work.updatedAt}
-                    </time>
-                  )}
+                      <time datetime={work.createdAt.toISOString()}>
+                        {work.createdAt}
+                      </time>
+                      {work.updatedAt && (
+                        <time datetime={work.updatedAt.toISOString()}>
+                          {work.updatedAt}
+                        </time>
+                      )}
 
-                  <ul>
-                    {JSON.stringify(work.tags)}
-                  </ul>
-                  
-                  summary here
-                </article>
+                      <ul>
+                        {JSON.stringify(work.tags)}
+                      </ul>
+                    </header>
+                    
+                    <Fragment set:html={work.summary} />
+                  </article>
+                </li>
               ))}
-            </ul>
+            </ol>
           </section>
         )}
       </>
     )}
   </main>
 </Layout>
-
-<script>
-  const trigger = document.getElementById("trigger-connect");
-  const dialog = document.getElementById("connect-account") as HTMLDialogElement;
-
-  trigger?.addEventListener("click", (_) => {
-    dialog.showModal();
-  });
-</script>
