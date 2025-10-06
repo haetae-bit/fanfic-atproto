@@ -5,7 +5,7 @@ import Dialog from "./Dialog.astro";
 <Dialog id="settings" title="User preferences">
   <form id="user-settings">
     <fieldset class="fieldset">
-      <label for="theme" class="label">Theme</label>
+      <legend class="fieldset-legend">Theme</legend>
       <select name="theme" id="theme" class="select">
         <option disabled>Choose theme</option>
         {themes.map(theme => (
@@ -15,7 +15,7 @@ import Dialog from "./Dialog.astro";
     </fieldset>
 
     <fieldset class="fieldset">
-      <label for="font-family" class="label">Font family</label>
+      <legend class="fieldset-legend">Font family</legend>
       <select name="fontFamily" id="font-family" class="select">
         <option value="default">Choose...</option>
         <option value="--font-serif">serif</option>
@@ -26,31 +26,31 @@ import Dialog from "./Dialog.astro";
     </fieldset>
 
     <fieldset class="fieldset">
-      <label for="font-size" class="label">Text size</label>
+      <legend class="fieldset-legend">Text size</legend>
       <input class="range" type="range" name="fontSize" id="font-size" min="-1" max="2" step="1" value="0" />
     </fieldset>
 
     <fieldset class="fieldset">
-      <label for="line-height" class="label">Line height</label>
+      <legend class="fieldset-legend">Line height</legend>
       <input class="range" type="range" name="lineHeight" id="line-height" min="1" max="2" step="0.05" value="1" />
     </fieldset>
     
     <fieldset class="fieldset">
-      <label for="letter-spacing" class="label">Letter spacing</label>
+      <legend class="fieldset-legend">Letter spacing</label>
       <input class="range" type="range" name="letterSpacing" id="letter-spacing" min="0" max="0.1" step="0.01" value="0" />
     </fieldset>
 
     <fieldset class="fieldset">
-      <label for="word-spacing" class="label">Word spacing</label>
+      <legend class="fieldset-legend">Word spacing</legend>
       <input class="range" type="range" name="wordSpacing" id="word-spacing" min="0" max="0.5" step="0.01" value="0" />
     </fieldset>
 
-    <div id="test-area" class="mt-4 text-(length:--size) leading-(--line-height) tracking-(--letter-spacing) line-clamp-4">
+    <div id="test-area">
       <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Asperiores quae dolorum debitis vero nostrum nobis aspernatur ipsam sunt dolorem, eum ut corrupti unde commodi soluta natus repellendus totam animi adipisci.</p>
     </div>
 
     <!-- reset here? -->
-     
+    
     <div class="modal-action">
       <button formmethod="dialog" value="default" class="btn btn-neutral">Cancel</button>
       <button id="confirm-settings" class="btn btn-primary">Save</button>
@@ -60,17 +60,10 @@ import Dialog from "./Dialog.astro";
 
 <style>
   #test-area {
-    --font: var(--font-sans);
-    --size: var(--step-0);
-    --letter-spacing: 0em;
-    --word-spacing: 0em;
-    --line-height: 1.5;
+    @apply mt-4 line-clamp-4 font-(--font) text-(length:--size) leading-(--line-height) tracking-(--letter-spacing) word-spacing-(--word-spacing);
 
-    font-family: var(--font);
+    --size: var(--step-0);
     font-size: var(--size);
-    letter-spacing: var(--letter-spacing);
-    word-spacing: var(--word-spacing);
-    line-height: var(--line-height);
   }
 </style>
 
@@ -97,7 +90,7 @@ import Dialog from "./Dialog.astro";
         case "fontFamily":
           (target.value !== "default") 
             ? test?.style.setProperty("--font", `var(${target.value})`)
-            : test?.style.setProperty("--font", `var(--body)`);
+            : test?.style.setProperty("--font", `var(--font-sans)`);
           break;
         case "fontSize":
           test?.style.setProperty("--size", `var(--step-${target.value})`);

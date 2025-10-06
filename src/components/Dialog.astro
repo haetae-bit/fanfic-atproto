@@ -6,10 +6,17 @@ interface Props {
   title: string;
   class?: string;
   alert?: boolean;
+  buttonColor?: "primary" | "neutral" | "accent" | "info" | "warning" | "danger" | "success";
 }
 
-const { id, title, class: className, alert = false } = Astro.props;
+const { id, title, class: className, buttonColor, alert = false } = Astro.props;
 ---
+{Astro.slots.has("button") && (
+  <button class:list={["dialog-trigger", "btn", buttonColor && `btn-${buttonColor}`]} aria-controls={id}>
+    <slot name="button">Open</slot>
+  </button>
+)}
+
 <dialog
   {id}
   class:list={[
@@ -19,18 +26,18 @@ const { id, title, class: className, alert = false } = Astro.props;
   role={alert ? "alertdialog" : undefined}
   closedby="any"
 >
-  <div class="modal-box">
+  <div class="modal-box p-0">
     <header class="modal-header">
       <h1 class="text-lg leading-none flex-1 pl-2">{title}</h1>
       <form method="dialog">
         <button class="btn btn-error">
-          <div class="i-lc-x w-[2em] h-[2em]" aria-hidden="true"></div>
+          <div class="i-lc-x w-6 h-6" aria-hidden="true" />
           <span class="sr-only">Close</span>
         </button>
       </form>
     </header>
     
-    <div class="mt-14">
+    <div class="modal-content">
       <slot />
     </div>
   </div>
@@ -38,6 +45,21 @@ const { id, title, class: className, alert = false } = Astro.props;
 
 <style>
   .modal-header {
-    @apply absolute top-0 left-0 flex items-center justify-between p-2 container bg-accent text-accent-content;
+    @apply absolute z-10 top-0 left-0 flex items-center justify-between w-full p-2 bg-accent text-accent-content;
+  }
+  
+  .modal-content {
+    @apply mt-14 max-h[calc(100vh-5em-56px-24px)] p-6 overflow-y-scroll overscroll-contain;
   }
 </style>
+
+<script>
+  const triggers = document.querySelectorAll(".dialog-trigger");
+  triggers.forEach((trigger) => {
+    trigger.addEventListener("click", (e) => {
+      const target = e.currentTarget as HTMLButtonElement;
+      const dialog = target.ariaControlsElements![0] as HTMLDialogElement;
+      dialog.showModal();
+    });
+  });
+</script>

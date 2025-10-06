@@ -25,8 +25,6 @@ export default defineConfig<PresetWind4Theme>({
       },
       extraProperties: {
         display: 'inline-block',
-        height: "inherit",
-        width: "inherit",
       }
     }),
     presetTypography({

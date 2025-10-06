@@ -5,7 +5,7 @@ interface Props {
   icon?: "info" | "warning" | "danger" | string;
   title?: string;
   class?: string;
-  color?: "primary" | "secondary" | "accent" | "neutral" | "info" | "warning" | "danger" | "success" | "base";
+  color?: "primary" | "secondary" | "accent" | "neutral" | "info" | "warning" | "danger" | "success";
 }
 
 const { id, label, icon, title, color, class: className, ...rest } = Astro.props;
@@ -16,7 +16,7 @@ const { id, label, icon, title, color, class: className, ...rest } = Astro.props
   id={`${id}-trigger`} 
   class:list={[
     "btn btn-xs",
-    color && [`bg-${color}`, `text-${color}-content`], 
+    color && [`btn-${color}`], 
     icon && ["btn-circle", "btn-ghost"],
     "popover-btn"
   ]} 
@@ -34,7 +34,7 @@ const { id, label, icon, title, color, class: className, ...rest } = Astro.props
           `i-lc-${icon} text-base-content`,
         ]} 
         aria-label={label}
-      ></div>
+      />
     : <span>{label}</span>
   }
 </button>
@@ -59,6 +59,11 @@ const { id, label, icon, title, color, class: className, ...rest } = Astro.props
 </div>
 
 <style define:vars={{ anchor: `--${id}-anchor` }}>
+  .icon {
+    width: inherit;
+    height: inherit;
+  }
+
   .popover-btn {
     @supports (anchor-name: var(--anchor)) {
       anchor-name: var(--anchor);
