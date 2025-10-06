@@ -20,8 +20,8 @@ export const worksActions = {
     input: workSchema.extend({
       chapterOption: z.enum(["manual", "leaflet", "bsky"]),
       chapterUri: z.string().optional(),
-      chapterTitle: z.string(),
-      content: z.string(),
+      chapterTitle: z.string().optional(),
+      content: z.string().optional(),
       notes: z.string().optional(),
     }),
     handler: async (
@@ -70,6 +70,17 @@ export const worksActions = {
         summary,
         tags,
       };
+      
+      if (chapterUri) {
+        const { collection, rkey } = new AtUri(chapterUri);
+        const agent = await getAgent(context.locals);
+        const record = await agent?.com.atproto.repo.getRecord({
+          repo: loggedInUser.did,
+          collection,
+          rkey,
+        });
+        console.log(record);
+      }
 
       let uri; // we'll assign this after a successful request was made
       // depending on whether someone toggled the privacy option, push this into user pds
@@ -141,12 +152,14 @@ export const worksActions = {
         ...record,
       }).returning();
 
-      await addChapter(
-        work.id,
-        chapterTitle,
-        content,
-        notes,
-      );
+      if (chapterTitle && content) {
+        await addChapter(
+          work.id,
+          chapterTitle,
+          content,
+          notes,
+        );
+      }
       
       return work;
     },

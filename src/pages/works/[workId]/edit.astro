@@ -76,18 +76,16 @@ const errors = isInputError(result?.error) ? result.error.fields : {};
       </fieldset>
 
       <fieldset class="fieldset">
-        <label for="content" class="label">Body</label>
+        <label for="summary" class="label">Body</label>
         <textarea 
-          name="content" 
-          id="content" 
+          name="summary" 
+          id="summary" 
           class="textarea" 
-          aria-describedby="content-error" 
+          aria-describedby="summary-error" 
           transition:persist
-        >
-          {work.Works.summary.trim()}
-        </textarea>
+        >{work.Works.summary}</textarea>
         {errors.summary && (
-          <div id="content-error">
+          <div id="summary-error">
             {errors.summary}
           </div>
         )}

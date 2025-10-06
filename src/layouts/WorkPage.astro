@@ -5,20 +5,21 @@ interface Props {
   slug: string;
   title: string;
   author: string;
+  summary: string;
   // tags: Tag[];
   tags: any;
   createdAt: Date;
   updatedAt?: Date | null;
   comments?: boolean;
-  previous?: boolean;
-  next?: boolean;
+  chapters?: any[];
 }
 
-const { slug, title, author, tags, createdAt, updatedAt, comments, previous, next } = Astro.props;
+const { slug, title, author, summary, tags, createdAt, updatedAt, comments, chapters } = Astro.props;
 ---
 <Layout title={title} skipLink="work-body">
+  <!-- this chapter menu should be componentized -->
   <nav id="work-menu">
-    {previous && (
+    {chapters && (
       // chapterid - 1?
       <a href="">previous chaptertitle</a>
     )}
@@ -28,7 +29,7 @@ const { slug, title, author, tags, createdAt, updatedAt, comments, previous, nex
       <!-- map each chapter here -->
     </select>
 
-    {next && (
+    {chapters && (
       // chapterid + 1 ?
       <a href="">next chaptertitle</a>
     )}
@@ -45,13 +46,14 @@ const { slug, title, author, tags, createdAt, updatedAt, comments, previous, nex
         <time datetime={updatedAt.toISOString()}>{updatedAt}</time>
       )}
 
-      <div id="summary">
-        summary
-      </div>
+      <aside id="summary">
+        {summary}
+      </aside>
     </header>
-
+    
     <section id={`${slug}-content`}>
       <!-- if work has its own style, render it here somehow -->
+      <!-- also componentize the chapter content -->
       <details>
         <summary>Author's notes</summary>
         this should include author's notes

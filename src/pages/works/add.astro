@@ -74,7 +74,7 @@ if (result && !result.error) {
       <fieldset class="fieldset">
         <legend class="fieldset-legend">Add chapter</legend>
 
-        <div class="tabs tabs-box" id="chapter-options">
+        <div class="tabs tabs-box" id="chapter-options" role="tablist">
           <input 
             class="tab"
             type="radio" 
@@ -83,9 +83,10 @@ if (result && !result.error) {
             value="manual" 
             aria-label="Default" 
             aria-controls="option-manual"
+            role="tab"
             checked 
           />
-          <div id="option-manual" class="tab-content option">
+          <div id="option-manual" class="tab-content option" role="tabpanel">
             <label for="chapter-title" class="label">Chapter Title</label>
             <input 
               class="input" 
@@ -93,7 +94,6 @@ if (result && !result.error) {
               name="chapterTitle" 
               id="chapter-title" 
               aria-errormessage="chapter-error"
-              required 
               transition:persist 
             />
             {errors.chapterTitle && (
@@ -104,7 +104,13 @@ if (result && !result.error) {
           
             <label for="content" class="label">Work Text</label>
             <!-- replace this with a rich text editor / code editor later -->
-            <textarea class="textarea" name="content" id="content" aria-errormessage="content-error" transition:persist></textarea>
+            <textarea 
+              class="textarea" 
+              name="content" 
+              id="content" 
+              aria-errormessage="content-error" 
+              transition:persist
+            ></textarea>
             {errors.content && (
               <div id="content-error" class="label text-error">
                 {errors.content}
@@ -120,8 +126,9 @@ if (result && !result.error) {
             value="leaflet" 
             aria-label="Import from leaflet" 
             aria-controls="option-leaflet"
+            role="tab"
           />
-          <div id="option-leaflet" class="tab-content option">
+          <div id="option-leaflet" class="tab-content option" role="tabpanel">
             <p>You can import a document from leaflet.pub as a chapter into your work.</p>
             <label for="leaflet-uri" class="label">
               Leaflet URI
@@ -140,8 +147,9 @@ if (result && !result.error) {
             value="bsky" 
             aria-label="Import from BlueSky" 
             aria-controls="option-bsky"
+            role="tab"
           />
-          <div id="option-bsky" class="tab-content option">
+          <div id="option-bsky" class="tab-content option" role="tabpanel">
             <p>You can import a BlueSky post as a chapter in your work!</p>
             <label for="bsky-uri" class="label">
               BlueSky URI

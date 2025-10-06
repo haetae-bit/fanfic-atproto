@@ -14,15 +14,14 @@ const [work] = await db.select()
 
 const chapters = await db.select()
   .from(Chapters)
-  .where(eq(Chapters.workId, Works.id))
+  .where(eq(Chapters.workId, work.Works.id))
   .all();
 ---
 <WorkPage 
   slug={work.Works.slug}
   title={work.Works.title}
-  author={work.Users.nickname
-    ? work.Users.nickname
-    : await didToHandle(work.Users.userDid)}
+  author={work.Users.nickname ? work.Users.nickname : await didToHandle(work.Users.userDid)}
+  summary={work.Works.summary}
   createdAt={work.Works.createdAt}
   updatedAt={work.Works.updatedAt}
   tags={work.Works.tags}
@@ -31,8 +30,10 @@ const chapters = await db.select()
     <a href={`/works/${workId}/edit`}>Edit your work</a>
   )}
 
-  <div class="prose lg:prose-xl">
-    <!-- set the first chapter here -->
-    <Fragment set:html={chapters[0].content} />
-  </div>
+  {chapters[0] && (
+    <div class="prose lg:prose-xl">
+      {/* set the first chapter here */}
+      <Fragment set:html={chapters[0].content} />
+    </div>
+  )}
 </WorkPage>

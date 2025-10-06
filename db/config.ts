@@ -6,6 +6,7 @@ const Users = defineTable({
     nickname: column.text({ unique: true, optional: true }),
     userDid: column.text({ name: "user_did", unique: true }),
     joinedAt: column.date({ name: "joined_at", default: NOW }),
+    preferences: column.json({ optional: true }),
   },
   indexes: [
     { on: ["userDid"], unique: true },
