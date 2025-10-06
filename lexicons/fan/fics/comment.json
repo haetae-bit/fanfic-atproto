@@ -1,6 +1,6 @@
 {
   "lexicon": 1,
-  "id": "moe.fanfics.work.comment",
+  "id": "fan.fics.work.comment",
   "defs": {
     "main": {
       "type": "record",

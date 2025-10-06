@@ -1,6 +1,6 @@
 {
   "lexicon": 1,
-  "id": "moe.fanfics.work",
+  "id": "fan.fics.work",
   "defs": {
     "main": {
       "type": "record",
@@ -49,8 +49,9 @@
             "items": {
               "type": "union",
               "refs": [
-                "moe.fanfics.work.chapter",
-                "moe.fanfics.work.chapter#chapterRef"
+                "fan.fics.work.chapter",
+                "fan.fics.work.chapter#chapterRef",
+                "com.atproto.repo.strongRef"
               ]
             }
           },
