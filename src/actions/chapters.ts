@@ -6,10 +6,10 @@ import { Chapters, db, eq, Works } from "astro:db";
 import { z } from "astro:schema"
 
 const chapterSchema = z.object({
-  uri: z.string(), // this is in case someone wants to add a new post
-  title: z.string(),
+  uri: z.string().optional(), // this is in case someone wants to add a new post
+  title: z.string().optional(),
   notes: z.string().optional(),
-  content: z.string(),
+  content: z.string().optional(),
 });
 
 export const chaptersActions = {
@@ -143,9 +143,8 @@ export const chaptersActions = {
       
       const result = await db.insert(Chapters).values({
         workId: work.id,
-        uri: atUri,
-        title,
-        content,
+        title: title!,
+        content: content!,
         notes,
       }).returning();
 

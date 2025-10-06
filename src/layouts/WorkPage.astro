@@ -1,5 +1,6 @@
 ---
 import Layout from "./Layout.astro";
+import type { Chapter } from "@/lib/types";
 
 interface Props {
   slug: string;
@@ -10,8 +11,8 @@ interface Props {
   tags: any;
   createdAt: Date;
   updatedAt?: Date | null;
+  chapters?: Chapter[];
   comments?: boolean;
-  chapters?: any[];
 }
 
 const { slug, title, author, summary, tags, createdAt, updatedAt, comments, chapters } = Astro.props;
@@ -19,20 +20,13 @@ const { slug, title, author, summary, tags, createdAt, updatedAt, comments, chap
 <Layout title={title} skipLink="work-body">
   <!-- this chapter menu should be componentized -->
   <nav id="work-menu">
-    {chapters && (
-      // chapterid - 1?
-      <a href="">previous chaptertitle</a>
-    )}
     <!-- if theres more than one chapter, render this box -->
     <select name="chapterSelect" id={`${slug}-chapters`} class="select">
       <option value="default" selected>Choose chapter...</option>
-      <!-- map each chapter here -->
+      {chapters?.map(chapter => (
+        <option value={`/works/${slug}/${chapter.id}`}>{chapter.title}</option>
+      ))}
     </select>
-
-    {chapters && (
-      // chapterid + 1 ?
-      <a href="">next chaptertitle</a>
-    )}
   </nav>
 
   <main id="work-body">

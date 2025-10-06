@@ -1,0 +1,115 @@
+---
+import { actions, isInputError } from "astro:actions";
+import Layout from "@/layouts/Layout.astro";
+import Popover from "~/Popover.astro";
+
+const { workId } = Astro.params;
+const result = Astro.getActionResult(actions.chaptersActions.addChapter);
+const errors = isInputError(result?.error) ? result.error.fields : {};
+
+if (result && !result.error) {
+  return Astro.redirect(`works/${workId}`);
+}
+---
+
+<Layout>
+  <h1>Add a chapter</h1>
+
+  <form action={actions.chaptersActions.addChapter} method="post">
+    <div class="tabs tabs-box">
+      <input 
+        class="tab" 
+        type="radio" 
+        name="chapterOption" 
+        id="manual" 
+        value="manual" 
+        aria-label="Default" 
+        aria-controls="option-manual"
+        role="tab" 
+        checked
+      />
+      <div id="option-manual" class="tab-content option" role="tabpanel">
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend">Chapter Title</legend>
+          <input 
+            class="input" 
+            type="text" 
+            name="title" 
+            id="title" 
+            aria-errormessage="title-error"
+            transition:persist 
+          />
+          {errors.title && (
+            <div id="title-error" class="label text-error">
+              {errors.title}
+            </div>
+          )}
+        </fieldset>
+      
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend">Work Text</legend>
+          <!-- replace this with a rich text editor / code editor later -->
+          <textarea 
+            class="textarea" 
+            name="content" 
+            id="content" 
+            aria-errormessage="content-error" 
+            transition:persist
+          ></textarea>
+          {errors.content && (
+            <div id="content-error" class="label text-error">
+              {errors.content}
+            </div>
+          )}
+        </fieldset>
+      </div>
+
+      <input 
+        class="tab" 
+        type="radio" 
+        name="chapterOption" 
+        id="leaflet" 
+        value="leaflet" 
+        aria-label="Import from leaflet" 
+        aria-controls="option-leaflet"
+        role="tab"
+      />
+      <div id="option-leaflet" class="tab-content option" role="tabpanel">
+        <p>You can import a document from leaflet.pub as a chapter into your work.</p>
+        <label for="leaflet-uri" class="label">
+          Leaflet URI
+          <Popover id="leaflet-help" icon="info" label="help">
+            <p>Please input the URL of the leaflet document you'd like to use. Make sure it's published in a publication(?)</p>
+          </Popover>
+        </label>
+        <input class="input" type="url" name="chapterUri" id="leaflet-uri" />
+      </div>
+
+      <input 
+        class="tab" 
+        type="radio" 
+        name="chapterOption" 
+        id="bsky" 
+        value="bsky" 
+        aria-label="Import from BlueSky" 
+        aria-controls="option-bsky"
+        role="tab"
+      />
+      <div id="option-bsky" class="tab-content option" role="tabpanel">
+        <p>You can import a BlueSky post as a chapter in your work!</p>
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend">
+            BlueSky URI
+            <Popover id="bsky-help" icon="info" label="help">
+              <p>Please input the URL of the BlueSky post.</p>
+            </Popover>
+          </legend>
+          <input class="input" type="url" name="chapterUri" id="bsky-uri" />
+        </fieldset>
+      </div>
+    </div>
+
+    <button class="btn btn-primary">Post chapter</button>
+    {result?.error}
+  </form>
+</Layout>

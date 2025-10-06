@@ -1,0 +1,27 @@
+---
+import type { Chapter } from "@/lib/types";
+
+interface Props {
+  chapter: Chapter;
+}
+
+const { chapter } = Astro.props;
+---
+<section>
+  <header>
+    <h2>{chapter.title}</h2>
+    {chapter.notes && (
+      <details>
+        <summary>Author's Notes</summary>
+        <Fragment set:html={chapter.notes} />
+      </details>
+    )}
+    <time datetime={chapter.createdAt.toISOString()}>
+      {chapter.createdAt}
+    </time>
+  </header>
+
+  <div class="prose lg:prose-xl">
+    <Fragment set:html={chapter.content} />
+  </div>
+</section>
