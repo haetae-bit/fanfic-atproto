@@ -1,5 +1,4 @@
 ---
-import Cog from "@lucide/astro/icons/cog";
 import Settings from "./Settings.astro";
 
 const loggedInUser = Astro.locals.loggedInUser;
@@ -25,7 +24,8 @@ const loggedInUser = Astro.locals.loggedInUser;
       }
       <li>
         <button id="trigger-settings">
-          <Cog aria-label="Open settings" />
+          <div class="i-lc-cog w-7 h-7" aria-hidden="true"></div>
+          <span class="sr-only">Open settings</span>
         </button>
       </li>
     </ul>

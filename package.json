@@ -4,19 +4,18 @@
   "dependencies": {
     "@astrojs/db": "^0.18.0",
     "@astrojs/node": "^9.4.4",
-    "@astrojs/svelte": "^7.2.0",
+    "@astrojs/preact": "^4.1.1",
     "@atproto/api": "^0.16.9",
     "@atproto/common-web": "^0.4.3",
     "@atproto/identity": "^0.4.9",
-    "@atproto/lexicon": "^0.5.1",
-    "@atproto/sync": "^0.1.35",
-    "@atproto/xrpc-server": "^0.9.5",
     "@floating-ui/dom": "^1.7.4",
     "@fujocoded/authproto": "^0.1.1",
-    "@lucide/astro": "^0.544.0",
     "@sindresorhus/slugify": "^3.0.0",
+    "@slices/client": "jsr:0.1.0-alpha.4",
+    "@slices/oauth": "jsr:^0.6.0",
     "astro": "^5.14.1",
-    "nanoid": "^5.1.5"
+    "nanoid": "^5.1.5",
+    "preact": "^10.27.2"
   },
   "scripts": {
     "dev": "astro dev",
@@ -29,6 +28,8 @@
   "devDependencies": {
     "@ameinhardt/unocss-preset-daisy": "^1.1.8",
     "@atproto/lex-cli": "^0.9.5",
+    "@iconify-json/lucide": "^1.2.68",
+    "@iconify-json/lucide-lab": "^1.2.3",
     "daisyui": "^5.1.13",
     "unocss": "^66.5.2"
   }

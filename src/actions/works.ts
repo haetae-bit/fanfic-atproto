@@ -2,8 +2,8 @@ import { AtUri } from "@atproto/api";
 import { TID } from "@atproto/common-web";
 import { getAgent } from "@/lib/atproto";
 import { ActionError, defineAction } from "astro:actions";
-import { z } from "astro:schema";
 import { db, eq, and, Users, Works } from "astro:db";
+import { z } from "astro:schema";
 import { customAlphabet } from "nanoid";
 import { addChapter } from "@/lib/db";
 
@@ -188,6 +188,7 @@ export const worksActions = {
 
       const updatedAt = new Date();
       // if the work has a uri, we should update the record to the pds
+      // this should be handled by an appview...
       if (work.uri) {
         try {
           const { rkey, host } = new AtUri(work.uri);

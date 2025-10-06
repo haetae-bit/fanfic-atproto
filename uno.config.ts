@@ -1,4 +1,4 @@
-import { defineConfig, presetTypography, presetWind4, transformerDirectives, type PresetWind4Theme } from "unocss";
+import { defineConfig, presetTypography, presetWind4, presetIcons, transformerDirectives, type PresetWind4Theme } from "unocss";
 import { presetDaisy } from "@ameinhardt/unocss-preset-daisy";
 // @ts-expect-error
 import theme from 'daisyui/functions/variables.js';
@@ -18,6 +18,17 @@ export default defineConfig<PresetWind4Theme>({
   presets: [
     presetWind4(),
     presetDaisy(),
+    presetIcons({
+      collections: {
+        lca: () => import("@iconify-json/lucide-lab/icons.json").then(i => i.default),
+        lc: () => import("@iconify-json/lucide/icons.json").then(i => i.default),
+      },
+      extraProperties: {
+        display: 'inline-block',
+        height: "inherit",
+        width: "inherit",
+      }
+    }),
     presetTypography({
       colorScheme: {
         "body": ["color-mix(in oklab,var(--color-base-content)80%,#0000)", "color-mix(in oklab,var(--color-base-content)80%,#0000)"],

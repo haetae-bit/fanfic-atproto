@@ -5,7 +5,7 @@ import db from "@astrojs/db";
 import authproto from "@fujocoded/authproto";
 import unocss from "unocss/astro";
 
-import svelte from "@astrojs/svelte";
+import preact from "@astrojs/preact";
 
 // https://astro.build/config
 export default defineConfig({
@@ -22,7 +22,7 @@ export default defineConfig({
     scopes: {
       genericData: true,
     },
-  }), unocss(), svelte()],
+  }), unocss(), preact()],
   experimental: {
     fonts: [
       {

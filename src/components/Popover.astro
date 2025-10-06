@@ -1,43 +1,40 @@
 ---
-import { Info, TriangleAlert, Skull } from "@lucide/astro";
-
 interface Props {
   id?: string;
   label: string;
-  icon?: "info" | "warning" | "danger";
+  icon?: "info" | "warning" | "danger" | string;
   title?: string;
   class?: string;
+  color?: "primary" | "secondary" | "accent" | "neutral" | "info" | "warning" | "danger" | "success" | "base";
 }
 
-const { id, label, icon, title, class: className, ...rest } = Astro.props;
+const { id, label, icon, title, color, class: className, ...rest } = Astro.props;
 ---
 <!-- type button needs to be set here, otherwise it doesn't work inside forms -->
 <button
   type="button" 
   id={`${id}-trigger`} 
   class:list={[
-    "btn btn-xs", 
+    "btn btn-xs",
+    color && [`bg-${color}`, `text-${color}-content`], 
     icon && ["btn-circle", "btn-ghost"],
-    icon &&
-      (icon === "info") ? "text-info" :
-      (icon === "warning") ? "text-warning" :
-      (icon === "danger") ? "text-error" :
-      "text-base-content",
     "popover-btn"
   ]} 
   aria-describedby={id}
   popovertarget={id}
 >
   {icon
-    ? 
-      <div class="icon" aria-label={label}>
-        {icon &&
-          (icon === "info") ? <Info /> :
-          (icon === "warning") ? <TriangleAlert /> :
-          (icon === "danger") ? <Skull /> :
-          <></>
-        }
-      </div>
+    ? <div 
+        class:list={[
+          "icon",
+          icon &&
+            (icon === "info") ? "i-lc-info text-info" :
+            (icon === "warning") ? "i-lc-triangle-alert text-warning" :
+            (icon === "danger") ? "i-lc-skull text-error" :
+          `i-lc-${icon} text-base-content`,
+        ]} 
+        aria-label={label}
+      ></div>
     : <span>{label}</span>
   }
 </button>
@@ -45,7 +42,7 @@ const { id, label, icon, title, class: className, ...rest } = Astro.props;
 <div
   {id} 
   class:list={[
-    "popover-content card w-72 border-2 border-accent shadow shadow-inherit",
+    "popover-content dropdown card w-72 bg-base-100 shadow shadow-inherit",
     className,
   ]} 
   role="tooltip" 
@@ -69,8 +66,6 @@ const { id, label, icon, title, class: className, ...rest } = Astro.props;
   }
 
   .popover-content {
-    @apply dropdown bg-base-100;
-
     @supports (position-anchor: var(--anchor)) and (left: anchor(center)) {
       position-anchor: var(--anchor);
       left: anchor(center);
@@ -85,15 +80,13 @@ const { id, label, icon, title, class: className, ...rest } = Astro.props;
   
   triggers.forEach(trigger => {
     const btn = trigger as HTMLButtonElement;
-    // triggering button will always end with "-trigger", so slice that from the id
-    const id = btn.id.slice(0, -8);
-    const popover = document.getElementById(`${id}`) as HTMLElement;
+    const popover = btn.popoverTargetElement as HTMLElement;
     
     btn.addEventListener("click", (e) => {
       e.preventDefault();
       popover.togglePopover();
     });
-
+    
     popover.addEventListener("toggle", (e) => {
       const cleanup = autoUpdate(
         btn, 

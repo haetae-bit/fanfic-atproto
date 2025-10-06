@@ -1,3 +1,5 @@
+import type { AtUri } from "@atproto/api";
+
 export type Work = {
   slug: string;
   title: string;
@@ -9,7 +11,7 @@ export type Work = {
 }
 
 export type Chapter = {
-  order: number;
+  uri?: AtUri;
   title: string;
   notes?: string | undefined;
   content: string;

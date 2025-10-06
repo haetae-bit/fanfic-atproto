@@ -7,7 +7,9 @@
     "paths": {
       "~/*": ["src/components/*"],
       "$/*": ["src/assets/*"],
-      "@/*": ["src/*"],
+      "@/*": ["src/*"]
     },
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact"
   }
 }

@@ -35,19 +35,19 @@ export default async function() {
   await db.insert(Chapters).values([
     {
       workId: 1,
-      order: 1,
+      // order: 1,
       title: "chapter title 1",
       content: "what's up?! <b>bold</b> and <em>italics</em> should work.",
     },
     {
       workId: 2,
-      order: 1,
+      // order: 1,
       title: "chapter title 2",
       content: "test",
     },
     {
       workId: 3,
-      order: 1,
+      // order: 1,
       title: "at proto",
       content: "what's up?! <b>bold</b> and <em>italics</em> should work.",
     }

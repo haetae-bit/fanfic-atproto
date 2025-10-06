@@ -1,11 +1,16 @@
 import type { APIContext } from "astro";
 import { AtpBaseClient } from "@atproto/api";
 import { DidResolver } from "@atproto/identity";
+import { AtProtoClient } from "./client";
 
 export async function getAgent(locals: APIContext["locals"]) {
-  const loggedInUser = locals.loggedInUser;
   try {
-    const agent = new AtpBaseClient(loggedInUser?.fetchHandler!);
+    const agent = new AtpBaseClient(locals.loggedInUser?.fetchHandler!);
+    const client = new AtProtoClient(
+      'https://api.slices.network',
+      'at://did:plc:dg2qmmjic7mmecrbvpuhtvh6/network.slices.slice/3m2fpay6dw522',
+      // oauthClient
+    );
     return agent;
   } catch (error) {
     // we don't need to return anything to make sure the site still functions for not logged in users?

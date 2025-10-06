@@ -1,5 +1,5 @@
 ---
-import X from "@lucide/astro/icons/x";
+// import X from "@lucide/astro/icons/x";
 
 interface Props {
   id: string;
@@ -23,8 +23,9 @@ const { id, title, class: className, alert = false } = Astro.props;
     <header class="modal-header">
       <h1 class="text-lg leading-none flex-1 pl-2">{title}</h1>
       <form method="dialog">
-        <button aria-label="close" class="btn btn-error">
-          <X />
+        <button class="btn btn-error">
+          <div class="i-lc-x w-[2em] h-[2em]" aria-hidden="true"></div>
+          <span class="sr-only">Close</span>
         </button>
       </form>
     </header>
