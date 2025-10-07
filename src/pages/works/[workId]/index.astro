@@ -1,6 +1,5 @@
 ---
 import WorkPage from "@/layouts/WorkPage.astro";
-import { didToHandle } from "@/lib/atproto";
 import { db, eq, Users, Works, Chapters } from "astro:db";
 import type { Work, Chapter, User } from "@/lib/types";
 
@@ -27,16 +26,7 @@ const result = rows.reduce<Record<string, { work: Work; user: User; chapters: Ch
 
 const { work, user, chapters } = result[slug];
 ---
-<WorkPage 
-  slug={work.slug}
-  title={work.title}
-  author={user.nickname ? user.nickname : await didToHandle(user.userDid)}
-  summary={work.summary}
-  createdAt={work.createdAt}
-  updatedAt={work.updatedAt}
-  tags={work.tags}
-  {chapters}
->
+<WorkPage work={work} user={user} chapters={chapters}>
   {(user.userDid === loggedInUser?.did) && (
     <a href={`/works/${workId}/edit`}>Edit your work</a>
     <a href={`/works/${workId}/add-chapter`}>Add chapter</a>

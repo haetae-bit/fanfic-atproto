@@ -1,8 +1,9 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import { didToHandle } from "@/lib/atproto";
-import type { User, Work } from "@/lib/types";
+import type { User, Work as WorkType } from "@/lib/types";
 import { db, eq, Users, Works } from "astro:db";
+import Work from "~/Work.astro";
 
 const { userDid } = Astro.params;
 const did = userDid!;
@@ -13,7 +14,11 @@ const rows = await db.select()
   .leftJoin(Works, eq(Works.author, did))
   .all();
 
-const result = rows.reduce<Record<string, { user: User; works: Work[]; }>>((acc, row) => {
+if (rows.length === 0) {
+  return Astro.redirect("/errors/not-found");
+}
+
+const result = rows.reduce<Record<string, { user: User; works: WorkType[]; }>>((acc, row) => {
   const user = row.Users;
   const work = row.Works;
 
@@ -35,20 +40,7 @@ works.sort((a, b) => {
       <ol>
         {works.map(work => (
           <li>
-            <article>
-              <header>
-                <h2><a href={`/works/${work.slug}`}>{work.title}</a></h2>
-                <time datetime={work.createdAt.toISOString()}>{work.createdAt}</time>
-                {work.updatedAt && (
-                  <time datetime={work.updatedAt.toISOString()}>{work.updatedAt}</time>
-                )}
-                {JSON.stringify(work.tags)}
-              </header>
-              
-              <blockquote>
-                {work.summary}
-              </blockquote>
-            </article>
+            <Work work={work} user={user} />
           </li>
         ))}
       </ol>

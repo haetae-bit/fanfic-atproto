@@ -1,8 +1,7 @@
 ---
 import Layout from "@/layouts/Layout.astro";
-import { didToHandle } from "@/lib/atproto";
-import type { Tag } from "@/lib/types";
 import { db, eq, Users, Works } from "astro:db";
+import Work from "~/Work.astro";
 
 const loggedInUser = Astro.locals.loggedInUser;
 const works = await db.select()
@@ -16,7 +15,7 @@ works.sort((a, b) => {
 ---
 
 <Layout>
-  <main id="content" class="flex flex-col gap-5 max-w-full">
+  <main id="content">
     <header class="flex items-center justify-between">
       <h1>Works</h1>
       {loggedInUser && 
@@ -24,42 +23,14 @@ works.sort((a, b) => {
       }
     </header>
 
-    {works.map(async ({ Works, Users }) => (
-      <article class="card rounded-box shadow p-5">
-        <header>
-          <div class="flex items-center justify-between">
-            <hgroup class="flex-1">
-              <h2 class="card-title">
-                <a href={`/works/${Works.slug}`}>{Works.title}</a>
-              </h2>
-              <h3>
-                {Users.nickname ? Users.nickname : await didToHandle(Users.userDid)}
-              </h3>
-            </hgroup>
-            <time datetime={Works.createdAt.toISOString()}>
-              {Works.createdAt.toLocaleDateString()}
-            </time>
-          </div>
-          {Array.isArray(Works.tags)
-            ? <ul class="flex flex-wrap gap-1.5">
-                {(Works.tags as Tag[]).map((tag: Tag) => (
-                  <li><a class="tag" href={tag.slug}>{tag.label}</a></li>
-                ))}
-              </ul>
-            : <pre>{JSON.stringify(Works.tags)}</pre>
-          }
-        </header>
-
-        <div class="card-body prose lg:prose-xl">
-          <Fragment set:html={Works.summary} />
-        </div>
-      </article>
-    ))}
+    <section>
+      <ol class="flex flex-col flex-wrap gap-5">
+        {works.map(async ({ Works, Users }) => (
+          <li>
+            <Work work={Works} user={Users} />
+          </li>
+        ))}
+      </ol>
+    </section>
   </main>
 </Layout>
-
-<style>
-  .tag {
-    @apply btn btn-accent;  
-  }
-</style>

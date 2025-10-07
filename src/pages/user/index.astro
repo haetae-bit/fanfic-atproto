@@ -1,11 +1,12 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import { didToHandle } from "@/lib/atproto";
-import type { Work, User } from "@/lib/types";
-import { actions } from "astro:actions";
+import type { Work as WorkType, User } from "@/lib/types";
+import { actions, isInputError } from "astro:actions";
 import { db, eq, Users, Works } from "astro:db";
-import Dialog from "~/Dialog.astro";
+// import Dialog from "~/Dialog.astro";
 import Popover from "~/Popover.astro";
+import Work from "~/Work.astro";
 
 const loggedInUser = Astro.locals.loggedInUser;
 
@@ -13,113 +14,131 @@ if (!loggedInUser) {
   return Astro.redirect("/login");
 }
 
+let user: User | undefined = undefined;
+let works: WorkType[] = [];
+
 const rows = await db.select()
   .from(Users)
   .where(eq(Users.userDid, loggedInUser.did))
   .leftJoin(Works, eq(Works.author, loggedInUser.did))
   .all();
 
-const result = rows.reduce<Record<string, { user: User; works: Work[]; }>>((acc, row) => {
-  const user = row.Users;
-  const work = row.Works;
+if (rows.length === 0) {
+  user;
+  works;
+} else {
+  const result = rows.reduce<Record<string, { user: User; works: WorkType[]; }>>((acc, row) => {
+    const user = row.Users;
+    const work = row.Works;
 
-  if (!acc[user.userDid]) { acc[user.userDid] = { user, works: [] }; }
-  if (work) { acc[user.userDid].works.push(work); }
-  return acc;
-}, {});
+    if (!acc[user.userDid]) { acc[user.userDid] = { user, works: [] }; }
+    if (work) { acc[user.userDid].works.push(work); }
+    return acc;
+  }, {});
 
-const { user, works } = result[loggedInUser.did];
-works.sort((a, b) => {
-  return (b.updatedAt ?? b.createdAt).valueOf() - (a.updatedAt ?? a.createdAt).valueOf();
-});
+  user = result[loggedInUser.did].user;
+  works = result[loggedInUser.did].works;
+  works.sort((a, b) => {
+    return (b.updatedAt ?? b.createdAt).valueOf() - (a.updatedAt ?? a.createdAt).valueOf();
+  });
+}
+
+const registerResult = Astro.getActionResult(actions.usersActions.addUser);
+const registerErrors = isInputError(registerResult?.error) ? registerResult.error.fields : {};
+const editResult = Astro.getActionResult(actions.usersActions.editUser);
+const editErrors = isInputError(editResult?.error) ? editResult.error.fields : {};
 ---
 <Layout skipLink="user-profile">
   <main id="user-profile">
     <h1>User Settings</h1>
-    <p>{loggedInUser?.handle}</p>
+    <p>{loggedInUser.handle}</p>
     
     <!-- registration will only happen in the below form! -->
-    {!user && (
-      <>
+    {!user ? (
+      <section>
         <h2>Connect account</h2>
         <div class="info">
           <p>Right now, you aren't connected to the site. You can connect your BlueSky / self-hosted PDS account to this website to post a work.</p>
           <p>Please check out the Terms of Service, Privacy Policy, and Code of Conduct before connecting your account.</p>
         </div>
-        
-        <Dialog id="connect-account" title="Are you sure?" buttonColor="accent">
-          <span slot="button">Connect your PDS Account</span>
-
-          <form action={actions.usersActions.addUser} method="post">
-            <fieldset class="fieldset">
-              <div class="flex gap-1">
-                <label for="nickname" class="label">Nickname</label>
-                <Popover id="nickname-note" label="info" icon="warning" title="Important">
-                  <p>If you do set a nickname, please make sure it's unique!</p>
-                </Popover>
+        <form action={actions.usersActions.addUser} method="post">
+          <fieldset class="fieldset">
+            <legend class="fieldset-legend">
+              Nickname
+              <Popover id="nickname-note" label="info" icon="warning" title="Important">
+                <p>Please make sure it's unique!</p>
+              </Popover>
+            </legend>
+            <input 
+              class="input w-full" 
+              type="text" 
+              name="nickname" 
+              id="nickname" 
+              aria-describedby="nickname-info"
+              aria-errormessage="nickname-error"
+            />
+            <div id="nickname-info" class="fieldset-label">
+              <p>You can optionally set your nickname for this site.</p>
+              <p>This is separate from your handle and acts similarly to a penname.</p>
+            </div>
+            {registerErrors.nickname && (
+              <div id="nickname-error">
+                {registerErrors.nickname}
               </div>
+            )}
+          </fieldset>
+
+          <button class="btn btn-primary">Confirm</button>
+        </form>
+      </section>
+    ) : (
+      <section>
+        <h2>{user.nickname ? user.nickname : await didToHandle(user.userDid)}</h2>
+        <time datetime={user.joinedAt.toISOString()}>{user.joinedAt}</time>
+        {!user.nickname && (
+          <form action={actions.usersActions.editUser} method="post">
+            <fieldset class="fieldset">
+              <legend class="fieldset-legend">
+                Nickname
+                <Popover id="nickname-note" label="info" icon="warning" title="Important">
+                  <p>Please make sure it's unique!</p>
+                </Popover>
+              </legend>
               <input 
                 class="input w-full" 
                 type="text" 
                 name="nickname" 
                 id="nickname" 
                 aria-describedby="nickname-info"
+                aria-errormessage="nickname-error"
               />
-              <div id="nickname-info" class="alert">
-                <div class="i-lc-info text-info" aria-hidden="true" />
-                <div>
-                  <p>You can optionally set your nickname for this site.</p>
-                  <p>This is separate from your handle and acts similarly to a penname.</p>
-                </div>
+              <div id="nickname-info" class="fieldset-label">
+                <p>This is separate from your handle and acts similarly to a penname.</p>
               </div>
+              {editErrors.nickname && (
+                <div id="nickname-error" class="alert alert-error">
+                  {editErrors.nickname}
+                </div>
+              )}
             </fieldset>
 
-            <div class="modal-action">
-              <button class="btn btn-neutral" formmethod="dialog">Cancel</button>
-              <button class="btn btn-primary">Confirm</button>
-            </div>
+            <button class="btn btn-primary">Set nickname</button>
           </form>
-        </Dialog>
-      </>
-    )}
-    
-    {user && (
-      <>
-        <h2>{user.nickname ? user.nickname : await didToHandle(user.userDid)}</h2>
-        <time datetime={user.joinedAt.toISOString()}>{user.joinedAt}</time>
-
-        {works && (
+        )}
+        
+        {works.length > 0 && (
           <section>
+            <h3>Works</h3>
             <ol>
               {works.map(work => (
                 <li>
-                  {/* probably could componentize work entries */}
-                  <article>
-                    <header>
-                      <h3><a href={`/works/${work.slug}`}>{work.title}</a></h3>
-
-                      <time datetime={work.createdAt.toISOString()}>
-                        {work.createdAt}
-                      </time>
-                      {work.updatedAt && (
-                        <time datetime={work.updatedAt.toISOString()}>
-                          {work.updatedAt}
-                        </time>
-                      )}
-
-                      <ul>
-                        {JSON.stringify(work.tags)}
-                      </ul>
-                    </header>
-                    
-                    <Fragment set:html={work.summary} />
-                  </article>
+                  <Work work={work} user={user} />
                 </li>
               ))}
             </ol>
           </section>
         )}
-      </>
+      </section>
     )}
   </main>
 </Layout>

@@ -1,0 +1,51 @@
+---
+import { didToHandle } from "@/lib/atproto";
+import type { Tag, User, Work } from "@/lib/types";
+
+interface Props {
+  work: Work;
+  user?: User;
+}
+
+const { work, user } = Astro.props;
+---
+<article class="card rounded-box shadow p-2">
+  <header>
+    <div class="flex items-center justify-between">
+      <hgroup>
+        <h2 class="card-title">
+          <a href={`/works/${work.slug}`}>{work.title}</a>
+        </h2>
+        <p class="author">
+          {user ? user.nickname : await didToHandle(work.author)}
+        </p>
+      </hgroup>
+
+      <time datetime={work.createdAt.toISOString()}>
+        {work.createdAt}
+      </time>
+    </div>
+    {Array.isArray(work.tags)
+      ? <ul class="flex flex-wrap gap-1.5">
+          {(work.tags as Tag[]).map((tag: Tag) => (
+            <li><a class="tag" href={tag.slug}>{tag.label}</a></li>
+          ))}
+        </ul>
+      : <pre>{JSON.stringify(work.tags)}</pre>
+    }
+  </header>
+
+  <blockquote class="card-body prose lg:prose-xl">
+    <Fragment set:html={work.summary} />
+  </blockquote>
+</article>
+
+<style>
+  .author {
+    font-style: italic;
+  }
+
+  .tag {
+    @apply btn btn-accent;  
+  }
+</style>

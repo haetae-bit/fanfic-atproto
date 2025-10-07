@@ -26,6 +26,7 @@ const Works = defineTable({
     updatedAt: column.date({ name: "updated_at", optional: true }),
   },
   indexes: [
+    { on: ["author", "slug"], unique: true },
     { on: ["slug", "createdAt"], unique: true },
     { on: ["uri", "createdAt"], unique: true },
   ],

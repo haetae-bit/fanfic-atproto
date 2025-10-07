@@ -1,5 +1,5 @@
 import slugify from "@sindresorhus/slugify";
-import { Chapters, db, eq, Tags } from "astro:db";
+import { and, Chapters, db, eq, Tags, Works } from "astro:db";
 import type { Chapter } from "./types";
 
 // fetch tags
@@ -33,7 +33,7 @@ export async function addChapter(workId: number, title: string, content: string,
   if (!workId) {
     throw new Error("Work ID is invalid!");
   }
-
+  
   await db.insert(Chapters).values({
     workId,
     title,
@@ -43,3 +43,13 @@ export async function addChapter(workId: number, title: string, content: string,
   });
 }
 
+export async function updateWork(chapter: Chapter) {
+  await db
+    .update(Works)
+    .set({ updatedAt: chapter.createdAt })
+    .from(Chapters)
+    .where(and(
+      eq(Works.id, chapter.workId),
+      eq(Chapters.id, chapter.id)
+    ));
+}

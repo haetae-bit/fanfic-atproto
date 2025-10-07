@@ -1,4 +1,5 @@
 import { getAgent } from "@/lib/atproto";
+import { updateWork } from "@/lib/db";
 import { AtUri } from "@atproto/api";
 import { TID } from "@atproto/common-web";
 import { ActionError, defineAction } from "astro:actions"
@@ -71,10 +72,12 @@ export const chaptersActions = {
           collection,
           rkey,
         });
+        
+        console.log(record);
       }
 
       const createdAt = new Date();
-      let atUri; // this will be set once a chapter is published
+      let atUri: string | undefined; // this will be set once a chapter is published
       if (publish && !uri) {
         // fetch the work record then add
         if (!work.uri) {
@@ -119,7 +122,7 @@ export const chaptersActions = {
         const crkey = TID.nextStr();
         const chapter = await agent.com.atproto.repo.createRecord({
           repo: loggedInUser.did,
-          collection: "moe.fanfics.chapter",
+          collection: "fan.fics.work.chapter",
           rkey: crkey,
           record: {
             workAtUri: work.uri,
@@ -141,13 +144,16 @@ export const chaptersActions = {
         atUri = chapter.data.uri;
       }
       
-      const result = await db.insert(Chapters).values({
+      const [result] = await db.insert(Chapters).values({
         workId: work.id,
         title: title!,
         content: content!,
         notes,
       }).returning();
 
+      // any new chapters add need to also update the work
+      await updateWork(result);
+      
       return result;
     },
   }),
