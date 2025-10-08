@@ -10,6 +10,7 @@
     "@atproto/identity": "^0.4.9",
     "@floating-ui/dom": "^1.7.4",
     "@fujocoded/authproto": "^0.1.1",
+    "@preact/signals": "^2.3.2",
     "@sindresorhus/slugify": "^3.0.0",
     "@slices/client": "jsr:0.1.0-alpha.4",
     "@slices/oauth": "jsr:^0.6.0",

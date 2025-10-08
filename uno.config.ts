@@ -1,4 +1,4 @@
-import { defineConfig, presetTypography, presetWind4, presetIcons, transformerDirectives, type PresetWind4Theme } from "unocss";
+import { defineConfig, presetTypography, presetWind4, presetIcons, transformerDirectives, type PresetWind4Theme, transformerVariantGroup } from "unocss";
 import { presetDaisy } from "@ameinhardt/unocss-preset-daisy";
 // @ts-expect-error
 import theme from 'daisyui/functions/variables.js';
@@ -61,6 +61,7 @@ export default defineConfig<PresetWind4Theme>({
   },
   transformers: [
     transformerDirectives(),
+    transformerVariantGroup(),
   ],
   theme: {
     ...theme,

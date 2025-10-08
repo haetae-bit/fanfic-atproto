@@ -12,6 +12,7 @@ interface TagsInputProps extends InputHTMLAttributes<HTMLInputElement> {
 
 export default function TagsInput(props: TagsInputProps) {
   interface TagData extends Tagify.BaseTagData {
+    label: string;
     slug: string;
     type: "character" | "relationship" | "series" | "warnings";
   }
@@ -22,29 +23,26 @@ export default function TagsInput(props: TagsInputProps) {
   const [loading, setLoading] = useState(false);
 
   async function onSetDropdown(e: Event) {
-    let data = e.target;
+    let data = (e.currentTarget as HTMLInputElement).value;
     setLoading(true);
-    const tags = await actions.tagsActions.fetchTags(data);
+    const tags = await actions.tagsActions.fetchTags({ tags: data });
     if (tags.data) { setWhitelist(tags.data as TagData[]); }
     setLoading(false);
   }
 
-  function onAddTag(e: Event) {
-    console.log((e.target as HTMLInputElement).value);
-
-  }
-
   useEffect(() => {
+    let tagify: Tagify<TagData> | undefined;
+
     if (ref.current) {
-      new Tagify<TagData>(ref.current, {
+      tagify = new Tagify<TagData>(ref.current, {
         callbacks: {
           add(e) {
             console.log("this is data: " + JSON.stringify(e.detail.data));
           },
         },
-        classNames: {
-          input: "tagify_input"
-        },
+        // classNames: {
+
+        // },
         dropdown: {
           appendTarget: () => ref.current!,
           searchKeys: ["value", "searchBy", "slug"],
@@ -63,8 +61,25 @@ export default function TagsInput(props: TagsInputProps) {
         // },
         whitelist,
       });
+
+      tagify.loading(loading);
+      
+      tagify.on("input", (e) => {
+        console.log("input event start: " + e.detail.tagify.getInputValue());
+        setWhitelist([]);
+
+      });
+    }
+
+    return () => {
+      tagify?.destroy();
     }
   }, [ref.current]);
 
-  return <input type="text" ref={ref} data-type={props.tagType} {...props} />
+  return <input
+    type="hidden" 
+    ref={ref} 
+    data-type={props.tagType} 
+    {...props} 
+  />
 }

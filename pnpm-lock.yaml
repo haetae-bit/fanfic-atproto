@@ -32,6 +32,9 @@ importers:
       '@fujocoded/authproto':
         specifier: ^0.1.1
         version: 0.1.1(astro@5.14.1(@types/node@24.6.0)(jiti@2.6.0)(rollup@4.52.3)(sass-embedded@1.93.2)(sass@1.93.2)(typescript@5.9.2))(pg@8.16.3)
+      '@preact/signals':
+        specifier: ^2.3.2
+        version: 2.3.2(preact@10.27.2)
       '@sindresorhus/slugify':
         specifier: ^3.0.0
         version: 3.0.0
