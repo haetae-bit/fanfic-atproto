@@ -8,15 +8,21 @@
       "record": {
         "type": "object",
         "required": [
-          "workAtUri",
+          "work",
           "title",
           "content",
           "createdAt"
         ],
         "properties": {
-          "workAtUri": {
+          "work": {
+            "description": "The work this chapter is associated with",
             "type": "string",
             "format": "at-uri"
+          },
+          "chapterRef": {
+            "description": "A reference to this chapter",
+            "type": "ref",
+            "ref": "com.atproto.repo.strongRef"
           },
           "title": {
             "type": "string",
@@ -32,8 +38,12 @@
             "maxGraphemes": 256
           },
           "content": {
-            "type": "string",
-            "minLength": 1
+            "type": "union",
+            "refs": [
+              "#chapterText",
+              "#leafletDoc",
+              "#bskyPost"
+            ]
           },
           "endNotes": {
             "type": "string",
@@ -53,13 +63,27 @@
         }
       }
     },
-    "chapterRef": {
+    "chapterText": {
+      "type": "string",
+      "minLength": 1
+    },
+    "leafletDoc": {
       "type": "object",
-      "description": "A reference to a chapter record",
+      "required": ["docRef"],
       "properties": {
-        "atUri": {
-          "type": "string",
-          "format": "at-uri"
+        "docRef": {
+          "type": "ref",
+          "ref": "com.atproto.repo.strongRef"
+        }
+      }
+    },
+    "bskyPost": {
+      "type": "object",
+      "required": ["postRef"],
+      "properties": {
+        "postRef": {
+          "type": "ref",
+          "ref": "com.atproto.repo.strongRef"
         }
       }
     }
