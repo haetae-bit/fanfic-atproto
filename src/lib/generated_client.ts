@@ -1,5 +1,5 @@
 // Generated TypeScript client for AT Protocol records
-// Generated at: 2025-10-07 01:09:41 UTC
+// Generated at: 2025-10-08 17:59:49 UTC
 // Lexicons: 4
 
 /**
@@ -12,32 +12,32 @@
  *   'at://did:plc:dg2qmmjic7mmecrbvpuhtvh6/network.slices.slice/3m2fpay6dw522'
  * );
  *
- * // Get records from the fan.fics.work.comment collection
- * const records = await client.fan.fics.work.comment.getRecords();
+ * // Get records from the fan.fics.work.chapter collection
+ * const records = await client.fan.fics.work.chapter.getRecords();
  *
  * // Get a specific record
- * const record = await client.fan.fics.work.comment.getRecord({
- *   uri: 'at://did:plc:example/fan.fics.work.comment/3abc123'
+ * const record = await client.fan.fics.work.chapter.getRecord({
+ *   uri: 'at://did:plc:example/fan.fics.work.chapter/3abc123'
  * });
  *
  * // Get records with filtering and search
- * const filteredRecords = await client.fan.fics.work.comment.getRecords({
+ * const filteredRecords = await client.fan.fics.work.chapter.getRecords({
  *   where: {
  *     text: { contains: "example search term" }
  *   }
  * });
  *
  * // Use slice-level methods for cross-collection queries with type safety
- * const sliceRecords = await client.network.slices.slice.getSliceRecords<FanFicsWorkComment>({
+ * const sliceRecords = await client.network.slices.slice.getSliceRecords<FanFicsWorkChapter>({
  *   where: {
- *     collection: { eq: 'fan.fics.work.comment' }
+ *     collection: { eq: 'fan.fics.work.chapter' }
  *   }
  * });
  *
  * // Search across multiple collections using union types
- * const multiCollectionRecords = await client.network.slices.slice.getSliceRecords<FanFicsWorkComment | AppBskyActorProfile>({
+ * const multiCollectionRecords = await client.network.slices.slice.getSliceRecords<FanFicsWorkChapter | AppBskyActorProfile>({
  *   where: {
- *     collection: { in: ['fan.fics.work.comment', 'app.bsky.actor.profile'] },
+ *     collection: { in: ['fan.fics.work.chapter', 'app.bsky.actor.profile'] },
  *     text: { contains: 'example search term' },
  *     did: { in: ['did:plc:user1', 'did:plc:user2'] }
  *   },
@@ -63,6 +63,65 @@ import {
 } from "@slices/client";
 import type { OAuthClient } from "@slices/oauth";
 
+export interface FanFicsWorkChapter {
+  /** The work this chapter is associated with */
+  work: string;
+  /** A reference to this chapter */
+  chapterRef?: ComAtprotoRepoStrongRef;
+  title: string;
+  /** You can add additional notes to a chapter. Typically, these are displayed before chapter content. Only limited HTML is allowed. */
+  authorsNotes?: string;
+  content:
+    | FanFicsWorkChapter["ChapterText"]
+    | FanFicsWorkChapter["LeafletDoc"]
+    | FanFicsWorkChapter["BskyPost"]
+    | { $type: string; [key: string]: unknown };
+  /** You can add additional notes to a chapter. Typically, these are displayed after chapter content. Only limited HTML is allowed. */
+  endNotes?: string;
+  createdAt: string;
+  updatedAt?: string;
+}
+
+export type FanFicsWorkChapterSortFields =
+  | "work"
+  | "title"
+  | "authorsNotes"
+  | "endNotes"
+  | "createdAt"
+  | "updatedAt";
+
+export interface FanFicsWorkChapterChapterText {
+  text: string;
+}
+
+export interface FanFicsWorkChapterLeafletDoc {
+  docRef: ComAtprotoRepoStrongRef;
+}
+
+export interface FanFicsWorkChapterBskyPost {
+  postRef: ComAtprotoRepoStrongRef;
+}
+
+export interface FanFicsWork {
+  uri?: string;
+  author: string;
+  title: string;
+  /** Tags for content the work may be related to, for example 'fluff' or 'meta' */
+  tags: string[];
+  /** You can describe your work in a summary. Only limited HTML is allowed. */
+  summary: string;
+  createdAt: string;
+  updatedAt?: string;
+}
+
+export type FanFicsWorkSortFields =
+  | "uri"
+  | "author"
+  | "title"
+  | "summary"
+  | "createdAt"
+  | "updatedAt";
+
 export interface ComAtprotoRepoStrongRef {
   uri: string;
   cid: string;
@@ -77,134 +136,10 @@ export interface FanFicsWorkComment {
 export type FanFicsWorkCommentSortFields = "content" | "createdAt" | "postedTo";
 
 export interface FanFicsWorkChapter {
-  workAtUri: string;
-  title: string;
-  /** You can add additional notes to a chapter. Typically, these are displayed before chapter content. Only limited HTML is allowed. */
-  authorsNotes?: string;
-  content: string;
-  /** You can add additional notes to a chapter. Typically, these are displayed after chapter content. Only limited HTML is allowed. */
-  endNotes?: string;
-  createdAt: string;
-  updatedAt?: string;
-}
-
-export type FanFicsWorkChapterSortFields =
-  | "workAtUri"
-  | "title"
-  | "authorsNotes"
-  | "content"
-  | "endNotes"
-  | "createdAt"
-  | "updatedAt";
-
-export interface FanFicsWorkChapterChapterRef {
-  atUri?: string;
-}
-
-export interface FanFicsWork {
-  uri?: string;
-  author: string;
-  title: string;
-  /** Tags for content the work may be related to, for example 'fluff' or 'meta' */
-  tags: string[];
-  /** You can describe your work in a summary. Only limited HTML is allowed. */
-  summary: string;
-  chapters:
-    | FanFicsWorkChapter["Main"]
-    | FanFicsWorkChapter["ChapterRef"]
-    | ComAtprotoRepoStrongRef
-    | { $type: string; [key: string]: unknown }[];
-  createdAt: string;
-  updatedAt?: string;
-}
-
-export type FanFicsWorkSortFields =
-  | "uri"
-  | "author"
-  | "title"
-  | "summary"
-  | "createdAt"
-  | "updatedAt";
-
-export interface FanFicsWorkChapter {
   readonly Main: FanFicsWorkChapter;
-  readonly ChapterRef: FanFicsWorkChapterChapterRef;
-}
-
-class CommentWorkFicsFanClient {
-  private readonly client: SlicesClient;
-
-  constructor(client: SlicesClient) {
-    this.client = client;
-  }
-
-  async getRecords(
-    params?: {
-      limit?: number;
-      cursor?: string;
-      where?: {
-        [K in FanFicsWorkCommentSortFields | IndexedRecordFields]?:
-          WhereCondition;
-      };
-      orWhere?: {
-        [K in FanFicsWorkCommentSortFields | IndexedRecordFields]?:
-          WhereCondition;
-      };
-      sortBy?: SortField<FanFicsWorkCommentSortFields>[];
-    },
-  ): Promise<GetRecordsResponse<FanFicsWorkComment>> {
-    return await this.client.getRecords("fan.fics.work.comment", params);
-  }
-
-  async getRecord(
-    params: GetRecordParams,
-  ): Promise<RecordResponse<FanFicsWorkComment>> {
-    return await this.client.getRecord("fan.fics.work.comment", params);
-  }
-
-  async countRecords(
-    params?: {
-      limit?: number;
-      cursor?: string;
-      where?: {
-        [K in FanFicsWorkCommentSortFields | IndexedRecordFields]?:
-          WhereCondition;
-      };
-      orWhere?: {
-        [K in FanFicsWorkCommentSortFields | IndexedRecordFields]?:
-          WhereCondition;
-      };
-      sortBy?: SortField<FanFicsWorkCommentSortFields>[];
-    },
-  ): Promise<CountRecordsResponse> {
-    return await this.client.countRecords("fan.fics.work.comment", params);
-  }
-
-  async createRecord(
-    record: FanFicsWorkComment,
-    useSelfRkey?: boolean,
-  ): Promise<{ uri: string; cid: string }> {
-    return await this.client.createRecord(
-      "fan.fics.work.comment",
-      record,
-      useSelfRkey,
-    );
-  }
-
-  async updateRecord(
-    rkey: string,
-    record: FanFicsWorkComment,
-  ): Promise<{ uri: string; cid: string }> {
-    return await this.client.updateRecord(
-      "fan.fics.work.comment",
-      rkey,
-      record,
-    );
-  }
-
-  async deleteRecord(rkey: string): Promise<void> {
-    return await this.client.deleteRecord("fan.fics.work.comment", rkey);
-  }
+  readonly ChapterText: FanFicsWorkChapterChapterText;
+  readonly LeafletDoc: FanFicsWorkChapterLeafletDoc;
+  readonly BskyPost: FanFicsWorkChapterBskyPost;
 }
 
 class ChapterWorkFicsFanClient {
@@ -283,15 +218,91 @@ class ChapterWorkFicsFanClient {
   }
 }
 
-class WorkFicsFanClient {
-  readonly comment: CommentWorkFicsFanClient;
-  readonly chapter: ChapterWorkFicsFanClient;
+class CommentWorkFicsFanClient {
   private readonly client: SlicesClient;
 
   constructor(client: SlicesClient) {
     this.client = client;
-    this.comment = new CommentWorkFicsFanClient(client);
+  }
+
+  async getRecords(
+    params?: {
+      limit?: number;
+      cursor?: string;
+      where?: {
+        [K in FanFicsWorkCommentSortFields | IndexedRecordFields]?:
+          WhereCondition;
+      };
+      orWhere?: {
+        [K in FanFicsWorkCommentSortFields | IndexedRecordFields]?:
+          WhereCondition;
+      };
+      sortBy?: SortField<FanFicsWorkCommentSortFields>[];
+    },
+  ): Promise<GetRecordsResponse<FanFicsWorkComment>> {
+    return await this.client.getRecords("fan.fics.work.comment", params);
+  }
+
+  async getRecord(
+    params: GetRecordParams,
+  ): Promise<RecordResponse<FanFicsWorkComment>> {
+    return await this.client.getRecord("fan.fics.work.comment", params);
+  }
+
+  async countRecords(
+    params?: {
+      limit?: number;
+      cursor?: string;
+      where?: {
+        [K in FanFicsWorkCommentSortFields | IndexedRecordFields]?:
+          WhereCondition;
+      };
+      orWhere?: {
+        [K in FanFicsWorkCommentSortFields | IndexedRecordFields]?:
+          WhereCondition;
+      };
+      sortBy?: SortField<FanFicsWorkCommentSortFields>[];
+    },
+  ): Promise<CountRecordsResponse> {
+    return await this.client.countRecords("fan.fics.work.comment", params);
+  }
+
+  async createRecord(
+    record: FanFicsWorkComment,
+    useSelfRkey?: boolean,
+  ): Promise<{ uri: string; cid: string }> {
+    return await this.client.createRecord(
+      "fan.fics.work.comment",
+      record,
+      useSelfRkey,
+    );
+  }
+
+  async updateRecord(
+    rkey: string,
+    record: FanFicsWorkComment,
+  ): Promise<{ uri: string; cid: string }> {
+    return await this.client.updateRecord(
+      "fan.fics.work.comment",
+      rkey,
+      record,
+    );
+  }
+
+  async deleteRecord(rkey: string): Promise<void> {
+    return await this.client.deleteRecord("fan.fics.work.comment", rkey);
+  }
+}
+
+class WorkFicsFanClient {
+  readonly chapter: ChapterWorkFicsFanClient;
+  readonly comment: CommentWorkFicsFanClient;
+  private readonly client: SlicesClient;
+
+  constructor(client: SlicesClient) {
+    this.client = client;
     this.chapter = new ChapterWorkFicsFanClient(client);
+    this.comment = new CommentWorkFicsFanClient(client);
   }
 
   async getRecords(

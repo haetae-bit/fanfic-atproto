@@ -1,4 +1,5 @@
 onlyBuiltDependencies:
+  - '@parcel/watcher'
   - cbor-extract
   - esbuild
   - sharp

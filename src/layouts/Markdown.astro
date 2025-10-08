@@ -1,0 +1,20 @@
+---
+import type { MarkdownLayoutProps } from "astro";
+import Layout from "./Layout.astro";
+
+export const prerender = true;
+
+type Props = MarkdownLayoutProps<{
+  title: string;
+  contentId?: string;
+  updated: Date;
+}>;
+
+const { frontmatter } = Astro.props;
+---
+
+<Layout title={frontmatter.title} skipLink={frontmatter.contentId}>
+  <main class="prose lg:prose-xl mx-auto" id={frontmatter.contentId}>
+    <slot />
+  </main>
+</Layout>

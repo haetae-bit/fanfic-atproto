@@ -64,8 +64,14 @@
       }
     },
     "chapterText": {
-      "type": "string",
-      "minLength": 1
+      "type": "object",
+      "required": ["text"],
+      "properties": {
+        "text": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
     },
     "leafletDoc": {
       "type": "object",

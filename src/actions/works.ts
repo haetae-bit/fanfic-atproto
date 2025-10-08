@@ -1,10 +1,11 @@
-import { AtUri, ComAtprotoRepoStrongRef } from "@atproto/api";
-import { getAgent } from "@/lib/atproto";
+import { AtUri } from "@atproto/api";
+import { callSlices, client, getAgent } from "@/lib/atproto";
 import { ActionError, defineAction } from "astro:actions";
 import { db, eq, and, Users, Works } from "astro:db";
 import { z } from "astro:schema";
 import { customAlphabet } from "nanoid";
 import { addChapter } from "@/lib/db";
+import { TID } from "@atproto/common-web";
 
 const workSchema = z.object({
   title: z.string(),
@@ -17,8 +18,9 @@ export const worksActions = {
   addWork: defineAction({
     accept: "form",
     input: workSchema.extend({
-      chapterOption: z.enum(["manual", "leaflet", "bsky"]),
-      chapterUri: z.string().optional(),
+      option: z.enum(["manual", "leaflet", "bsky"]),
+      bskyUri: z.string().optional(),
+      leafletUri: z.string().optional(),
       chapterTitle: z.string().optional(),
       content: z.string().optional(),
       notes: z.string().optional(),
@@ -28,8 +30,9 @@ export const worksActions = {
         title,
         summary, 
         tags, 
-        chapterOption, 
-        chapterUri, 
+        option, 
+        bskyUri, 
+        leafletUri, 
         chapterTitle, 
         content, 
         notes, 
@@ -70,24 +73,24 @@ export const worksActions = {
         tags,
       };
       
-      if (chapterUri) {
-        const { collection, rkey } = new AtUri(chapterUri);
-        const agent = await getAgent(context.locals);
-        const record = await agent?.com.atproto.repo.getRecord({
-          repo: loggedInUser.did,
-          collection,
-          rkey,
-        });
-        if (record?.success) {
-          const { data } = record;
-          console.log(data.value);
-        }
+      // if the chapter is being imported, check if it exists
+      if (option !== "manual") {
+        // record key is 13 chars long
+        // const { records } = await client.getSliceRecords({
+        //   where: {
+        //     collection: { in: ["app.bsky.feed.post", "pub.leaflet.document"] },
+        //     did: { eq: loggedInUser.did },
+        //   }
+        // });
+
+        // console.log(records);
       }
 
       let uri; // we'll assign this after a successful request was made
       // depending on whether someone toggled the privacy option, push this into user pds
       if (publish) {
         try {
+          const rkey = TID.nextStr();
           const agent = await getAgent(context.locals);
 
           if (!agent) {
@@ -98,32 +101,39 @@ export const worksActions = {
             });
           }
 
-          // ideally, we'd like tags to be references to another record but we won't process them here
           // we'll just smush this in and pray
-          const result = await agent.fan.fics.work.createRecord({
-            title,
-            tags: [tags],
-            author: loggedInUser.did,
-            summary,
-            chapters: [],
-            createdAt: createdAt.toISOString(),
-          });
+          const result = await callSlices(
+            "work",
+            "createRecord",
+            { 
+              rkey,
+              record: {
+                ...record,
+                author: loggedInUser.did,
+                createdAt: createdAt.toISOString(),
+              }
+            }
+          );
           
+          console.log(JSON.stringify(result));
           uri = result.uri;
 
           // only do this if chapterOption is set to manual
-          if (chapterOption === "manual") {
-            // const crkey = TID.nextStr();
-            const chapter = await agent.fan.fics.work.chapter.createRecord({
-              workAtUri: uri as string,
-              title: chapterTitle!,
-              content: content!,
-              createdAt: createdAt.toISOString(),
-              Main: {
-
-              },
-              ChapterRef: "",
-            });
+          if (option === "manual") {
+            const crkey = TID.nextStr(rkey);
+            const chapter = await callSlices(
+              "work.chapter",
+              "createRecord",
+              {
+                rkey: crkey,
+                record: {
+                  title: chapterTitle,
+                  content,
+                  createdAt: createdAt.toISOString(),
+                  work: new AtUri(uri),
+                }
+              }
+            );
 
             console.log(chapter);
           }
@@ -141,6 +151,7 @@ export const worksActions = {
       const nanoid = customAlphabet(alphabet, 16);
       const slug = nanoid();
 
+      // regardless if the user posted to their pds, record it into the db here too
       const [work] = await db.insert(Works).values({
         uri,
         slug,
@@ -218,15 +229,14 @@ export const worksActions = {
               message: "You can only update your own work!",
             });
           }
-
-          const result = await agent.fan.fics.work.updateRecord(rkey, {
+          
+          const result = client.fan.fics.work.updateRecord(rkey, {
             title,
             tags: [tags],
             author: loggedInUser.did,
-            chapters: [],
-            createdAt: work.createdAt.toISOString(),
-            updatedAt: new Date().toISOString(),
             summary,
+            createdAt: work.createdAt.toISOString(),
+            updatedAt: updatedAt.toISOString(),
           });
 
           if (!result) {
@@ -315,8 +325,7 @@ export const worksActions = {
           }
 
           // we'll just smush this in and pray
-          const result = await agent.fan.fics.work.deleteRecord(rkey);
-          return result;
+          await client.fan.fics.work.deleteRecord(rkey);
         } catch (error) {
           console.error(error);
           throw new ActionError({

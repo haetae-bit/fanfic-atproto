@@ -78,7 +78,7 @@ if (result && !result.error) {
           <input 
             class="tab"
             type="radio" 
-            name="chapterOption" 
+            name="option" 
             id="manual" 
             value="manual" 
             aria-label="Default" 
@@ -121,10 +121,31 @@ if (result && !result.error) {
           <input 
             class="tab" 
             type="radio" 
-            name="chapterOption" 
+            name="option" 
+            id="bsky" 
+            value="bsky" 
+            aria-label="Import from Bluesky" 
+            aria-controls="option-bsky"
+            role="tab"
+          />
+          <div id="option-bsky" class="tab-content option" role="tabpanel">
+            <p>You can import a Bluesky post as a chapter in your work!</p>
+            <label for="bsky-uri" class="label">
+              Bluesky URI
+              <Popover id="bsky-help" icon="info" label="help">
+                <p>Please input the URL of the Bluesky post.</p>
+              </Popover>
+            </label>
+            <input class="input" type="text" name="bskyUri" id="bsky-uri" />
+          </div>
+
+          <input 
+            class="tab" 
+            type="radio" 
+            name="option" 
             id="leaflet" 
             value="leaflet" 
-            aria-label="Import from leaflet" 
+            aria-label="Import from Leaflet.pub" 
             aria-controls="option-leaflet"
             role="tab"
           />
@@ -133,31 +154,11 @@ if (result && !result.error) {
             <label for="leaflet-uri" class="label">
               Leaflet URI
               <Popover id="leaflet-help" icon="info" label="help">
-                <p>Please input the URL of the leaflet document you'd like to use. Make sure it's published in a publication(?)</p>
+                <p>Please input the AT URI of the leaflet post you'd like to use. Make sure it's published in a publication!</p>
+                <p>For more info, <a href="/help/chapter">see this guide</a>.</p>
               </Popover>
             </label>
-            <input class="input" type="text" name="chapterUri" id="leaflet-uri" />
-          </div>
-
-          <input 
-            class="tab" 
-            type="radio" 
-            name="chapterOption" 
-            id="bsky" 
-            value="bsky" 
-            aria-label="Import from BlueSky" 
-            aria-controls="option-bsky"
-            role="tab"
-          />
-          <div id="option-bsky" class="tab-content option" role="tabpanel">
-            <p>You can import a BlueSky post as a chapter in your work!</p>
-            <label for="bsky-uri" class="label">
-              BlueSky URI
-              <Popover id="bsky-help" icon="info" label="help">
-                <p>Please input the URL of the BlueSky post.</p>
-              </Popover>
-            </label>
-            <input class="input" type="text" name="chapterUri" id="bsky-uri" />
+            <input class="input" type="text" name="leafletUri" id="leaflet-uri" />
           </div>
         </div>
       </fieldset>
@@ -192,5 +193,10 @@ if (result && !result.error) {
 
 <script>
   const form = document.forms.namedItem("new-work-form") as HTMLFormElement;
-  console.log(form.elements);
+  form.addEventListener("submit", (e) => {
+    // e.preventDefault();
+    // console.log(form.elements);
+    const data = new FormData(e.currentTarget as HTMLFormElement);
+    console.log(data);
+  });
 </script>
