@@ -1,0 +1,16 @@
+.tagify {
+  --tag-invalid-color: var(--color-error-content);
+  --tag-invalid-bg: var(--color-error);
+  display: flex;
+  flex-wrap: wrap;
+}
+
+/* .tagify_input {
+  @apply input input-ghost;
+} */
+
+.tagify__tag__removeBtn {
+  &::after {
+    content: icon('i-lc-x');
+  }
+}

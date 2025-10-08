@@ -31,7 +31,7 @@ export default async function() {
       tags: "hey",
     }
   ]);
-
+  
   await db.insert(Chapters).values([
     {
       workId: 1,

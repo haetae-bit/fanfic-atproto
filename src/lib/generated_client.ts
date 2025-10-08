@@ -1,3 +1,54 @@
+// Generated TypeScript client for AT Protocol records
+// Generated at: 2025-10-07 01:09:41 UTC
+// Lexicons: 4
+
+/**
+ * @example Usage
+ * ```ts
+ * import { AtProtoClient } from "./generated_client.ts";
+ *
+ * const client = new AtProtoClient(
+ *   'https://api.slices.network',
+ *   'at://did:plc:dg2qmmjic7mmecrbvpuhtvh6/network.slices.slice/3m2fpay6dw522'
+ * );
+ *
+ * // Get records from the fan.fics.work.comment collection
+ * const records = await client.fan.fics.work.comment.getRecords();
+ *
+ * // Get a specific record
+ * const record = await client.fan.fics.work.comment.getRecord({
+ *   uri: 'at://did:plc:example/fan.fics.work.comment/3abc123'
+ * });
+ *
+ * // Get records with filtering and search
+ * const filteredRecords = await client.fan.fics.work.comment.getRecords({
+ *   where: {
+ *     text: { contains: "example search term" }
+ *   }
+ * });
+ *
+ * // Use slice-level methods for cross-collection queries with type safety
+ * const sliceRecords = await client.network.slices.slice.getSliceRecords<FanFicsWorkComment>({
+ *   where: {
+ *     collection: { eq: 'fan.fics.work.comment' }
+ *   }
+ * });
+ *
+ * // Search across multiple collections using union types
+ * const multiCollectionRecords = await client.network.slices.slice.getSliceRecords<FanFicsWorkComment | AppBskyActorProfile>({
+ *   where: {
+ *     collection: { in: ['fan.fics.work.comment', 'app.bsky.actor.profile'] },
+ *     text: { contains: 'example search term' },
+ *     did: { in: ['did:plc:user1', 'did:plc:user2'] }
+ *   },
+ *   limit: 20
+ * });
+ *
+ * // Serve the records as JSON
+ * Deno.serve(async () => new Response(JSON.stringify(records.records.map(r => r.value))));
+ * ```
+ */
+
 import {
   type AuthProvider,
   type BlobRef,

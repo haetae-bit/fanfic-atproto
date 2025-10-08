@@ -22,7 +22,12 @@ export default defineConfig({
     scopes: {
       genericData: true,
     },
-  }), unocss(), preact()],
+  }), unocss(), preact({ compat: true })],
+  // vite: {
+  //   ssr: {
+  //     noExternal: ["@yaireo/tagify"]
+  //   }
+  // },
   experimental: {
     fonts: [
       {

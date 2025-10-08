@@ -1,5 +1,4 @@
-import { AtUri } from "@atproto/api";
-import { TID } from "@atproto/common-web";
+import { AtUri, ComAtprotoRepoStrongRef } from "@atproto/api";
 import { getAgent } from "@/lib/atproto";
 import { ActionError, defineAction } from "astro:actions";
 import { db, eq, and, Users, Works } from "astro:db";
@@ -79,14 +78,16 @@ export const worksActions = {
           collection,
           rkey,
         });
-        console.log(record);
+        if (record?.success) {
+          const { data } = record;
+          console.log(data.value);
+        }
       }
 
       let uri; // we'll assign this after a successful request was made
       // depending on whether someone toggled the privacy option, push this into user pds
       if (publish) {
         try {
-          const rkey = TID.nextStr();
           const agent = await getAgent(context.locals);
 
           if (!agent) {
@@ -99,33 +100,29 @@ export const worksActions = {
 
           // ideally, we'd like tags to be references to another record but we won't process them here
           // we'll just smush this in and pray
-          const result = await agent.com.atproto.repo.createRecord({
-            repo: user.did,
-            collection: "moe.fanfics.work",
-            rkey,
-            record: {
-              ...record,
-              createdAt: createdAt.toISOString(),
-            },
-            validate: false,
+          const result = await agent.fan.fics.work.createRecord({
+            title,
+            tags: [tags],
+            author: loggedInUser.did,
+            summary,
+            chapters: [],
+            createdAt: createdAt.toISOString(),
           });
           
-          uri = result.data.uri;
+          uri = result.uri;
 
           // only do this if chapterOption is set to manual
           if (chapterOption === "manual") {
-            const crkey = TID.nextStr();
-            const chapter = await agent.com.atproto.repo.createRecord({
-              repo: user.did,
-              collection: "moe.fanfics.work.chapter",
-              rkey: crkey,
-              record: {
-                worksUri: uri,
-                title: chapterTitle,
-                content,            
-                createdAt: createdAt.toISOString(),
+            // const crkey = TID.nextStr();
+            const chapter = await agent.fan.fics.work.chapter.createRecord({
+              workAtUri: uri as string,
+              title: chapterTitle!,
+              content: content!,
+              createdAt: createdAt.toISOString(),
+              Main: {
+
               },
-              validate: false,
+              ChapterRef: "",
             });
 
             console.log(chapter);
@@ -222,21 +219,17 @@ export const worksActions = {
             });
           }
 
-          const result = await agent.com.atproto.repo.putRecord({
-            repo: work.author, // since the author will be a did
-            collection: "moe.fanfics.work",
-            rkey,
-            record: {
-              title,
-              tags,
-              summary,
-              createdAt: work.createdAt.toISOString(),
-              updatedAt: updatedAt.toISOString(),
-            },
-            validate: false,
+          const result = await agent.fan.fics.work.updateRecord(rkey, {
+            title,
+            tags: [tags],
+            author: loggedInUser.did,
+            chapters: [],
+            createdAt: work.createdAt.toISOString(),
+            updatedAt: new Date().toISOString(),
+            summary,
           });
 
-          if (!result.success) {
+          if (!result) {
             throw new ActionError({
               code: "BAD_REQUEST",
               message: "Something went wrong with updating your fic on your PDS!",
@@ -322,18 +315,8 @@ export const worksActions = {
           }
 
           // we'll just smush this in and pray
-          const result = await agent.com.atproto.repo.deleteRecord({
-            repo: work.author, // since the author will be a did
-            collection: "moe.fanfics.work",
-            rkey,
-          });
-
-          if (!result.success) {
-            throw new ActionError({
-              code: "BAD_REQUEST",
-              message: "Something went wrong with deleting your fic from your PDS!",
-            });
-          }
+          const result = await agent.fan.fics.work.deleteRecord(rkey);
+          return result;
         } catch (error) {
           console.error(error);
           throw new ActionError({

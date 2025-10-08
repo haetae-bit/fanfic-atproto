@@ -1,7 +1,8 @@
 import type { APIContext } from "astro";
 import { AtpBaseClient } from "@atproto/api";
 import { DidResolver } from "@atproto/identity";
-import { AtProtoClient } from "./client";
+import { AtProtoClient } from "./generated_client";
+// import { oauthClient } from "@fujocoded/authproto/dist/routes/astro-authproto/src/lib/auth.js";
 
 export async function getAgent(locals: APIContext["locals"]) {
   try {
@@ -9,9 +10,9 @@ export async function getAgent(locals: APIContext["locals"]) {
     const client = new AtProtoClient(
       'https://api.slices.network',
       'at://did:plc:dg2qmmjic7mmecrbvpuhtvh6/network.slices.slice/3m2fpay6dw522',
-      // oauthClient
+      // oauthClient,
     );
-    return agent;
+    return client;
   } catch (error) {
     // we don't need to return anything to make sure the site still functions for not logged in users?
     console.error(error);
