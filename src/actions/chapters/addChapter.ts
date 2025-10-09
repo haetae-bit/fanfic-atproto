@@ -1,20 +1,13 @@
-import { getAgent } from "@/lib/atproto";
-import { updateWork } from "@/lib/db";
+import { defineAction, ActionError } from "astro:actions";
+import { z } from "astro:content";
+import { db, Works, eq, Chapters } from "astro:db";
 import { AtUri } from "@atproto/api";
 import { TID } from "@atproto/common-web";
-import { ActionError, defineAction } from "astro:actions"
-import { Chapters, db, eq, Works } from "astro:db";
-import { z } from "astro:schema"
+import { getAgent } from "@/lib/atproto";
+import { updateWork } from "@/lib/db";
+import { chapterSchema } from ".";
 
-const chapterSchema = z.object({
-  uri: z.string().optional(), // this is in case someone wants to add a new post
-  title: z.string().optional(),
-  notes: z.string().optional(),
-  content: z.string().optional(),
-});
-
-export const chaptersActions = {
-  addChapter: defineAction({
+export default defineAction({
     accept: "form",
     input: chapterSchema.extend({
       publish: z.boolean({ coerce: true }),
@@ -156,21 +149,4 @@ export const chaptersActions = {
       
       return result;
     },
-  }),
-  editChapter: defineAction({
-    accept: "form",
-    input: chapterSchema,
-    handler: async ({ uri, title, content, notes }, context) => {
-
-    }
-  }),
-  deleteChapter: defineAction({
-    accept: "form",
-    handler: async (_, context) => {
-      const workSlug = context.params["workId"];
-      if (!workSlug) {
-        // there is no work or chapter!
-      }
-    },
-  }),
-}
+  });
