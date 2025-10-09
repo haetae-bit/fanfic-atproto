@@ -1,16 +1,16 @@
 import { ActionError, defineAction } from "astro:actions";
 import { z } from "astro:schema";
-import { workSchema } from ".";
 import { db, eq, Users, Works } from "astro:db";
 import { TID } from "@atproto/common-web";
 import { AtUri } from "@atproto/api";
 import { customAlphabet } from "nanoid";
 import { callSlices, fetchBskyPost, getAgent } from "@/lib/atproto";
 import { addChapter } from "@/lib/db";
+import schema from "./schema";
 
 export default defineAction({
   accept: "form",
-  input: workSchema.extend({
+  input: schema.extend({
     option: z.enum(["manual", "leaflet", "bsky"]),
     bskyUri: z.string().optional(),
     leafletUri: z.string().optional(),

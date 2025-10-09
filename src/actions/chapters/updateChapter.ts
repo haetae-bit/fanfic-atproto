@@ -1,10 +1,10 @@
 import { defineAction } from "astro:actions";
-import { chapterSchema } from ".";
+import schema from "./schema";
 
 export default defineAction({
   accept: "form",
-  input: chapterSchema,
+  input: schema,
   handler: async ({ uri, title, content, notes }, context) => {
-    
+
   }
 });

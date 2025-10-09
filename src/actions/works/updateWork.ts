@@ -2,11 +2,11 @@ import { defineAction, ActionError } from "astro:actions";
 import { db, Works, and, eq } from "astro:db";
 import { AtUri } from "@atproto/api";
 import { getAgent, client } from "@/lib/atproto";
-import { workSchema } from ".";
+import schema from "./schema";
 
 export default defineAction({
   accept: "form",
-  input: workSchema,
+  input: schema,
   handler: async ({ title, summary, tags }, context) => {
     const workId = context.params["workId"];
     const loggedInUser = context.locals.loggedInUser;
