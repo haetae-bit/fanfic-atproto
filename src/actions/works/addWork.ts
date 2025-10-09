@@ -5,7 +5,7 @@ import { AtUri } from "@atproto/api";
 import { TID } from "@atproto/common-web";
 import { customAlphabet } from "nanoid";
 import { callSlices, fetchBskyPost, fetchLeaflet, getAgent } from "@/lib/atproto";
-import { addChapter } from "@/lib/db";
+import { addChapter, updateWork } from "@/lib/db";
 import schema from "./schema";
 
 export default defineAction({
@@ -60,8 +60,7 @@ export default defineAction({
     //#region "Construct data for a new work"
     // convert the tags into json thru shenaniganery
     console.log(tags);
-
-    // we'll create a timestamp and record here
+    
     const createdAt = new Date();
     const record = {
       title,
@@ -84,53 +83,71 @@ export default defineAction({
     //#endregion
     
     //#region "Start publishing work to ATProto"
-    let uri: string | undefined; // we'll assign this after a successful request was made
-    // depending on whether someone toggled the privacy option, push this into user pds
+    // we'll assign this after a successful request was made
+    let uri: string | undefined;
+    let cUri: string | undefined;
+    
     if (publish) {
       try {
         const rkey = TID.nextStr();
-        const agent = await getAgent(context.locals);
-
-        if (!agent) {
-          console.error("Agent not found!");
-          throw new ActionError({
-            code: "BAD_REQUEST",
-            message: "Something went wrong when connecting to your PDS.",
-          });
-        }
-
-        // we'll just smush this in and pray
+        const { tags, ...rest } = record;
+        
         const result = await callSlices(
           "work",
           "createRecord",
           rkey,
           {
-            ...record,
+            ...rest,
+            tags: [tags],
             author: loggedInUser.did,
-            createdAt: createdAt.toISOString(),
+            createdAt: createdAt.toISOString()
           }
         );
         
         console.log(JSON.stringify(result));
+        if (result.error) {
+          console.error(`this went wrong for WORK: ${result.message}`);
+          throw new ActionError({
+            code: "BAD_REQUEST",
+            message: "Something went wrong!",
+          });
+        }
         uri = result.uri;
 
         //#region "Publish the first chapter with the work to ATProto"
-        // only do this if option is set to manual
-        if (option === "manual") {
+        // ONLY proceed if the uri is set from successfully adding a work
+        if (uri) {
           const crkey = TID.nextStr(rkey);
+          let chapterContent = {};
+                  
+          if (option === "manual") {
+            chapterContent = {
+              $type: "fan.fics.work.chapter#chapterText",
+              text: content,
+            };
+          }
+
           const chapter = await callSlices(
             "work.chapter",
             "createRecord",
             crkey,
             {
               title: chapterTitle,
-              content,
+              content: chapterContent,
               createdAt: createdAt.toISOString(),
-              work: new AtUri(uri as string),
+              workUri: uri,
             }
           );
 
-          console.log(chapter);
+          console.log(JSON.stringify(chapter));
+          if (chapter.error) {
+            console.error(`this went wrong: ${chapter.message}`);
+            throw new ActionError({
+              code: "BAD_REQUEST",
+              message: "Something went wrong!",
+            });
+          }
+          cUri = chapter.uri;
           //#endregion
         }
       } catch (error) {
@@ -158,13 +175,21 @@ export default defineAction({
     }).returning();
 
     if (chapterTitle && content) {
-      await addChapter(
-        work.id,
-        chapterTitle,
-        content,
-        uri,
-        notes,
-      );
+      try {
+        await addChapter(
+          work.id,
+          chapterTitle,
+          content,
+          cUri,
+          notes,
+        );
+      } catch (error) {
+        console.error(error);
+        throw new ActionError({
+          code: "BAD_REQUEST",
+          message: "Something went wrong!",
+        });
+      }
     }
     
     return work;

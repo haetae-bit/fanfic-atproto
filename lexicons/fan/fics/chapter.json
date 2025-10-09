@@ -8,13 +8,13 @@
       "record": {
         "type": "object",
         "required": [
-          "work",
+          "workUri",
           "title",
           "content",
           "createdAt"
         ],
         "properties": {
-          "work": {
+          "workUri": {
             "description": "The work this chapter is associated with",
             "type": "string",
             "format": "at-uri"

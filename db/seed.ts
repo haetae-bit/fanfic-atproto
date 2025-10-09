@@ -1,4 +1,4 @@
-import { Chapters, db, Users, Works } from "astro:db";
+import { Chapters, db, Tags, Users, Works } from "astro:db";
 
 export default async function() { 
   await db.insert(Users).values([
@@ -51,5 +51,53 @@ export default async function() {
       title: "at proto",
       content: "what's up?! <b>bold</b> and <em>italics</em> should work.",
     }
+  ]);
+
+  await db.insert(Tags).values([
+    {
+      type: "warnings",
+      slug: "warning:noncon",
+      label: "Non-con",
+    },
+    {
+      type: "warnings",
+      slug: "warning:dead-dove",
+      label: "Dead Dove: Do not eat",
+    },
+    {
+      type: "character",
+      slug: "character:till",
+      label: "Till",
+    },
+    {
+      type: "character",
+      slug: "character:ivan",
+      label: "Ivan",
+    },
+    {
+      type: "character",
+      slug: "character:mizi",
+      label: "Mizi",
+    },
+    {
+      type: "character",
+      slug: "character:sua",
+      label: "Sua",
+    },
+    {
+      type: "relationship",
+      slug: "ship:mizi-sua",
+      label: "Mizi/Sua",
+    },
+    {
+      type: "relationship",
+      slug: "ship:till-ivan",
+      label: "Till/Ivan",
+    },
+    {
+      type: "series",
+      slug: "series:alien-stage",
+      label: "Alien Stage"
+    },
   ]);
 }
