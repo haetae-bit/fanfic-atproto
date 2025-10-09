@@ -14,44 +14,6 @@ export async function getAgent(locals: APIContext["locals"]) {
   }
 }
 
-const API_URL = import.meta.env.API_URL as string;
-const SLICE_URI = import.meta.env.SLICE_URI as string;
-
-export const client = new AtProtoClient(
-  API_URL,
-  SLICE_URI,
-  // oauth | authprovider
-);
-
-export async function callSlices(collection: string, endpoint: string, record: { rkey: string, record: any }) {
-  const BEARER_TOKEN = import.meta.env.BEARER_TOKEN;
-  const SLICES_API = 'https://slices-api.fly.dev/xrpc';
-  const NAMESPACE = "fan.fics";
-  const url = `${SLICES_API}/${NAMESPACE}.${collection}.${endpoint}`;
-  let method = "";
-
-  if (endpoint.includes("getRecord")) {
-    method = "GET";
-  } else {
-    method = "POST";
-  }
-
-  const result = await fetch(url, {
-    method,
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${BEARER_TOKEN}`,
-    },
-    body: JSON.stringify({
-      ...record,
-      slice: SLICE_URI,
-    }),
-  });
-
-  const json = await result.json();
-  return json;
-}
-
 const RESOLVER = new DidResolver({});
 export async function didToHandle(did: string) {
   try {
@@ -75,7 +37,7 @@ export async function fetchBskyPost(uri: string) {
     "main.bsky.dev",
     "social.daniela.lol",
   ];
-
+  
   if (!bsky.includes(host)) {
     throw new Error("This URL is not from a compatible Bluesky client!");
   }
@@ -86,6 +48,80 @@ export async function fetchBskyPost(uri: string) {
   return atUri;
 }
 
-export function fetchLeaflet(uri: string) {
-  
+export async function fetchLeaflet(uri: string) {
+
+}
+
+const API_URL = import.meta.env.API_URL as string;
+const SLICE_URI = import.meta.env.SLICE_URI as string;
+const BEARER_TOKEN = import.meta.env.BEARER_TOKEN;
+const XRPC = 'https://slices-api.fly.dev/xrpc';
+const NAMESPACE = "fan.fics";
+
+export const client = new AtProtoClient(
+  API_URL,
+  SLICE_URI,
+  // oauth | authprovider
+);
+
+export async function callSlices(
+  collection: "work" | "work.chapter" | "work.comment",
+  endpoint: "createRecord" | "updateRecord" | "deleteRecord",
+  rkey: string,
+  record: any,
+) {
+  const url = `${XRPC}/${NAMESPACE}.${collection}.${endpoint}`;
+  const params = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${BEARER_TOKEN}`,
+    }
+  };
+
+  switch (endpoint) {
+    case "createRecord":
+    case "updateRecord":
+      try {
+        const result = await fetch(url, {
+          ...params,
+          body: JSON.stringify({
+            record,
+            rkey,
+            slice: SLICE_URI,
+          }),
+        });
+        const json = await result.json();
+        return json;
+      } catch (error) {
+        console.error(error);
+        throw new Error("Record failed to post!");
+      }
+    case "deleteRecord":
+      try {
+        const result = await fetch(url, {
+          ...params,
+          body: JSON.stringify({ rkey }),
+        });
+        return result.ok;
+      } catch (error) {
+        console.error(error);
+        throw new Error("Record failed to delete!");
+      }
+    default:
+      break;
+  }
+}
+
+export async function fetchSlices(query: string) {
+  const url = `${API_URL}/graphql?slice=${SLICE_URI}`;
+  const result = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      query: `${query}`
+    }),
+  });
+  const json = await result.json();
+  return json;
 }

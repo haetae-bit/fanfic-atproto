@@ -1,17 +1,17 @@
 import { ActionError, defineAction } from "astro:actions";
-import { z } from "astro:schema";
 import { db, eq, Users, Works } from "astro:db";
-import { TID } from "@atproto/common-web";
+import { z } from "astro:schema";
 import { AtUri } from "@atproto/api";
+import { TID } from "@atproto/common-web";
 import { customAlphabet } from "nanoid";
-import { callSlices, fetchBskyPost, getAgent } from "@/lib/atproto";
+import { callSlices, fetchBskyPost, fetchLeaflet, getAgent } from "@/lib/atproto";
 import { addChapter } from "@/lib/db";
 import schema from "./schema";
 
 export default defineAction({
   accept: "form",
   input: schema.extend({
-    option: z.enum(["manual", "leaflet", "bsky"]),
+    option: z.enum(["manual", "bsky", "leaflet"]),
     bskyUri: z.string().optional(),
     leafletUri: z.string().optional(),
     chapterTitle: z.string().optional(),
@@ -74,22 +74,17 @@ export default defineAction({
     if (option !== "manual") {
       if (bskyUri) {
         const result = await fetchBskyPost(bskyUri);
-        console.log(result);
+        console.log("bsky post: " + JSON.stringify(result));
       }
-      // record key is 13 chars long
-      // const { records } = await client.getSliceRecords({
-      //   where: {
-      //     collection: { in: ["app.bsky.feed.post", "pub.leaflet.document"] },
-      //     did: { eq: loggedInUser.did },
-      //   }
-      // });
-
-      // console.log(records);
+      if (leafletUri) {
+        const result = await fetchLeaflet(leafletUri);
+        console.log("leaflet: " + JSON.stringify(result));
+      }
     }
     //#endregion
-
+    
     //#region "Start publishing work to ATProto"
-    let uri; // we'll assign this after a successful request was made
+    let uri: string | undefined; // we'll assign this after a successful request was made
     // depending on whether someone toggled the privacy option, push this into user pds
     if (publish) {
       try {
@@ -108,13 +103,11 @@ export default defineAction({
         const result = await callSlices(
           "work",
           "createRecord",
-          { 
-            rkey,
-            record: {
-              ...record,
-              author: loggedInUser.did,
-              createdAt: createdAt.toISOString(),
-            }
+          rkey,
+          {
+            ...record,
+            author: loggedInUser.did,
+            createdAt: createdAt.toISOString(),
           }
         );
         
@@ -128,14 +121,12 @@ export default defineAction({
           const chapter = await callSlices(
             "work.chapter",
             "createRecord",
+            crkey,
             {
-              rkey: crkey,
-              record: {
-                title: chapterTitle,
-                content,
-                createdAt: createdAt.toISOString(),
-                work: new AtUri(uri),
-              }
+              title: chapterTitle,
+              content,
+              createdAt: createdAt.toISOString(),
+              work: new AtUri(uri as string),
             }
           );
 
@@ -171,6 +162,7 @@ export default defineAction({
         work.id,
         chapterTitle,
         content,
+        uri,
         notes,
       );
     }

@@ -29,18 +29,24 @@ export async function addTag(type: "character" | "relationship" | "series" | "wa
 }
 
 // this should be called when a new work is added
-export async function addChapter(workId: number, title: string, content: string, notes?: string) {
+export async function addChapter(workId: number, title: string, content: string, uri?: string, notes?: string) {
   if (!workId) {
     throw new Error("Work ID is invalid!");
   }
   
-  await db.insert(Chapters).values({
-    workId,
-    title,
-    // order,
-    notes,
-    content,
-  });
+  try {
+    const result = await db.insert(Chapters).values({
+      workId,
+      uri,
+      title,
+      // order,
+      notes,
+      content,
+    }).returning();
+    return result;
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 export async function updateWork(chapter: Chapter) {

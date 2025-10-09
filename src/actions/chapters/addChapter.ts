@@ -3,7 +3,7 @@ import { z } from "astro:schema";
 import { db, Works, eq, Chapters } from "astro:db";
 import { AtUri } from "@atproto/api";
 import { TID } from "@atproto/common-web";
-import { getAgent } from "@/lib/atproto";
+import { callSlices, fetchBskyPost, fetchLeaflet, fetchSlices, getAgent } from "@/lib/atproto";
 import { updateWork } from "@/lib/db";
 import schema from "./schema";
 
@@ -12,7 +12,8 @@ export default defineAction({
   input: schema.extend({
     publish: z.boolean({ coerce: true }),
   }),
-  handler: async ({ uri, title, content, notes, publish }, context) => {
+  handler: async ({ option, bskyUri, leafletUri, title, content, notes, publish }, context) => {
+    //#region "Check authentication and if work exists"
     const loggedInUser = context.locals.loggedInUser;
     if (!loggedInUser) {
       throw new ActionError({
@@ -40,38 +41,26 @@ export default defineAction({
         code: "NOT_FOUND",
       });
     }
-
-    if (uri) {
-      const { rkey, host, collection } = new AtUri(uri);
-      // start an import process here
-      const agent = await getAgent(context.locals);
-      if (!agent) {
-        console.error("Agent not found!");
-        throw new ActionError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Something went wrong when connecting to your PDS.",
-        });
+    //#endregion
+    //#region "Import a chapter"
+    if (option !== "manual") {
+      if (bskyUri) {
+        const bskyPost = await fetchBskyPost(bskyUri);
+        console.log(bskyPost);
       }
-
-      if (loggedInUser.did !== host) {
-        throw new ActionError({
-          code: "UNAUTHORIZED",
-          message: "You can only add posts or documents that you own!",
-        });
+      if (leafletUri) {
+        const leaflet = await fetchLeaflet(leafletUri);
+        console.log(leaflet);
       }
-
-      const record = await agent.com.atproto.repo.getRecord({
-        repo: loggedInUser.did,
-        collection,
-        rkey,
-      });
-      
-      console.log(record);
     }
+    //#endregion
 
+    //#region "Construct the data"
     const createdAt = new Date();
-    let atUri: string | undefined; // this will be set once a chapter is published
-    if (publish && !uri) {
+    let uri: string | undefined; // this will be set once a chapter is published
+    //#endregion
+    //#region "Publish the chapter"
+    if (publish && (option === "manual")) {
       // fetch the work record then add
       if (!work.uri) {
         throw new ActionError({
@@ -80,17 +69,7 @@ export default defineAction({
         });
       }
 
-      const { rkey, host } = new AtUri(work.uri);
-      const agent = await getAgent(context.locals);
-
-      if (!agent) {
-        console.error("Agent not found!");
-        throw new ActionError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Something went wrong when connecting to your PDS.",
-        });
-      }
-
+      const { host } = new AtUri(work.uri);
       if (loggedInUser.did !== host) {
         throw new ActionError({
           code: "UNAUTHORIZED",
@@ -98,13 +77,29 @@ export default defineAction({
         });
       }
 
-      const record = await agent.com.atproto.repo.getRecord({
-        repo: loggedInUser.did,
-        collection: "fan.fics.work",
-        rkey,
-      });
-
-      if (!record.success) {
+      // Probably the only way I can write this nightmare:
+      // https://api.slices.network/graphql?slice=at://did:plc:dg2qmmjic7mmecrbvpuhtvh6/network.slices.slice/3m2fpay6dw522
+      const response = await fetchSlices(`
+        query {
+          fanFicsWorks(where: {
+            and: [{
+              uri: { eq: "${work.uri}" },
+              author: { eq: "${loggedInUser.did}" }
+            }]
+          }) {
+            edges {
+              node {
+                uri
+              }
+            }
+          }
+        }
+      `);
+      
+      const { fanFicsWorks } = response.data;
+      const { node } = fanFicsWorks.edges;
+      console.log(JSON.stringify(fanFicsWorks));
+      if (!node.uri) {
         throw new ActionError({
           code: "NOT_FOUND",
           message: "That work does not exist!",
@@ -112,41 +107,40 @@ export default defineAction({
       }
 
       // new chapter record key
-      const crkey = TID.nextStr();
-      const chapter = await agent.com.atproto.repo.createRecord({
-        repo: loggedInUser.did,
-        collection: "fan.fics.work.chapter",
-        rkey: crkey,
-        record: {
-          workAtUri: work.uri,
+      const rkey = TID.nextStr();
+      const record = await callSlices(
+        "work.chapter",
+        "createRecord",
+        rkey,
+        {
           title,
           content,
           notes,
           createdAt: createdAt.toISOString(),
-        },
-        validate: false,
-      });
+        }
+      );
 
-      if (!chapter.success) {
+      if (!record.success) {
         throw new ActionError({
           code: "BAD_REQUEST",
           message: "Failed to add a new chapter to the work",
         });
       }
 
-      atUri = chapter.data.uri;
+      uri = record.data.uri;
     }
-    
+    //#endregion
+    //#region "Post the chapter to the database"
     const [result] = await db.insert(Chapters).values({
       workId: work.id,
+      uri,
       title: title!,
       content: content!,
       notes,
     }).returning();
-
     // any new chapters added also need to update the work
     await updateWork(result);
-    
+    //#endregion
     return result;
   },
 });
