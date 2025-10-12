@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "dependencies": {
     "@astrojs/db": "^0.18.0",
-    "@astrojs/node": "^9.4.4",
+    "@astrojs/node": "^9.4.6",
     "@astrojs/preact": "^4.1.1",
     "@atproto/api": "^0.16.9",
     "@atproto/common-web": "^0.4.3",
@@ -27,7 +27,8 @@
     "@tiptap/pm": "^3.6.5",
     "@tiptap/starter-kit": "^3.6.5",
     "@yaireo/tagify": "^4.35.4",
-    "astro": "^5.14.1",
+    "astro": "^5.14.4",
+    "atproto-ui": "^0.3.1",
     "nanoid": "^5.1.5",
     "preact": "^10.27.2"
   },

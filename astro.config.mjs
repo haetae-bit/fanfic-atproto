@@ -4,7 +4,6 @@ import node from '@astrojs/node';
 import db from "@astrojs/db";
 import authproto from "@fujocoded/authproto";
 import unocss from "unocss/astro";
-
 import preact from "@astrojs/preact";
 
 // https://astro.build/config
@@ -13,16 +12,39 @@ export default defineConfig({
   adapter: node({
     mode: 'standalone',
   }),
-  integrations: [db(), authproto({
-    applicationName: "fan archive",
-    applicationDomain: "localhost:4321",
-    driver: {
-      name: "astro:db",
+  integrations: [
+    db(),
+    authproto({
+      applicationName: "fan archive",
+      applicationDomain: "localhost:4321",
+      driver: {
+        name: "astro:db",
+      },
+      scopes: {
+        genericData: true,
+      },
+    }),
+    unocss(),
+    preact({ compat: true })
+  ],
+  vite: {
+    ssr: {
+      noExternal: ["atproto-ui"],
     },
-    scopes: {
-      genericData: true,
-    },
-  }), unocss(), preact({ compat: true })],
+  },
+  // session: { // could this work for slices oauth?
+  //   driver: process.env.PROD ? "db0" : "memory",
+  //   options: {
+  //     database: db(),
+  //     tableName: "oauth",
+  //   },
+  //   cookie: {
+  //     name: "fics.fan-session",
+  //     secure: process.env.PROD ? true : false,
+  //     sameSite: "lax",
+  //     path: "/",
+  //   }
+  // },
   experimental: {
     fonts: [
       {
