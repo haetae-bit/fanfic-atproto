@@ -24,11 +24,11 @@ const Works = defineTable({
     tags: column.json(),
     createdAt: column.date({ name: "created_at", default: NOW }),
     updatedAt: column.date({ name: "updated_at", optional: true }),
+    draft: column.boolean({ default: true }),
   },
   indexes: [
     { on: ["author", "slug"], unique: true },
     { on: ["slug", "createdAt"], unique: true },
-    { on: ["uri", "createdAt"], unique: true },
   ],
 });
 
@@ -37,13 +37,19 @@ const Chapters = defineTable({
     id: column.number({ primaryKey: true }),
     uri: column.text({ optional: true }),
     workId: column.number({ references: () => Works.columns.id }),
-    // order: column.number(), // i don't think this is needed...
+    slug: column.text({ unique: true }),
     title: column.text(),
+    warnings: column.text({ multiline: true, optional: true }),
     notes: column.text({ multiline: true, optional: true }),
-    content: column.text({ multiline: true }),
+    content: column.json(),
     createdAt: column.date({ name: "created_at", default: NOW }),
     updatedAt: column.date({ name: "updated_at", optional: true }),
+    draft: column.boolean({ default: true }),
   },
+  indexes: [
+    { on: ["workId", "slug"], unique: true },
+    { on: ["workId", "createdAt"], unique: true },
+  ]
 });
 
 const Tags = defineTable({

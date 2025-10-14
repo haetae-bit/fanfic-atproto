@@ -10,10 +10,10 @@ const { chapter } = Astro.props;
 <section>
   <header>
     <h1>{chapter.title}</h1>
-    {chapter.authorsNotes && (
+    {chapter.warnings && (
       <details>
-        <summary>Author's Notes</summary>
-        <Fragment set:html={chapter.authorsNotes} />
+        <summary>Content warnings</summary>
+        <Fragment set:html={chapter.warnings} />
       </details>
     )}
     <time datetime={chapter.createdAt.toISOString()}>
@@ -26,10 +26,10 @@ const { chapter } = Astro.props;
   </div>
 
   <footer>
-    {chapter.endNotes && (
+    {chapter.notes && (
       <aside>
-        <p>End notes</p>
-        <Fragment set:html={chapter.endNotes} />
+        <p>Author's Notes</p>
+        <Fragment set:html={chapter.notes} />
       </aside>
     )}
   </footer>

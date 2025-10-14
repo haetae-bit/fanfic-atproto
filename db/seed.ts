@@ -13,14 +13,14 @@ export default async function() {
       author: "test", 
       title: "Hey there title",
       summary: "<p>i have evil html</p>",
-      tags: [{ label: "test", url: "#" }],
+      tags: [{ label: "test", slug: "#", type: "character" }],
     },
     { 
       slug: "1235",
       author: "another", 
       title: "Hello world",
       summary: "<p>whoag i have <b>BOLD</b></p>",
-      tags: [{ label: "label", url: "#" }],
+      tags: [{ label: "label", slug: "#", type: "relationship" }, { label: "label", slug: "#", type: "character" }],
     },
     {
       uri: "at://did:plc:dg2qmmjic7mmecrbvpuhtvh6/moe.fanfics.works/3lyeiyq32ek2o",
@@ -35,19 +35,19 @@ export default async function() {
   await db.insert(Chapters).values([
     {
       workId: 1,
-      // order: 1,
+      slug: `${new Date().valueOf().toString()}-1`,
       title: "chapter title 1",
       content: "what's up?! <b>bold</b> and <em>italics</em> should work.",
     },
     {
       workId: 2,
-      // order: 1,
+      slug: `${new Date().valueOf().toString()}-2`,
       title: "chapter title 2",
       content: "test",
     },
     {
       workId: 3,
-      // order: 1,
+      slug: `${new Date().valueOf().toString()}-3`,
       title: "at proto",
       content: "what's up?! <b>bold</b> and <em>italics</em> should work.",
     }

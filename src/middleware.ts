@@ -3,8 +3,9 @@ import { defineMiddleware } from "astro:middleware";
 
 export const onRequest = defineMiddleware(async (context, next) => {
   if (context.isPrerendered) return next();
-  const { action, setActionResult, serializeActionResult } = getActionContext(context);
+  // context.session?.set("oauth", "hey") // figure this out
 
+  const { action, setActionResult, serializeActionResult } = getActionContext(context);
   const latestAction = await context.session?.get("latest-action");
   if (latestAction) {
     setActionResult(latestAction.name, latestAction.result);
