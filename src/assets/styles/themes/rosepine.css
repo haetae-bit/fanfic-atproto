@@ -1,3 +1,4 @@
+@layer custom-theme {
 :root:where([data-theme="rosepine"]) {
   color-scheme: dark;
   --color-base-100: oklch(21.336% 0.02549 291.118);
@@ -92,4 +93,5 @@
   --border: 1px;
   --depth: 1;
   --noise: 1;
+}
 }
