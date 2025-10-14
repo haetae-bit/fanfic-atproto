@@ -1,4 +1,5 @@
 import { useBlob, type FeedPostRecord } from "atproto-ui";
+import clsx from "clsx";
 
 export function createAutoEmbed(record: FeedPostRecord, authorDid: string | undefined) {
   const embed = record.embed as { $type?: string } | undefined;
@@ -73,13 +74,13 @@ function PostImage({ image, did }: PostImageProps) {
     : undefined;
 
   return (
-    <figure aria-busy={loading}>
-      <div style={{ aspectRatio: aspect }}>
+    <figure className="bsky embed" aria-busy={loading}>
+      <div className="max-w-full" style={{ aspectRatio: aspect }}>
         {url ? (
-          <img src={url} alt={alt} />
+          <img className="rounded-box" src={url} alt={alt} />
         ) : (
-          <div>
-            {loading ? 'Loading image…' : error ? 'Image failed to load' : 'Image unavailable'}
+          <div className={clsx([error ? "text-error" : "text-neutral", loading && "loading loading-spinner mx-auto"])}>
+            {error ? 'Image failed to load' : 'Image unavailable'}
           </div>
         )}
       </div>
@@ -116,21 +117,20 @@ function ExternalEmbed({ embed, did }: ExternalEmbedProps) {
   const { url, loading, error } = image;
   
   return (
-    <figure aria-busy={loading}>
+    <figure className="bsky embed" aria-busy={loading}>
       <div className="max-w-full">
-        <a href={embed.external.uri} target="_blank" rel="noopener noreferrer">
-          <span aria-hidden="true">{embed.external.title}</span>
-        </a>
         {url ? (
-          <img src={url} alt={embed.external.description} />
+          <a href={embed.external.uri} target="_blank" rel="noopener noreferrer" aria-label={embed.external.title}>
+            <img className="rounded-box" src={url} alt={embed.external.description} />
+          </a>
         ) : (
-          <div className={error ? "text-error" : "text-neutral"}>
-            {loading ? 'Loading image…' : error ? 'Image failed to load' : 'Image unavailable'}
+          <div className={clsx([error ? "text-error" : "text-neutral", loading && "loading loading-spinner mx-auto"])}>
+            {error ? 'Image failed to load' : 'Image unavailable'}
           </div>
         )}
       </div>
       {embed.external.description && embed.external.description.trim().length > 0 && (
-        <figcaption className="font-style-italic">{embed.external.description}</figcaption>
+        <figcaption>{embed.external.description}</figcaption>
       )}
     </figure>
   );

@@ -1,7 +1,7 @@
 import type { LeafletRichTextFacet, LeafletRichTextFeature } from "atproto-ui";
 import React from "preact/compat";
 
-interface BskyPostTextFacet {
+interface BskyPostFacet {
   $type?: "app.bsky.richtext.facet";
   features?: BskyPostFeature[];
   index: {
@@ -28,21 +28,21 @@ type BskyPostMentionFeature = {
   did?: string;
 }
 
-type Features = LeafletRichTextFeature | BskyPostFeature;
+type Feature = LeafletRichTextFeature | BskyPostFeature;
 
 interface Segment {
   text: string;
-  features: Features[];
+  features: Feature[];
 }
 
-export function createFacetedSegments(plaintext: string, facets?: LeafletRichTextFacet[] | BskyPostTextFacet[]): Segment[] {
+export function createFacetedSegments(plaintext: string, facets?: LeafletRichTextFacet[] | BskyPostFacet[]): Segment[] {
   if (!facets?.length) {
     return [{ text: plaintext, features: [] }];
   }
   
   const prefix = buildBytePrefix(plaintext);
-  const startEvents = new Map<number, Features[]>();
-  const endEvents = new Map<number, Features[]>();
+  const startEvents = new Map<number, Feature[]>();
+  const endEvents = new Map<number, Feature[]>();
   const boundaries = new Set<number>([0, prefix.length - 1]);
   for (const facet of facets) {
     const { byteStart, byteEnd } = facet.index ?? {};
@@ -59,7 +59,7 @@ export function createFacetedSegments(plaintext: string, facets?: LeafletRichTex
   }
   const sortedBounds = [...boundaries].sort((a, b) => a - b);
   const segments: Segment[] = [];
-  let active: Features[] = [];
+  let active: Feature[] = [];
   for (let i = 0; i < sortedBounds.length - 1; i++) {
     const boundary = sortedBounds[i];
     const next = sortedBounds[i + 1];
@@ -125,7 +125,7 @@ export function renderSegment(segment: Segment): React.ReactNode {
   });
 }
 
-export function applyFeatures(content: React.ReactNode, features: Features[], key: string): React.ReactNode {
+export function applyFeatures(content: React.ReactNode, features: Feature[], key: string): React.ReactNode {
   if (!features?.length) return <React.Fragment key={key}>{content}</React.Fragment>;
   return (
     <React.Fragment key={key}>
@@ -134,7 +134,7 @@ export function applyFeatures(content: React.ReactNode, features: Features[], ke
   );
 }
 
-export function wrapFeature(child: React.ReactNode, feature: Features, key: string): React.ReactNode {
+export function wrapFeature(child: React.ReactNode, feature: Feature, key: string): React.ReactNode {
   switch (feature.$type) {
     case 'app.bsky.richtext.facet#link':
     case 'pub.leaflet.richtext.facet#link':
@@ -154,9 +154,9 @@ export function wrapFeature(child: React.ReactNode, feature: Features, key: stri
     case 'pub.leaflet.richtext.facet#id':
       return <span key={key} id={feature.id}>{child}</span>;
     case "app.bsky.richtext.facet#mention":
-      return <a key={key} href={`https://bsky.app/profile/${feature.did}`} target="_blank" rel="noopener noreferrer">@{child}</a>
+      return <a key={key} href={`https://bsky.app/profile/${feature.did}`} target="_blank" rel="noopener noreferrer">{child}</a>
     case "app.bsky.richtext.facet#tag":
-      return <a key={key} href={`https://bsky.app/hashtag/${feature.tag}`} target="_blank" rel="noopener noreferrer">{feature.tag}</a>
+      return <a key={key} href={`https://bsky.app/hashtag/${feature.tag}`} target="_blank" rel="noopener noreferrer">{child}</a>
     default:
       return <span key={key}>{child}</span>;
   }

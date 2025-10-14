@@ -1,0 +1,7 @@
+.leaflet {
+  @apply prose lg:prose-xl;
+  /* prose uses :is() so we need to override the max-width here */
+  max-width: 80ch !important;
+
+
+}

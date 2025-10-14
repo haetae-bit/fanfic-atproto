@@ -1,12 +1,13 @@
-import { BlueskyPost, formatDidForLabel, parseAtUri, useBlob, useDidResolution, type LeafletAlignmentValue, type LeafletBlock, type LeafletBlockquoteBlock, type LeafletBskyPostBlock, type LeafletCodeBlock, type LeafletHeaderBlock, type LeafletIFrameBlock, type LeafletImageBlock, type LeafletLinearDocumentBlock, type LeafletLinearDocumentPage, type LeafletListItem, type LeafletMathBlock, type LeafletRichTextFacet, type LeafletRichTextFeature, type LeafletTextBlock, type LeafletUnorderedListBlock, type LeafletWebsiteBlock } from "atproto-ui";
+import { parseAtUri, useBlob, type LeafletAlignmentValue, type LeafletBlock, type LeafletBlockquoteBlock, type LeafletBskyPostBlock, type LeafletCodeBlock, type LeafletHeaderBlock, type LeafletIFrameBlock, type LeafletImageBlock, type LeafletLinearDocumentBlock, type LeafletLinearDocumentPage, type LeafletListItem, type LeafletMathBlock, type LeafletRichTextFacet, type LeafletRichTextFeature, type LeafletTextBlock, type LeafletUnorderedListBlock, type LeafletWebsiteBlock } from "atproto-ui";
 import React from "preact/compat";
-import { useMemo, useRef } from "preact/hooks";
+import { useMemo, useRef } from "preact/compat";
 import { createFacetedSegments, renderSegment } from "./Facet";
+import { Bsky } from "./Bsky";
 
-export const LeafletRenderer: React.FC<{ page: LeafletLinearDocumentPage; documentDid: string; }> = ({ page, documentDid }) => {
+export const LeafletPageRenderer: React.FC<{ page: LeafletLinearDocumentPage; documentDid: string; }> = ({ page, documentDid }) => {
   if (!page.blocks?.length) return null;
   return (
-    <div>
+    <>
       {page.blocks.map((blockWrapper, idx) => (
         <LeafletBlockRenderer
           key={`block-${idx}`}
@@ -15,7 +16,7 @@ export const LeafletRenderer: React.FC<{ page: LeafletLinearDocumentPage; docume
           isFirst={idx === 0}
         />
       ))}
-    </div>
+    </>
   );
 };
 
@@ -66,8 +67,8 @@ const LeafletTextBlockView: React.FC<{ block: LeafletTextBlock; alignment?: Reac
     return null;
   }
   const style: React.CSSProperties = {
-    ...(alignment ? { textAlign: alignment } : undefined),
-    ...(isFirst ? { marginTop: 0 } : undefined)
+    ...(alignment && { textAlign: alignment }),
+    ...(isFirst && { marginTop: 0 })
   };
   return (
     <p style={style}>
@@ -86,8 +87,8 @@ const LeafletHeaderBlockView: React.FC<{ block: LeafletHeaderBlock; alignment?: 
   const normalizedLevel = Math.min(Math.max(level, 1), 6) as 1 | 2 | 3 | 4 | 5 | 6;
   const headingTag = (['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] as const)[normalizedLevel - 1];
   const style: React.CSSProperties = {
-    ...(alignment ? { textAlign: alignment } : undefined),
-    ...(isFirst ? { marginTop: 0 } : undefined)
+    ...(alignment && { textAlign: alignment }),
+    ...(isFirst && { marginTop: 0 })
   };
   return React.createElement(
     headingTag,
@@ -125,14 +126,14 @@ const LeafletImageBlockView: React.FC<{ block: LeafletImageBlock; alignment?: Re
     : undefined;
   
   return (
-    <figure style={{ ...(alignment ? { textAlign: alignment } : undefined) }}>
-      <div style={{ ...(aspectRatio ? { aspectRatio } : {}) }}>
+    <figure style={{ ...(alignment && { textAlign: alignment }) }}>
+      <div className="flex justify-center">
         {url && !error ? (
-          <img src={url} alt={block.alt ?? ''} />
+          <img className="not-prose" style={{ ...(aspectRatio && { aspectRatio }) }} src={url} alt={block.alt ?? ''} />
         ) : (
-          <div>
-            {loading ? 'Loading image…' : error ? 'Image unavailable' : 'No image'}
-          </div>
+          <span className={loading ? "loading loading-spinner loading-lg text-neutral" : undefined}>
+            {error ? 'Image unavailable' : 'No image'}
+          </span>
         )}
       </div>
       {block.alt && block.alt.trim().length > 0 && (
@@ -144,7 +145,7 @@ const LeafletImageBlockView: React.FC<{ block: LeafletImageBlock; alignment?: Re
 
 const LeafletListBlockView: React.FC<{ block: LeafletUnorderedListBlock; alignment?: React.CSSProperties['textAlign']; documentDid: string; }> = ({ block, alignment, documentDid }) => {
   return (
-    <ul style={{ ...(alignment ? { textAlign: alignment } : undefined) }}>
+    <ul style={{ ...(alignment && { textAlign: alignment }) }}>
       {block.children?.map((child, idx) => (
         <LeafletListItemRenderer
           key={`list-item-${idx}`}
@@ -159,12 +160,12 @@ const LeafletListBlockView: React.FC<{ block: LeafletUnorderedListBlock; alignme
 
 const LeafletListItemRenderer: React.FC<{ item: LeafletListItem; documentDid: string; alignment?: React.CSSProperties['textAlign'] }> = ({ item, documentDid, alignment }) => {
   return (
-    <li style={{ ...(alignment ? { textAlign: alignment } : undefined) }}>
+    <li style={{ ...(alignment && { textAlign: alignment }) }}>
       <div>
         <LeafletInlineBlock block={item.content} documentDid={documentDid} alignment={alignment} />
       </div>
       {item.children && item.children.length > 0 && (
-        <ul style={{ ...(alignment ? { textAlign: alignment } : undefined) }}>
+        <ul style={{ ...(alignment && { textAlign: alignment }) }}>
           {item.children.map((child, idx) => (
             <LeafletListItemRenderer key={`nested-${idx}`} item={child} documentDid={documentDid} alignment={alignment} />
           ))}
@@ -248,7 +249,7 @@ const LeafletBskyPostBlockView: React.FC<{ block: LeafletBskyPostBlock }> = ({ b
   if (!parsed) {
     return <div>Referenced post unavailable.</div>;
   }
-  return <BlueskyPost did={parsed.did} rkey={parsed.rkey} iconPlacement="linkInline" />;
+  return <Bsky did={parsed.did} rkey={parsed.rkey} />;
 };
 
 function alignmentValue(value?: LeafletAlignmentValue): React.CSSProperties['textAlign'] | undefined {
@@ -273,12 +274,3 @@ function alignmentValue(value?: LeafletAlignmentValue): React.CSSProperties['tex
       return undefined;
   }
 }
-
-function useAuthorLabel(author: string | undefined, authorDid: string | undefined): string | undefined {
-  const { handle } = useDidResolution(authorDid);
-  if (!author) return undefined;
-  if (handle) return `@${handle}`;
-  if (authorDid) return formatDidForLabel(authorDid);
-  return author;
-}
-
