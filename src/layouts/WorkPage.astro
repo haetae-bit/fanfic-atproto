@@ -1,7 +1,7 @@
 ---
 import { didToHandle } from "@/lib/atproto";
 import Layout from "./Layout.astro";
-import type { Chapter, User, Work } from "@/lib/types";
+import type { Chapter, Tag, User, Work } from "@/lib/types";
 
 interface Props {
   work: Work;
@@ -11,8 +11,10 @@ interface Props {
 }
 
 const { work, user, comments, chapters } = Astro.props;
+const author = user.nickname ? user.nickname : await didToHandle(work.author);
+const tags = Array.isArray(work.tags) && Object.groupBy(work.tags as Tag[], ({ type }) => type);
 ---
-<Layout title={work.title} skipLink="work-body">
+<Layout title={`${work.title} by ${author}`} skipLink="work-body">
   <!-- this chapter menu should be componentized -->
   <nav id="work-menu">
     <!-- if theres more than one chapter, render this box -->
@@ -27,9 +29,20 @@ const { work, user, comments, chapters } = Astro.props;
   <main id="work-body">
     <header>
       <h1>{work.title}</h1>
-      <h2>{user.nickname ? user.nickname : await didToHandle(work.author)}</h2>
+      <h2>{author}</h2>
       <!-- replace this at some point -->
-      {JSON.stringify(work.tags)}
+      <aside>
+        <dl>
+          {tags && Object.entries(tags).map(types => (
+            <dt>{types[0]}</dt>
+            <>
+              {types[1].map(tag => (
+                <dd><a href={`${tag.slug}`}>{tag.label}</a></dd>
+              ))}
+            </>
+          ))}
+        </dl>
+      </aside>
       <time datetime={work.createdAt.toISOString()}>
         {work.createdAt}
       </time>

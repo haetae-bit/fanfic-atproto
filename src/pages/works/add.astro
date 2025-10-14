@@ -71,7 +71,7 @@ if (result && !result.error) {
         )}
       </fieldset>
 
-      <fieldset class="fieldset">
+      <!-- <fieldset class="fieldset">
         <legend class="fieldset-legend">Add chapter</legend>
 
         <div class="tabs tabs-box" id="chapter-options" role="tablist">
@@ -103,7 +103,7 @@ if (result && !result.error) {
             )}
           
             <label for="content" class="label">Work Text</label>
-            <!-- replace this with a rich text editor / code editor later -->
+            {/* replace this with a rich text editor / code editor later */}
             <textarea 
               class="textarea" 
               name="content" 
@@ -161,7 +161,7 @@ if (result && !result.error) {
             <input class="input" type="text" name="leafletUri" id="leaflet-uri" />
           </div>
         </div>
-      </fieldset>
+      </fieldset> -->
       
       <fieldset class="fieldset">
         <label class="flex items-center gap-2">
@@ -170,7 +170,11 @@ if (result && !result.error) {
         </label>
       </fieldset>
       
-      <button class="btn btn-primary">Submit</button>
+      <fieldset class="fieldset">
+        <legend class="fieldset-legend">Actions</legend>
+        <button class="btn btn-secondary" name="action" value="public">Post</button>
+        <button class="btn btn-primary" name="action" value="save">Save</button>
+      </fieldset>
     </form>
 
     {result?.error && (
