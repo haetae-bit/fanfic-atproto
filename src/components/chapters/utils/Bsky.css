@@ -1,10 +1,11 @@
+@layer custom-components {
 .bsky {
   @apply gap-2;
   display: flex;
   flex-flow: column wrap;
   max-width: 66ch;
   
-  a:not(:is(a:has(img))) {
+  a:not(:is(a:has(img)), .author-link) {
     color: var(--color-secondary);
     text-decoration: underline;
 
@@ -18,17 +19,62 @@
     display: flex;
     align-items: center;
   }
+}
 
-  time { font-size: var(--step--1); }
-  
-  .embed {
-    @apply p-4 gap-2;
-    display: flex;
-    flex-flow: column wrap;
+.bsky .embed {
+  @apply flex flex-col flex-wrap p-4 gap-2;
 
-    figcaption {
-      font-style: italic;
-      text-align: center;
+  &:has(.bsky) {
+    background-color: var(--color-base-200);
+
+    & a:not(:is(a:has(img)), .author-link) {
+      color: var(--color-neutral);
+      text-decoration: underline;
+
+      &:hover {
+        color: color-mix(in oklab, var(--color-neutral) 80%, #000);
+        text-decoration: none;
+      }
     }
   }
+
+  .images {
+    display: grid;
+    grid-template-rows: masonry;
+  }
+
+  figcaption {
+    display: flex;
+    gap: calc(var(--spacing) * 2);
+    align-items: center;
+    justify-items: center;
+    max-width: 100%;
+    font-size: var(--step--2);
+    font-style: italic;
+    text-align: center;
+  }
+}
+
+.bsky .trigger {
+  @apply btn btn-sm btn-circle btn-info;
+  font-size: var(--step--0);
+}
+
+.bsky .popover {
+  @apply p-5 max-w-90 max-h-42 rounded-box shadow;
+  background-color: var(--color-base-100);
+}
+
+.bsky .author {
+  @apply flex gap-2 items-center;
+  text-decoration: none;
+}
+
+.bsky .author-text {
+  @apply flex flex-col flex-wrap text-sm;
+}
+
+.bsky .author-handle {
+  font-size: var(--step--2);
+}
 }

@@ -1,15 +1,10 @@
 /** @jsxImportSource react */
-import { BlueskyPost, useAtProtoRecord, type FeedPostRecord } from "atproto-ui";
+import { BlueskyPost, useAtProtoRecord, type BlueskyPostProps, type FeedPostRecord } from "atproto-ui";
 import BskyRenderer from "./BskyRenderer";
 import "./Bsky.css";
 
-type props = {
-  did: string;
-  rkey: string;
-}
-
-export function Bsky({ did, rkey }: props) {
-  const { record, error } = useAtProtoRecord<FeedPostRecord>({
+export function Bsky({ did, rkey, record, renderer, loadingIndicator, fallback }: BlueskyPostProps) {
+  const { record: foundRecord, error } = useAtProtoRecord<FeedPostRecord>({
     did,
     collection: "app.bsky.feed.post",
     rkey
@@ -21,9 +16,10 @@ export function Bsky({ did, rkey }: props) {
     <BlueskyPost
       did={did}
       rkey={rkey}
-      record={record}
-      renderer={BskyRenderer}
-      loadingIndicator={<div className="loading loading-spinner loading-lg mx-auto" />}
+      record={record ?? foundRecord}
+      renderer={renderer ?? BskyRenderer}
+      fallback={fallback}
+      loadingIndicator={loadingIndicator ?? <div className="loading loading-spinner loading-lg mx-auto" />}
     />
   );
 }

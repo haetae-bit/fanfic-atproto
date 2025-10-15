@@ -10,20 +10,21 @@ type props = {
 }
 
 export function Leaflet({ did, rkey }: props) {
-  const { record, loading, error } = useAtProtoRecord<LeafletDocumentRecord>({ 
+  const { record, error } = useAtProtoRecord<LeafletDocumentRecord>({ 
     did, 
     collection: "pub.leaflet.document", 
     rkey 
   });
-
-  if (loading) return <div className="loading loading-spinner loading-lg mx-auto" />
+  
   if (error) return <p className="text-error p-4">Could not load post!</p>
   
   return (
     <LeafletDocument
       did={did}
       rkey={rkey} 
+      record={record}
       renderer={LeafletRenderer}
+      loadingIndicator={<div className="loading loading-spinner loading-lg mx-auto" />}
     />
   )
 }

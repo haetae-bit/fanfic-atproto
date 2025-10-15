@@ -13,8 +13,9 @@ export default defineConfig<PresetWind4Theme>({
     'daisy-components': -2,
     'shortcuts': -1,
     'custom-theme': 0,
-    'default': 1,
-    'typography': 2,
+    'custom-components': 1,
+    'default': 2,
+    'typography': 3,
   },
   presets: [
     presetWind4(),

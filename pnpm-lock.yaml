@@ -18,8 +18,8 @@ importers:
         specifier: ^4.1.1
         version: 4.1.1(@babel/core@7.28.4)(@types/node@24.7.2)(jiti@2.6.1)(preact@10.27.2)(sass-embedded@1.93.2)(sass@1.93.2)
       '@atproto/api':
-        specifier: ^0.16.11
-        version: 0.16.11
+        specifier: ^0.17.3
+        version: 0.17.3
       '@atproto/common-web':
         specifier: ^0.4.3
         version: 0.4.3
@@ -29,6 +29,9 @@ importers:
       '@floating-ui/dom':
         specifier: ^1.7.4
         version: 1.7.4
+      '@floating-ui/react-dom':
+        specifier: ^2.1.6
+        version: 2.1.6(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@fujocoded/authproto':
         specifier: ^0.1.1
         version: 0.1.1(astro@5.14.5(@types/node@24.7.2)(jiti@2.6.1)(rollup@4.52.4)(sass-embedded@1.93.2)(sass@1.93.2)(typescript@5.9.2))(pg@8.16.3)
@@ -221,8 +224,8 @@ packages:
   '@atproto-labs/simple-store@0.3.0':
     resolution: {integrity: sha512-nOb6ONKBRJHRlukW1sVawUkBqReLlLx6hT35VS3imaNPwiXDxLnTK7lxw3Lrl9k5yugSBDQAkZAq3MPTEFSUBQ==}
 
-  '@atproto/api@0.16.11':
-    resolution: {integrity: sha512-1dhfQNHiclb102RW+Ea8Nft5olfqU0Ev/vlQaSX6mWNo1aP5zT+sPODJ8+BTUOYk3vcuvL7QMkqA/rLYy2PMyw==}
+  '@atproto/api@0.17.3':
+    resolution: {integrity: sha512-pdQXhUAapNPdmN00W0vX5ta/aMkHqfgBHATt20X02XwxQpY2AnrPm2Iog4FyjsZqoHooAtCNV/NWJ4xfddJzsg==}
 
   '@atproto/common-web@0.4.3':
     resolution: {integrity: sha512-nRDINmSe4VycJzPo6fP/hEltBcULFxt9Kw7fQk6405FyAWZiTluYHlXOnU7GkQfeUK44OENG1qFTBcmCJ7e8pg==}
@@ -548,6 +551,12 @@ packages:
 
   '@floating-ui/dom@1.7.4':
     resolution: {integrity: sha512-OOchDgh4F2CchOX94cRVqhvy7b3AFb+/rQXyswmzmGakRfkMgoWVjfnLWkRirfLEfuD4ysVW16eXzwt3jHIzKA==}
+
+  '@floating-ui/react-dom@2.1.6':
+    resolution: {integrity: sha512-4JX6rEatQEvlmgU80wZyq9RT96HZJa88q8hp0pBd+LrczeDI4o6uA2M+uvxngVHo4Ihr8uibXxH6+70zhAFrVw==}
+    peerDependencies:
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
 
   '@floating-ui/utils@0.2.10':
     resolution: {integrity: sha512-aGTxbpbg8/b5JfU1HXSrbH3wXZuLPJcNEcZQFMxLs3oSzgtVu6nFPkbbGGUvBcUjKV2YyB9Wxxabo+HEH9tcRQ==}
@@ -3511,7 +3520,7 @@ snapshots:
 
   '@atproto-labs/simple-store@0.3.0': {}
 
-  '@atproto/api@0.16.11':
+  '@atproto/api@0.17.3':
     dependencies:
       '@atproto/common-web': 0.4.3
       '@atproto/lexicon': 0.5.1
@@ -3865,6 +3874,12 @@ snapshots:
     dependencies:
       '@floating-ui/core': 1.7.3
       '@floating-ui/utils': 0.2.10
+
+  '@floating-ui/react-dom@2.1.6(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
+    dependencies:
+      '@floating-ui/dom': 1.7.4
+      react: 19.2.0
+      react-dom: 19.2.0(react@19.2.0)
 
   '@floating-ui/utils@0.2.10': {}
 
