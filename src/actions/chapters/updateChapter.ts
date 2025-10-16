@@ -29,7 +29,7 @@ export default defineAction({
       .fullJoin(Works, eq(Chapters.workId, Works.id))
       .innerJoin(Users, eq(Works.author, loggedInUser.did))
       .having(and(
-        eq(Works.slug, workSlug!),
+        eq(Works.slug, workSlug),
         eq(Works.author, loggedInUser.did)
       ))
       .where(eq(Chapters.slug, chapterSlug))
