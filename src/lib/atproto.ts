@@ -1,29 +1,47 @@
-import type { APIContext } from "astro";
-import { AtpBaseClient, AtUri } from "@atproto/api";
-import { DidResolver } from "@atproto/identity";
+import { AtpBaseClient } from "@atproto/api";
+import { IdResolver } from "@atproto/identity";
 import { AtProtoClient } from "./generated_client";
 import type { atProtoChapter, atProtoComment, atProtoWork, BskyPost, LeafletDoc } from "./types";
 
-export async function getAgent(locals?: APIContext["locals"]) {
+const IDENTITY_RESOLVER = new IdResolver({});
+export async function getDid(didOrHandle: string) {
+  if (didOrHandle.startsWith("did:")) {
+    return didOrHandle;
+  }
+  return await IDENTITY_RESOLVER.handle.resolve(didOrHandle);
+};
+
+async function getPdsUrl(didOrHandle: string) {
+  const did = await getDid(didOrHandle);
+  if (!did) {
+    throw new Error(`Did not resolve to a valid DID: ${didOrHandle}`);
+  }
+  const atprotoData = await IDENTITY_RESOLVER.did.resolveAtprotoData(did);
+  return atprotoData.pds;
+};
+
+export async function getAgent(loggedInUser: NonNullable<App.Locals["loggedInUser"]>) {
   try {
-    const agent = new AtpBaseClient(
-      locals?.loggedInUser?.fetchHandler ?? { service: "api.bsky.social" }
-    );
+    const agent = new AtpBaseClient(loggedInUser.fetchHandler);
     return agent;
   } catch (error) {
-    // we don't need to return anything to make sure the site still functions for not logged in users?
-    console.error(error);
-    return;
+    return null;
   }
 }
 
-const RESOLVER = new DidResolver({});
-export async function didToHandle(did: string) {
+export async function getPdsAgent(pdsOwner: { didOrHandle: string } | { loggedInUser: NonNullable<App.Locals["loggedInUser"]> }) {
+  if ("loggedInUser" in pdsOwner) {
+    return getAgent(pdsOwner.loggedInUser)
+  }
   try {
-    const atProtoData = await RESOLVER.resolveAtprotoData(did);
-    return atProtoData.handle;
+    const destination = await getPdsUrl(pdsOwner.didOrHandle);
+    if (!destination) {
+      return null;
+    }
+    const agent = new AtpBaseClient(destination);
+    return agent;
   } catch (error) {
-    return "Invalid handle";
+    return null;
   }
 }
 
@@ -44,38 +62,38 @@ async function fetchBskyPost(url: string) {
   if (!bsky.includes(host)) {
     throw new Error("This URL is not from a compatible Bluesky client!");
   }
-
-  const key = pathname.split("/")[-1];
-  const handleOrDid = pathname.split("/")[1];
-  console.log(`rkey is ${key}\nhandle/did is ${handleOrDid}`);
-  const atUri = AtUri.make(handleOrDid, "app.bsky.feed.post", key);
-  return atUri;
+  
+  const rkey = pathname.split("/")[-1];
+  const didOrHandle = pathname.split("/")[1];
+  const agent = await getPdsAgent({ didOrHandle });
+  const result = await agent?.app.bsky.feed.post.get({ repo: didOrHandle, rkey });
+  if (!result) {
+    throw new Error("Bluesky post not found!");
+  }
+  return result;
 }
 
 async function fetchLeaflet(uri: string, did: string) {
-  const agent = await getAgent();
-  const atUri = new AtUri(uri);
-  const { collection, rkey } = atUri;
+  const agent = await getPdsAgent({ didOrHandle: did });
+  const { pathname } = new URL(uri);
+  const rkey = pathname.split("/")[-1];
   const record = await agent?.com.atproto.repo.getRecord({
     rkey,
-    collection,
+    collection: "pub.leaflet.document",
     repo: did,
   });
   return record?.data;
 }
 
-export async function importChapter(option: "manual" | "bsky" | "leaflet", uri: string, did?: string) {
+export async function importChapter(option: "bsky" | "leaflet", uri: string, did?: string) {
   let chapterContent: BskyPost | LeafletDoc;
   switch (option) {
     case "bsky":
-      const bsky = await fetchBskyPost(uri);
-      console.log("bsky post: " + JSON.stringify(bsky));
+      const { uri: bskyUri, cid } = await fetchBskyPost(uri);
+      console.log("bsky post: " + JSON.stringify({bskyUri, cid}));
       chapterContent = {
         $type: "fan.fics.work.chapter#bskyPost",
-        postRef: {
-          uri: bsky.toString(),
-          cid: ""
-        }
+        postRef: { uri: bskyUri, cid }
       };
       return chapterContent;
     case "leaflet":
@@ -131,7 +149,7 @@ async function callSlices(
           ...params,
           body: JSON.stringify({
             record: data.record,
-            ...(endpoint === "updateRecord" && { rkey: data.rkey }),
+            rkey: data.rkey,
             slice: SLICE_URI,
           }),
         });
@@ -155,8 +173,33 @@ async function callSlices(
   }
 }
 
-export async function createFanficWork(record: atProtoWork) {
-  return await callSlices("work", "createRecord", { record });
+export async function createFanficWork(workRecord: atProtoWork, chapterRecord: atProtoChapter, rkey?: string) {
+  const agent = await getPdsAgent({ didOrHandle: workRecord.author });
+  const result = await agent?.com.atproto.repo.applyWrites({
+    repo: workRecord.author,
+    writes: [
+      {
+        $type: "com.atproto.repo.applyWrites#create",
+        rkey,
+        collection: "fics.fan.work",
+        value: {
+          record: workRecord,
+        }
+      },
+      {
+        $type: "com.atproto.repo.applyWrites#create",
+        collection: "fan.fics.work.chapter",
+        value: {
+          record: {
+            workUri: `at://${workRecord.author}/fan.fics.work/${rkey}`,
+            ...chapterRecord
+          }
+        }
+      }
+    ]
+  });
+  return result?.data.results;
+  // return await callSlices("work", "createRecord", { record: workRecord, rkey });
 }
 
 export async function updateFanficWork(record: atProtoWork, rkey: string) {

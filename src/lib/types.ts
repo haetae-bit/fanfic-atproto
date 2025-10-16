@@ -1,3 +1,4 @@
+import type { ComAtprotoRepoStrongRef } from "@atproto/api";
 import type { Chapters, Tags, Users, Works } from "astro:db";
 
 export type Work = typeof Works.$inferSelect;
@@ -5,14 +6,13 @@ export type Chapter = typeof Chapters.$inferSelect;
 export type Tag = typeof Tags.$inferSelect;
 export type User = typeof Users.$inferSelect;
 
-export type atProtoWork = Omit<Work, "id" | "slug"> | {
+export type atProtoWork = Pick<Work, "title" | "author" | "summary" | "tags"> & {
   createdAt: string;
   updatedAt?: string;
 };
 
-export type atProtoChapter = Omit<Chapter, "id" | "uri" | "slug" | "workId"> | {
-  workUri: string;
-  chapterRef?: string;
+export type atProtoChapter = Pick<Chapter, "title" | "warnings" | "authorsNotes" | "endNotes"> & {
+  chapterRef?: ComAtprotoRepoStrongRef.Main;
   content: ChapterText | BskyPost | LeafletDoc;
   createdAt: string;
   updatedAt?: string;
@@ -24,11 +24,6 @@ export type atProtoComment = {
   postedTo?: string;
 };
 
-type comAtProtoStrongRef = {
-  uri: string;
-  cid: string;
-};
-
 export type ChapterText = {
   $type: "fan.fics.work.chapter#chapterText";
   text: string;
@@ -36,10 +31,10 @@ export type ChapterText = {
 
 export type BskyPost = {
   $type: "fan.fics.work.chapter#bskyPost";
-  postRef: comAtProtoStrongRef;
+  postRef: ComAtprotoRepoStrongRef.Main;
 };
 
 export type LeafletDoc = {
   $type: "fan.fics.work.chapter#leafletDoc";
-  docRef: comAtProtoStrongRef;
+  docRef: ComAtprotoRepoStrongRef.Main;
 };
