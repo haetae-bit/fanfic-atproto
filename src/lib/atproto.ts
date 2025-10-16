@@ -1,7 +1,7 @@
 import { AtpBaseClient } from "@atproto/api";
 import { IdResolver } from "@atproto/identity";
-import { AtProtoClient } from "./generated_client";
 import type { atProtoChapter, atProtoComment, atProtoWork, BskyPost, LeafletDoc } from "./types";
+import type { PubLeafletDocument } from "@atcute/leaflet";
 
 const IDENTITY_RESOLVER = new IdResolver({});
 export async function getDid(didOrHandle: string) {
@@ -82,31 +82,47 @@ async function fetchLeaflet(uri: string, did: string) {
     collection: "pub.leaflet.document",
     repo: did,
   });
-  return record?.data;
+  if (!record || !record.data || !record.success) {
+    throw new Error("Leaflet not found!");
+  }
+  const data = record.data;
+  const result = {
+    uri: data.uri,
+    cid: data.cid,
+    value: data.value as PubLeafletDocument.Main
+  };
+  return result;
 }
 
-export async function importChapter(option: "bsky" | "leaflet", uri: string, did?: string) {
-  let chapterContent: BskyPost | LeafletDoc;
-  switch (option) {
-    case "bsky":
-      const { uri: bskyUri, cid } = await fetchBskyPost(uri);
-      console.log("bsky post: " + JSON.stringify({bskyUri, cid}));
-      chapterContent = {
-        $type: "fan.fics.work.chapter#bskyPost",
-        postRef: { uri: bskyUri, cid }
-      };
-      return chapterContent;
-    case "leaflet":
-      const leaflet = await fetchLeaflet(uri, did!);
-      console.log("leaflet: " + JSON.stringify(leaflet));
-      chapterContent = {
-        $type: "fan.fics.work.chapter#leafletDoc",
-        docRef: {
-          uri: leaflet!.uri,
-          cid: leaflet!.cid!,
-        }
-      };
-      return chapterContent;
+export async function importChapter(option: "bsky" | "leaflet", inputUri: string, did?: string) {
+  let record: BskyPost | LeafletDoc;
+  if (option === "bsky") {
+    const { uri, cid, value } = await fetchBskyPost(inputUri);
+    console.log("bsky post: " + JSON.stringify({ uri, cid, value }));
+    record = {
+      $type: "fan.fics.work.chapter#bskyPost",
+      postRef: { uri, cid }
+    };
+    return {
+      record,
+      value
+    };
+  }
+  
+  if (option === "leaflet") {
+    const { uri, cid, value } = await fetchLeaflet(inputUri, did!);
+    console.log("leaflet: " + JSON.stringify({uri, cid, value}));
+    record = {
+      $type: "fan.fics.work.chapter#leafletDoc",
+      docRef: {
+        uri,
+        cid: cid!,
+      }
+    };
+    return {
+      record,
+      value
+    }
   }
 }
 
@@ -116,12 +132,6 @@ const SLICE_URI = import.meta.env.SLICE_URI as string;
 const BEARER_TOKEN = import.meta.env.BEARER_TOKEN;
 const XRPC = 'https://slices-api.fly.dev/xrpc';
 const NAMESPACE = "fan.fics";
-
-export const client = new AtProtoClient(
-  API_URL,
-  SLICE_URI,
-  // oauth | authprovider
-);
 
 // This is a very thin wrapper for the fetch requests to Slices
 async function callSlices(

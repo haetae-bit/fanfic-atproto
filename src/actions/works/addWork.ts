@@ -17,39 +17,21 @@ export default defineAction({
   input: schema.extend({
     chapterTitle: title,
     ...rest
-  }).superRefine((data, ctx) => {
-    // conditionally require fields based on option
+  }).refine(data => {
+    // conditionally validate fields based on chapter option
     switch (data.option) {
-      case "manual":
-        if ((data.chapterTitle || data.content) === undefined || (data.chapterTitle || data.content) === null) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: `If you're writing manually, make sure "Chapter Title" and "Work Text" are not empty!`,
-            path: ["chapterTitle", "content"]
-          });
-        }
-        break;
       case "bsky":
-        if ((data.bskyTitle || data.bskyUri) === undefined || (data.bskyTitle || data.bskyUri) === null) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: `If you're importing a Bluesky post, make sure "Chapter Title" and "Bluesky URI" are not empty!`,
-            path: ["bskyTitle", "bskyUri"]
-          });
-        }
-        break;
+        return data.bskyUri && data.bskyTitle;
       case "leaflet":
-        if (data.leafletUri === undefined || data.leafletUri === null) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: `If you're importing a Leaflet document, make sure "Leaflet URI" is not empty!`,
-            path: ["leafletUri"]
-          });
-        }
-        break;
+        return data.leafletUri;
+      case "manual":
+        return data.title && data.content;
       default:
-        return true;
+        return false
     }
+  }, {
+    message: "Missing fields for the chapter option!",
+    path: ["option"]
   }),
   handler: async ({
     title,
@@ -98,25 +80,22 @@ export default defineAction({
 
     let chapterContent: ChapterText | BskyPost | LeafletDoc;
     switch (option) {
-      case "manual":
-        chapterContent = {
-          $type: "fan.fics.work.chapter#chapterText",
-          text: content!
-        };
       case "bsky":
         const bsky = await importChapter("bsky", bskyUri!);
-        chapterContent = bsky!;
-        if (!content) {
-          
-        }
+        chapterContent = bsky?.record!;
+        content = JSON.stringify(bsky?.value);
       case "leaflet":
         const leaflet = await importChapter("leaflet", leafletUri!, loggedInUser.did);
-        chapterContent = leaflet!;
+        chapterContent = leaflet?.record!;
+        chapterTitle = leaflet?.value.title as string;
+        content = JSON.stringify(leaflet?.value);
       default:
         chapterContent = {
           $type: "fan.fics.work.chapter#chapterText",
           text: content!
         };
+        chapterTitle = chapterTitle!;
+        content = content!;
     }
     
     const createdAt = new Date();

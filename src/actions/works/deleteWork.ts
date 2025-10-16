@@ -1,6 +1,6 @@
 import { defineAction, ActionError } from "astro:actions";
 import { db, Works, and, eq } from "astro:db";
-import { getAgent, client } from "@/lib/atproto";
+import { getAgent, deleteFanficWork } from "@/lib/atproto";
 import { AtUri } from "@atproto/api";
 
 export default defineAction({
@@ -42,7 +42,7 @@ export default defineAction({
     if (work.uri) {
       try {
         const { rkey, host } = new AtUri(work.uri);
-        const agent = await getAgent(context.locals);
+        const agent = await getAgent(loggedInUser);
 
         if (!agent) {
           console.error("Agent not found!");
@@ -59,8 +59,8 @@ export default defineAction({
           });
         }
 
-        // we'll just smush this in and pray
-        await client.fan.fics.work.deleteRecord(rkey);
+        const result = await deleteFanficWork(rkey);
+        return result;
       } catch (error) {
         console.error(error);
         throw new ActionError({
@@ -73,7 +73,7 @@ export default defineAction({
     //#region "Delete the work from the database"
     const [result] = await db.delete(Works)
       .where(and(
-        eq(Works.slug, workId!),
+        eq(Works.slug, workId),
         eq(Works.author, loggedInUser.did)
       ))
       .returning();

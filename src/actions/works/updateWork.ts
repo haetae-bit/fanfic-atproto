@@ -1,7 +1,8 @@
 import { defineAction, ActionError } from "astro:actions";
 import { db, Works, and, eq } from "astro:db";
 import { AtUri } from "@atproto/api";
-import { getAgent, client } from "@/lib/atproto";
+import { getAgent, updateFanficWork } from "@/lib/atproto";
+import type { atProtoWork } from "@/lib/types";
 import schema from "./schema";
 
 export default defineAction({
@@ -49,7 +50,7 @@ export default defineAction({
     if (work.uri) {
       try {
         const { rkey, host } = new AtUri(work.uri);
-        const agent = await getAgent(context.locals);
+        const agent = await getAgent(loggedInUser);
 
         if (!agent) {
           console.error("Agent not found!");
@@ -58,22 +59,23 @@ export default defineAction({
             message: "Something went wrong when connecting to your PDS.",
           });
         }
-
+        
         if (loggedInUser.did !== host) {
           throw new ActionError({
             code: "UNAUTHORIZED",
             message: "You can only update your own work!",
           });
         }
-        
-        const result = client.fan.fics.work.updateRecord(rkey, {
+        //#region "Contstruct record"
+        const workRecord: atProtoWork = {
           title,
           tags: [tags],
           author: loggedInUser.did,
           summary,
           createdAt: work.createdAt.toISOString(),
           updatedAt: updatedAt.toISOString(),
-        });
+        };
+        const result = await updateFanficWork(workRecord, rkey);
 
         if (!result) {
           throw new ActionError({
