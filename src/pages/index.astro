@@ -1,6 +1,7 @@
 ---
 import TagsInput from "~/TagsInput";
 import Layout from "../layouts/Layout.astro";
+import { AtProto } from "~/chapters/AtProto";
 
 const currentUser = Astro.locals.loggedInUser;
 ---
@@ -12,6 +13,7 @@ const currentUser = Astro.locals.loggedInUser;
 		<p>
 			<TagsInput tagType="character" client:only="preact" />
 		</p>
+		<!-- <AtProto type="bsky" did="haetae.cozy.fan" rkey="3m36kaftz522d" client:only /> -->
 	</main>
 
 	{currentUser

@@ -1,8 +1,7 @@
 import slugify from "@sindresorhus/slugify";
 import { and, Chapters, db, eq, Tags, Works } from "astro:db";
 import type { Chapter } from "./types";
-import { SQLiteOAuthStorage } from "@slices/oauth";
-
+// import { SQLiteOAuthStorage } from "@slices/oauth";
 
 const OAUTH_CLIENT_ID = import.meta.env.OAUTH_CLIENT_ID;
 const OAUTH_CLIENT_SECRET = import.meta.env.OAUTH_CLIENT_SECRET;
@@ -61,7 +60,8 @@ export async function addChapter(workId: number, title: string, content: string,
       title,
       slug: "",
       // order,
-      notes,
+      authorsNotes: "",
+      endNotes: "",
       content,
     }).returning();
     return result;

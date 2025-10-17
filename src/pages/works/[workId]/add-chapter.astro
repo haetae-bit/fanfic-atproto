@@ -4,6 +4,11 @@ import Layout from "@/layouts/Layout.astro";
 import Popover from "~/Popover.astro";
 
 const { workId } = Astro.params;
+
+if (!workId) {
+  return Astro.redirect("/errors/not-found");
+}
+
 const result = Astro.getActionResult(actions.chaptersActions.addChapter);
 const errors = isInputError(result?.error) ? result.error.fields : {};
 
@@ -16,39 +21,39 @@ if (result && !result.error) {
   <h1>Add a chapter</h1>
 
   <form action={actions.chaptersActions.addChapter} method="post">
-    <div class="tabs tabs-box">
-      <input 
-        class="tab" 
-        type="radio" 
-        name="chapterOption" 
-        id="manual" 
-        value="manual" 
-        aria-label="Default" 
-        aria-controls="option-manual"
-        role="tab" 
-        checked
-      />
-      <div id="option-manual" class="tab-content option" role="tabpanel">
-        <fieldset class="fieldset">
-          <legend class="fieldset-legend">Chapter Title</legend>
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend">Add chapter</legend>
+
+      <div class="tabs tabs-box" id="chapter-options" role="tablist">
+        <input 
+          class="tab"
+          type="radio" 
+          name="option" 
+          id="manual" 
+          value="manual" 
+          aria-label="Default" 
+          aria-controls="option-manual"
+          role="tab"
+          checked 
+        />
+        <div id="option-manual" class="tab-content option" role="tabpanel">
+          <label for="chapter-title" class="label">Chapter Title</label>
           <input 
             class="input" 
             type="text" 
-            name="title" 
-            id="title" 
-            aria-errormessage="title-error"
+            name="chapterTitle" 
+            id="chapter-title" 
+            aria-errormessage="chapter-title-error"
             transition:persist 
           />
           {errors.title && (
-            <div id="title-error" class="label text-error">
+            <div id="chapter-title-error" class="label text-error">
               {errors.title}
             </div>
           )}
-        </fieldset>
-      
-        <fieldset class="fieldset">
-          <legend class="fieldset-legend">Work Text</legend>
-          <!-- replace this with a rich text editor / code editor later -->
+        
+          <label for="content" class="label">Work Text</label>
+          {/* replace this with a rich text editor / code editor later */}
           <textarea 
             class="textarea" 
             name="content" 
@@ -61,55 +66,61 @@ if (result && !result.error) {
               {errors.content}
             </div>
           )}
-        </fieldset>
-      </div>
+        </div>
 
-      <input 
-        class="tab" 
-        type="radio" 
-        name="chapterOption" 
-        id="leaflet" 
-        value="leaflet" 
-        aria-label="Import from leaflet" 
-        aria-controls="option-leaflet"
-        role="tab"
-      />
-      <div id="option-leaflet" class="tab-content option" role="tabpanel">
-        <p>You can import a document from leaflet.pub as a chapter into your work.</p>
-        <label for="leaflet-uri" class="label">
-          Leaflet URI
-          <Popover id="leaflet-help" icon="info" label="help">
-            <p>Please input the URL of the leaflet document you'd like to use. Make sure it's published in a publication(?)</p>
-          </Popover>
-        </label>
-        <input class="input" type="url" name="chapterUri" id="leaflet-uri" />
-      </div>
+        <input 
+          class="tab" 
+          type="radio" 
+          name="option" 
+          id="bsky" 
+          value="bsky" 
+          aria-label="Import from Bluesky" 
+          aria-controls="option-bsky"
+          role="tab"
+        />
+        <div id="option-bsky" class="tab-content option" role="tabpanel">
+          <p>You can import a Bluesky post as a chapter in your work!</p>
 
-      <input 
-        class="tab" 
-        type="radio" 
-        name="chapterOption" 
-        id="bsky" 
-        value="bsky" 
-        aria-label="Import from BlueSky" 
-        aria-controls="option-bsky"
-        role="tab"
-      />
-      <div id="option-bsky" class="tab-content option" role="tabpanel">
-        <p>You can import a BlueSky post as a chapter in your work!</p>
-        <fieldset class="fieldset">
-          <legend class="fieldset-legend">
-            BlueSky URI
+          <label for="bsky-title" class="label">Title</label>
+          <input type="text" type="text" name="bskyTitle" id="bsky-title" />
+
+          <label for="bsky-uri" class="label">
+            Bluesky URI
             <Popover id="bsky-help" icon="info" label="help">
-              <p>Please input the URL of the BlueSky post.</p>
+              <p>Please input the URL of the Bluesky post.</p>
             </Popover>
-          </legend>
-          <input class="input" type="url" name="chapterUri" id="bsky-uri" />
-        </fieldset>
-      </div>
-    </div>
+          </label>
+          <input class="input" type="text" name="bskyUri" id="bsky-uri" />
+        </div>
 
-    <button class="btn btn-primary">Post chapter</button>
+        <input 
+          class="tab" 
+          type="radio" 
+          name="option" 
+          id="leaflet" 
+          value="leaflet" 
+          aria-label="Import from Leaflet.pub" 
+          aria-controls="option-leaflet"
+          role="tab"
+        />
+        <div id="option-leaflet" class="tab-content option" role="tabpanel">
+          <p>You can import a document from leaflet.pub as a chapter into your work.</p>
+          <label for="leaflet-uri" class="label">
+            Leaflet URI
+            <Popover id="leaflet-help" icon="info" label="help">
+              <p>Please input the AT URI of the leaflet post you'd like to use. Make sure it's published in a publication!</p>
+              <p>For more info, <a href="/help/chapter">see this guide</a>.</p>
+            </Popover>
+          </label>
+          <input class="input" type="text" name="leafletUri" id="leaflet-uri" />
+        </div>
+      </div>
+    </fieldset>
+
+    <div>
+      <button class="btn btn-secondary" type="submit" value="save">Save as draft</button>
+      <button class="btn btn-primary" type="submit" value="post">Post chapter</button>
+    </div>
     {result?.error}
   </form>
 </Layout>
