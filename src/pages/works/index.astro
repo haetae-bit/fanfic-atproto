@@ -14,10 +14,7 @@ works.sort((a, b) => {
 });
 
 function shouldShow(work) {
-  console.log(work);
-  let result = !work.draft || (loggedInUser && work.author == loggedInUser.did)
-  console.log(result);
-  return result;
+  return !work.draft || (loggedInUser && work.author == loggedInUser.did)
 }
 ---
 
