@@ -12,6 +12,10 @@ const works = await db.select()
 works.sort((a, b) => {
   return (b.Works.updatedAt ?? b.Works.createdAt).valueOf() - (a.Works.updatedAt ?? a.Works.createdAt).valueOf();
 });
+
+function shouldShow(work) {
+  return !work.draft || (loggedInUser && work.author == loggedInUser.did)
+}
 ---
 
 <Layout>
@@ -25,11 +29,12 @@ works.sort((a, b) => {
 
     <section>
       <ol class="flex flex-col flex-wrap gap-5">
-        {works.map(async ({ Works, Users }) => (
-          <li>
+        {works.map(async ({ Works, Users }) => 
+           shouldShow(Works) &&
+          (<li>
             <Work work={Works} user={Users} />
-          </li>
-        ))}
+          </li>)
+        )}
       </ol>
     </section>
   </main>

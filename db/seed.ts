@@ -21,6 +21,7 @@ export default async function() {
       title: "Hello world",
       summary: "<p>whoag i have <b>BOLD</b></p>",
       tags: [{ label: "label", slug: "#", type: "relationship" }, { label: "label", slug: "#", type: "character" }],
+      draft: false
     },
     {
       uri: "at://did:plc:dg2qmmjic7mmecrbvpuhtvh6/moe.fanfics.works/3lyeiyq32ek2o",
@@ -29,6 +30,7 @@ export default async function() {
       title: "testing title",
       summary: "what's up?! <b>bold</b> and <em>italics</em> should work.",
       tags: "hey",
+      draft: false
     }
   ]);
   
