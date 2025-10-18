@@ -14,7 +14,7 @@
     "@fujocoded/authproto": "^0.1.1",
     "@sindresorhus/slugify": "^3.0.0",
     "@yaireo/tagify": "^4.35.4",
-    "astro": "^5.14.5",
+    "astro": "^5.14.6",
     "atproto-ui": "0.5.3-1",
     "nanoid": "^5.1.6",
     "preact": "^10.27.2"
