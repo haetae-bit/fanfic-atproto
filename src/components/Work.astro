@@ -9,7 +9,7 @@ interface Props {
 
 const { work, user } = Astro.props;
 ---
-<article class="card rounded-box shadow p-2">
+<article class={`card rounded-box shadow p-2 ${work.draft ? "draft" : ""}`}>
   <header>
     <div class="flex items-center justify-between">
       <hgroup>
@@ -43,6 +43,11 @@ const { work, user } = Astro.props;
 <style>
   .author {
     font-style: italic;
+  }
+
+  .draft {
+    opacity: 0.5;
+    border-width: 0.5rem;
   }
 
   .tag {

@@ -16,6 +16,7 @@ export default defineAction({
   accept: "form",
   input: schema.extend({
     chapterTitle: title,
+    action: z.string(),
     ...rest
   }).refine(data => {
     // conditionally validate fields based on chapter option
@@ -47,9 +48,13 @@ export default defineAction({
     authorsNotes,
     endNotes,
     warnings,
+    action,
   }, context) => {
     const loggedInUser = context.locals.loggedInUser;
 
+    console.log(`action is ${action}`);
+    const draft = action === 'save';
+    
     //#region "Check authentication"
     if (!loggedInUser) {
       throw new ActionError({
@@ -167,6 +172,7 @@ export default defineAction({
         uri,
         slug,
         createdAt,
+        draft,
         ...workRecord
       }).onConflictDoNothing({ target: Works.slug }).returning();
       if (!work) { tx.rollback(); }
@@ -176,6 +182,7 @@ export default defineAction({
         uri: cUri,
         content: content!,
         createdAt,
+        draft,
         ...chapterRecord
       }).onConflictDoNothing({ target: Chapters.id }).returning();
       if (!chapter) { tx.rollback(); }

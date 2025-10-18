@@ -71,7 +71,7 @@ if (result && !result.error) {
         )}
       </fieldset>
 
-      <!-- <fieldset class="fieldset">
+      <fieldset class="fieldset">
         <legend class="fieldset-legend">Add chapter</legend>
 
         <div class="tabs tabs-box" id="chapter-options" role="tablist">
@@ -161,7 +161,7 @@ if (result && !result.error) {
             <input class="input" type="text" name="leafletUri" id="leaflet-uri" />
           </div>
         </div>
-      </fieldset> -->
+      </fieldset>
       
       <fieldset class="fieldset">
         <label class="flex items-center gap-2">
@@ -172,8 +172,8 @@ if (result && !result.error) {
       
       <fieldset class="fieldset">
         <legend class="fieldset-legend">Actions</legend>
-        <button class="btn btn-secondary" name="action" value="public">Post</button>
-        <button class="btn btn-primary" name="action" value="save">Save</button>
+        <button class="btn btn-secondary" name="action" value="public">Post Work</button>
+        <button class="btn btn-primary" name="action" value="save">Save As Draft</button>
       </fieldset>
     </form>
 
@@ -199,7 +199,7 @@ if (result && !result.error) {
   const form = document.forms.namedItem("new-work-form") as HTMLFormElement;
   form.addEventListener("submit", (e) => {
     // e.preventDefault();
-    // console.log(form.elements);
+    console.log(form.elements);
     const data = new FormData(e.currentTarget as HTMLFormElement);
     console.log(data);
   });
