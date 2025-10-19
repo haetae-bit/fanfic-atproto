@@ -1,8 +1,0 @@
-onlyBuiltDependencies:
-  - '@parcel/watcher'
-  - cbor-extract
-  - core-js
-  - esbuild
-  - sharp
-
-shamefullyHoist: true
