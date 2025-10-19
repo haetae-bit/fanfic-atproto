@@ -117,6 +117,9 @@ npm install
 npm run dev
 ```
 
+> [!NOTE]  
+> If you are not using pnpm, delete the pnpm-lock.yaml and pnpm-workspace.yaml files before installing packages, or there will be conflicts and your config files will not work correctly
+
 ## Support
 
 If you want to support me making making this, please feel free to donate a coffee.
